@@ -1,0 +1,150 @@
+<div class="page page-ng-table">
+
+
+
+
+  <!-- page header -->
+  <div class="pageheader">
+
+    <h2>{{page.title}}</h2>
+
+    <!-- <div class="page-bar">
+
+      <ul class="page-breadcrumb">
+        <li>
+          <a ui-sref="app.dashboard"><i class="fa fa-home"></i> {{main.title}}</a>
+        </li>
+        <li>
+          <a href="javascript:;">Tables</a>
+        </li>
+        <li>
+          <a ui-sref="app.tables.ng-table">{{page.title}}</a>
+        </li>
+      </ul>
+
+    </div> -->
+
+  </div>
+  <!-- /page header -->
+
+  <!-- page content -->
+  <div class="pagecontent">
+
+    <!-- row -->
+    <div class="row">
+
+      <!-- col -->
+      <div class="col-md-12">
+
+        <!-- tile -->
+        <section class="tile" fullscreen="isFullscreen06">
+
+          <!-- tile header -->
+          <div class="tile-header dvd dvd-btm">
+            <h1 class="custom-font"></h1>
+            <ul class="controls">
+              <li class="dropdown" dropdown on-toggle="toggled(open)">
+
+                <a href dropdown-toggle class="dropdown-toggle settings"><i class="fa fa-cog"></i></a>
+
+                <ul class="dropdown-menu pull-right with-arrow animated littleFadeInUp">
+                  <li>
+                    <a href tile-control-toggle>
+                      <span class="minimize"><fa name="angle-down"></fa>&nbsp;&nbsp;&nbsp;Minimize</span>
+                      <span class="expand"><fa name="angle-up"></fa>&nbsp;&nbsp;&nbsp;Expand</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href tile-control-refresh ng-click="ajaxFaker()">
+                      <fa name="refresh"></fa> Actualizar
+                    </a>
+                  </li>
+                  <li>
+                    <a href tile-control-fullscreen ng-click="isFullscreen06 = !isFullscreen06">
+                      <fa name="expand"></fa> Pantalla Completa
+                    </a>
+                  </li>
+
+                </ul>
+
+              </li>
+              <li class="remove"><a href tile-control-close><i class="fa fa-times"></i></a></li>
+            </ul>
+          </div>
+          <!-- /tile header -->
+
+          <!-- tile body -->
+          <div class="tile-body" >
+
+            <button class="bg-yellow-ps pt-7 pb-7 pr-12 pl-12 br-15 b-0 text-white" daterangepicker="dateRange.options" date-begin="dateRange.startDate" date-end="dateRange.endDate">
+              <i class="fa fa-calendar"></i>&nbsp;&nbsp;<span>{{dateRange.startDate}} - {{dateRange.endDate}}</span>&nbsp;&nbsp;<i class="fa fa-angle-down"></i>
+            </button>
+            <div ng-if="success">
+              <table ng-table="tableParams" show-filter="true" class="table table-custom" >
+                <tr ng-repeat="image in $data">
+                  <td data-title="'ID'" sortable="'id'" filter="{ 'id': 'text' }">
+                    {{image.id}}
+                  </td>
+                  <td data-title="'Imagen'" sortable="'url'" filter="{ 'url': 'text' }" width="20%">
+                    <a ng-href="{{image.url}}" target="_blank"><img ng-src="{{image.url}}" alt="img_" width="100%"></a>
+                  </td>
+                  <!-- <td data-title="'Categoría'" sortable="'name'" filter="{ 'name': 'text' }">
+                    {{image.name}}
+                  </td> -->
+                  <td data-title="'Descripción'" sortable="'comment'" filter="{ 'comment': 'text' }">
+                    {{image.comment}}
+                  </td>
+                  <td data-title="'Tags'" sortable="'tags'" filter="{ 'tags': 'text' }">
+                    {{image.tags}}
+                  </td>
+                  <!-- <td data-title="'Url'" sortable="'url'" filter="{ 'url': 'text' }">
+                    {{image.url}}
+                  </td> -->
+                  <td data-title="'Fecha creación'" sortable="'createDate'" filter="{ 'createDate': 'text' }">
+                    {{image.createDate | date:'dd-MM-yyyy'}}
+                  </td>
+                  <td data-title="'Rut usuario'" sortable="'userRut'" filter="{ 'userRut': 'text' }">
+                    {{image.userRut}}
+                  </td>
+                  <td data-title="'Activo'" sortable="'show'" filter="{ 'show': 'text' }">
+                    <switch id="enabled-{{image.id}}" name="enabled-{{image.id}}" ng-model="image.show" class="green" ng-change="updateShowImage(image.id, image.show, $index)"></switch>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div ng-if="!success">
+              <h2 class="pt-20">No se encontraron imagenes en esta fecha</h2>
+            </div>
+
+          </div>
+          <!-- /tile body -->
+
+        </section>
+        <!-- /tile -->
+
+
+      </div>
+      <!-- /col -->
+
+    </div>
+    <!-- /row -->
+
+  </div>
+  <!-- /page content -->
+
+  <script type="text/ng-template" id="modalMessage.html">
+  	<!-- <div class="modal-header text-gray">
+		<h3 class="text-center">{{modals.modalMessage.title.text}} {{modals.modalMessage.subtitle.text}}</h3>
+  </div> -->
+  <div class="modal-body text-orange-repo">
+  		<h3 class="text-center mb-20">{{modals.modalMessage.text_1}}</h3>
+  		<div class="text-center">
+  			<button class="btn btn-default btn-rounded-10 mb-10" type="button" ng-click="cancel()">Cerrar</button>
+  		</div>
+  </div>
+  <!-- <div class="modal-footer">
+  		<button class="btn btn-default btn-rounded-10 mb-10" type="button" ng-click="cancel()">Cerrar</button>
+  </div> -->
+  </script>
+
+</div>

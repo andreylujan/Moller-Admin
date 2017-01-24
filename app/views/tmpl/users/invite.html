@@ -1,0 +1,171 @@
+<div class="page">
+
+	<!-- page header -->
+	<div class="pageheader">
+
+		<h2>{{page.title}} <span></span></h2>
+
+		<div class="page-bar">
+
+			<ul class="page-breadcrumb">
+				<li>
+					<a ui-sref="app.dashboard"> {{main.title}}</a>
+				</li>
+				<li>
+					<a href="javascript:;">Reportes</a>
+				</li>
+				<li>
+					<a ui-sref="app.playStation.reports">{{page.title}}</a>
+				</li>
+			</ul>
+
+		</div>
+
+	</div>
+	<!-- /page header -->
+
+	<!-- page content -->
+	<div class="pagecontent">
+
+		<!-- row -->
+		<div class="row">
+
+			<!-- col -->
+			<div class="col-md-12">
+
+
+				<!-- tile -->
+				<section class="tile" fullscreen="isFullscreen06">
+
+					<!-- tile header -->
+					<div class="tile-header dvd dvd-btm">
+						<h1 class="custom-font"></h1>
+						<ul class="controls">
+							<li class="dropdown" uib-dropdown on-toggle="toggled(open)">
+
+								<a href uib-dropdown-toggle class="dropdown-toggle settings"><i class="fa fa-cog"></i></a>
+
+								<ul class="dropdown-menu pull-right with-arrow animated littleFadeInUp">
+									<li>
+										<a href tile-control-toggle>
+											<span class="minimize"><fa name="angle-down"></fa>&nbsp;&nbsp;&nbsp;Minimizar</span>
+											<span class="expand"><fa name="angle-up"></fa>&nbsp;&nbsp;&nbsp;Maximizar</span>
+										</a>
+									</li>
+									<li>
+										<a href ng-click="getReports()">
+											<fa name="refresh"></fa> Refrescar
+										</a>
+									</li>
+									<li>
+										<a href tile-control-fullscreen ng-click="isFullscreen06 = !isFullscreen06">
+											<fa name="expand"></fa> Pantalla completa
+										</a>
+									</li>
+
+								</ul>
+
+							</li>
+							<li class="remove"><a href tile-control-close><i class="fa fa-times"></i></a></li>
+						</ul>
+					</div>
+					<!-- /tile header -->
+
+					<!-- tile body -->
+					<div class="tile-body">
+
+					<div class="row mt-10">
+							<div class="col-md-5">
+								<h4>Invitación masiva (csv)</h4>
+								<input type="file" class="form-control rounded" file-model="page.csvFile" accept=".xls,.xlsx,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
+								<!-- <input type="file" class="form-control rounded" ng-value="page.csvFile" value="{{page.csvFile}}" file-model="page.csvFile" set-file-data="page.csvFile = value;"> -->
+							</div>
+						</div>
+
+						<div class="row mt-10">
+							<div class="col-md-6">
+								
+								<h4>Invitación manual</h4>
+
+								<form class="form-horizontal form-validation" name="form" novalidate>
+
+									<div class="form-group" ng-repeat="formGroup in page.formGroups.invite">
+										<div class="col-sm-11">
+
+											<input class="form-control rounded" type="email" placeholder="Email de usuario..." ng-model="formGroup.email" ng-change="validateMailAndRol({{formGroup.index}})" required>
+
+										</div>
+										<label class="col-sm-1 control-label text-left text-orange-ps" ng-show="formGroup.showIcon"><fa name="{{formGroup.faIcon}}" style="cursor:pointer" ng-click="addFormGroup($index)"></fa></label>
+									</div>
+
+								</form>
+
+								<h4 class="text-{{page.msg.color}}" ng-show="page.msg.show">{{page.msg.text}}</h4>
+								<ul class="list-unstyled">
+									<li><p ng-repeat="email in responseInvitations"><fa name="{{email.icon}}"></fa> {{email.email}}</p></li>
+								</ul>
+								
+							</div>
+						</div>
+
+						<div class="row mt-10">
+							<div class="col-md-12">
+								<!-- <button class="btn btn-orange-ps br-20 text-md pl-20 pr-20" type="submit" ng-disabled="form.$invalid" ng-click="sendInvitations()">Enviar</button> -->
+								<button class="btn btn-cyan-1-generic br-20 text-md pl-20 pr-20" type="submit" ng-click="invite()">Enviar</button>
+							</div>
+						</div>
+
+					</div>
+					<!-- /tile body -->
+
+				</section>
+				<!-- /tile -->
+
+			</div>
+			<!-- /col -->
+
+
+		</div>
+		<!-- /row -->
+
+
+	</div>
+	<!-- /page content -->
+
+	<script type="text/ng-template" id="summary.html">
+
+  	<div class="modal-header text-gray">
+			<h3 class="text-center">Resumen</h3>
+  	</div>
+
+  	<div class="modal-body">
+
+			<div ng-show="modal.errors.length">
+	  		<h4 class="text-center mb-20">No enviados</h4>
+	  		<ul ng-repeat="error in modal.errors">
+	  			<li>
+	  				<p>{{error.email}}</p>
+						<p>Error en la fila {{error.rowNumber}}</p>
+						<p>Revise el campo <strong>{{error.field}}</strong></p>
+	  			</li>
+	  		</ul>
+
+	  		<hr>
+	  	</div>
+
+  		<h4 class="text-center mb-20">Enviados</h4>
+  		<ul ng-repeat="success in modal.successes">
+  			<li>
+  				<p>{{success.email}}</p>
+  			</li>
+  		</ul>
+
+  	</div>
+
+  	<div class="modal-footer">
+  		<button class="btn btn-default btn-rounded-10 mb-10" type="button" ng-click="cancel()">Cerrar</button>
+  	</div>
+
+  </script>
+
+</div>

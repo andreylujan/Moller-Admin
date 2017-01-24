@@ -1,0 +1,228 @@
+<div class="page">
+
+	<!-- page header -->
+	<div class="pageheader">
+
+		<h2>{{page.title}} <span></span></h2>
+
+		<div class="page-bar">
+
+			<ul class="page-breadcrumb">
+				<li>
+					<a ui-sref="app.dashboard"> {{main.title}}</a>
+				</li>
+				<li>
+					<a href="javascript:;">Inspecciones</a>
+				</li>
+				<li>
+					<a ui-sref="app.playStation.reports">{{page.title}}</a>
+				</li>
+			</ul>
+
+		</div>
+
+	</div>
+	<!-- /page header -->
+
+	<!-- page content -->
+	<div class="pagecontent">
+
+		<!-- row -->
+		<div class="row">
+
+			<!-- col -->
+			<div class="col-md-12">
+
+
+				<!-- tile -->
+				<section class="tile" fullscreen="isFullscreen06">
+
+					<!-- tile header -->
+					<div class="tile-header dvd dvd-btm">
+						<h1 class="custom-font"></h1>
+						<ul class="controls">
+							<li class="dropdown" dropdown on-toggle="toggled(open)">
+
+								<a href dropdown-toggle class="dropdown-toggle settings"><i class="fa fa-cog"></i></a>
+
+								<ul class="dropdown-menu pull-right with-arrow animated littleFadeInUp">
+									<li>
+										<a href tile-control-toggle>
+											<span class="minimize"><fa name="angle-down"></fa>&nbsp;&nbsp;&nbsp;Minimizar</span>
+											<span class="expand"><fa name="angle-up"></fa>&nbsp;&nbsp;&nbsp;Maximizar</span>
+										</a>
+									</li>
+									<li>
+										<a href ng-click="getReports({success: true,detail: 'OK'})">
+											<fa name="refresh"></fa> Refrescar
+										</a>
+									</li>
+									<li>
+										<a href tile-control-fullscreen ng-click="isFullscreen06 = !isFullscreen06">
+											<fa name="expand"></fa> Pantalla completa
+										</a>
+									</li>
+
+								</ul>
+
+							</li>
+							<li class="remove"><a href tile-control-close><i class="fa fa-times"></i></a></li>
+						</ul>
+					</div>
+					<!-- /tile header -->
+
+					<!-- tile body -->
+					<div class="tile-body">
+
+						<div class="row">
+							<div class="col-md-2">
+								<button class="bg-blue-ps pt-7 pb-7 pr-12 pl-12 br-15 b-0 text-white ml-20 mb-10" ng-click="openModalDownloadPdfs()" uib-tooltip="Descargar PDF's"><i class="fa fa-cloud-download"></i></button>
+							</div>
+						</div>
+						<table ng-table="tableParams" show-filter="true" class="table table-custom">
+							<thead>
+								<tr>
+									<th ng-repeat="column in columns2" ng-show="column.visible" class="text-center sortable" ng-class="{'sort-asc': tableParams.isSortBy(column.name, 'asc'),'sort-desc': tableParams.isSortBy(column.name, 'desc')}" ng-click="tableParams.sorting(column.name, tableParams.isSortBy(column.name, 'asc') ? 'desc' : 'asc')"> {{column.title}} </th>
+									<th class="text-center"> PDF </th>
+									<th class="text-center"> Firma </th>
+								</tr>
+								<tr>
+									<th ng-repeat="column in columns2" ng-show="column.visible" class="text-center sortable" >
+										<input type="text" class="form-control" ng-model="filter[column.filter].filter"/>
+									</th>
+									<th class="text-center" ></th>
+									<th class="text-center" ></th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<tr ng-repeat="report in $data | filter: filtro">
+									<td ng-repeat="column in columns2 " ng-show="column.visible">
+										{{report[column.field] | capitalize:true}}
+									</td>
+									<td>
+										<input ng-if="report.pdfUploaded" class="text-center" type="image" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/pdf2.png" uib-tooltip="Descargar PDF" tooltip-placement="bottom" style="width: 15px" data-pdf="{{report.pdf}}" ng-click="downloadPdf($event)"/>
+										<input ng-if="!report.pdfUploaded" class="text-center" type="image" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/denied2.png" uib-tooltip="PDF no disponible" tooltip-placement="bottom" style="width: 20px;" data-pdf="{{report.pdf}}" />
+									</td>
+									<td>
+										<input class="text-center" type="image" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/pdf2.png" uib-tooltip="Descargar PDF" tooltip-placement="bottom" style="width: 15px" ng-click="FirmaInspeccionInstance(report.id)"/>
+									</td>
+								</tr>
+
+							</tbody>
+						</table>
+					</div>
+					<!-- /tile body -->
+				</section>
+				<!-- /tile -->
+			</div>
+			<!-- /col -->
+		</div>
+		<!-- /row -->
+	</div>
+	<!-- /page content -->
+
+	<script type="text/ng-template" id="firmarInspeccion.html">
+		<div class="modal-content">
+			<div class="modal-header ng-scope">
+            	<h3 class="modal-title custom-font" style="text-align: center;">FIRMA INSPECCIÓN</h3>
+        	</div>
+         	<div class="modal-body ng-scope">
+         		<h4 style="text-align: center;">¿Seguro que quieres firmar la siguiente inspección?</h4>
+         		<br>
+         		<div style="text-align: center;">
+         			<label class="ng-binding" style="font-weight: 900;">Empresa:</label> Nombre de la empresa
+         			<br>
+         			<label class="ng-binding" style="font-weight: 900;">Obra:</label> Nombre obra
+         			<br>
+         			<label class="ng-binding" style="font-weight: 900;">Usuario creador:</label> Nombre supervisor
+         			<br>
+         			<label class="ng-binding" style="font-weight: 900;">Fecha de creación:</label> Nombre 01/01/2016
+         			<br>
+         			<label class="ng-binding" style="font-weight: 900;">Fecha de resolución:</label> Nombre 01/01/2016
+         			<br>
+         			<br>
+         			<button class="btn btn-orange-ps {{elements.buttons.removeUser.border}}" type="button" ng-click="removeUser(user.id)" >{{elements.buttons.ver.text}}</button>
+					<button class="btn btn-slategray" ng-disabled="elements.buttons.firmar.disabled" type="button" ng-click="editUser(user.id)" >{{elements.buttons.firmar.text}}</button>
+					<br>
+					<label class="checkbox checkbox-custom"> <input type="checkbox" class="ng-untouched ng-valid ng-dirty ng-valid-parse ng-not-empty" ng-change="validaFirma(checkVal)" ng-model="check" aria-invalid="false" style=""><i></i> He visto el PDF </label>
+         		</div>
+            </div>
+        </div>
+	</script>
+
+<script type="text/ng-template" id="modalDownloadPdfs.html">
+	<div class="modal-header text-center">
+		<h3>Descargar PDF's</h3>
+		<h4>Seleccione los filtros para buscar los PDF's de reportes y descargar</h4>
+	</div>
+
+	<div class="modal-body">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="alert alert-{{modal.alert.color}}" ng-show="modal.alert.show"> <h4 class="text-md"><strong>{{modal.alert.title}}</strong></h4> {{modal.alert.text}} </div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<style>
+					.multiselect-parent,.dropdown-toggle,.dropdown-menu-form  {
+						width: 100%;
+					}
+				</style>
+
+				<form class="form-horizontal" role="form">
+					<div class="form-group">
+						<label class="col-sm-3 control-label">Creados entre</label>
+						<div class="col-sm-8">
+							<input style="cursor:pointer" id="daterangeDashGoals2" date-range-picker class="form-control date-picker" type="text" ng-model="modal.dateRange.date" ng-change="removeMessage()" options="modal.dateRange.options" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">Cliente</label>
+						<div class="col-sm-8">
+							<select class="form-control" ng-options="client.name for client in modal.clients.list track by client.id" ng-model="modal.clients.selected" ng-change="removeMessage()"></select>
+							<!-- <div ng-dropdown-multiselect="" options="modal.clients.list" selected-model="modal.clients.selected" extra-settings="modal.dropdownMultiselect.settings" translation-texts="modal.dropdownMultiselect.texts" events="" ng-dropdown-multiselect-disabled=""></div> -->
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">Ejecutores</label>
+						<div class="col-sm-8">
+							<!-- <select class="form-control" ng-options="executer.fullName for executer in creatorsUnique track by executer.id" ng-model="executerSelected"></select> -->
+							<div ng-dropdown-multiselect="" options="modal.executers.list" selected-model="modal.executers.selected" extra-settings="modal.dropdownMultiselect.settings" translation-texts="modal.dropdownMultiselect.texts" events="" ng-dropdown-multiselect-disabled=""></div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">Clase equipo</label>
+						<div class="col-sm-8">
+							<select class="form-control" ng-options="equipmentClass.name for equipmentClass in modal.classes.list track by equipmentClass.id" ng-model="modal.classes.selected" ng-change="removeMessage()"></select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">Territorios</label>
+						<div class="col-sm-8">
+							<div ng-dropdown-multiselect="" options="modal.territories.list" selected-model="modal.territories.selected" extra-settings="modal.dropdownMultiselect.settings" translation-texts="modal.dropdownMultiselect.texts" events="" ng-dropdown-multiselect-disabled=""></div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">Tipo de Actividad</label>
+						<div class="col-sm-8">
+							<select class="form-control" ng-options="activityType.name for activityType in activityTypesUnique track by activityType.id" ng-model="activityTypeSelected" ng-change="removeMessage()"></select>
+						</div>
+					</div>
+					
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal-footer">
+		<!-- <button class="btn bg-blue-ps btn-rounded-10 mb-10" type="button" ng-click="downloadZip()"><i class="fa fa-cloud-download"></i></button> -->
+		<a class="btn bg-blue-ps btn-rounded-10 mb-10" id="zipBtn" ng-href="" ng-click="downloadZip()" ng-disabled="zipBtnDisabled"><i class="fa fa-cloud-download" uib-tooltip="Descargar PDF's"></i></a>
+		<button class="btn btn-cancelRecit btn-rounded-10 mb-10" type="button" ng-click="cancel()">Cerrar</button>
+	</div>
+
+</script>
+
+</div>
