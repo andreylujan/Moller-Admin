@@ -32,7 +32,8 @@ angular.module('efindingAdminApp')
 	var data = [],
 		activityTypes = [],
 		users = [],
-		reportsIncluded = [];
+		reportsIncluded = [],
+		inspecciones = [];
 
 	var receiverName = null,
 		equipmentId = null,
@@ -149,6 +150,7 @@ angular.module('efindingAdminApp')
 				for (j = 0; j < $scope.columns2.length; j++) {
 					test[test.length - 1].title = $scope.columns2[j].title;
 					test[test.length - 1].id = success.data[i].id;
+					test[test.length - 1].state = success.data[i].attributes.state;
 					test[test.length - 1][$scope.columns2[j].relationshipName + '_id'] = success.data[i].attributes[$scope.columns2[j].relationshipName + '_id'];
 					test[test.length - 1].relationships = success.data[i].relationships;
 					test[test.length - 1].pdf = success.data[i].attributes.pdf;
@@ -265,8 +267,9 @@ angular.module('efindingAdminApp')
 
 			}
 
-			$log.info('test');
-			$log.info(test);
+			$log.log('test');
+			$log.log(test);
+			inspecciones = test;
 
 			$scope.tableParams = new NgTableParams({
 				page: 1, // show first page
@@ -368,7 +371,7 @@ angular.module('efindingAdminApp')
 			}
 		});
 
-		/*modalInstance.result.then(function(datos) {
+		modalInstance.result.then(function(datos) {
 			if (datos.action === 'removeUser') {
 				for (var i = 0; i < data.length; i++) {
 					if (data[i].id === datos.idUser) {
@@ -376,30 +379,26 @@ angular.module('efindingAdminApp')
 					}
 				}
 			}
-			if (datos.action === 'editUser') {
-				for (var j = 0; j < data.length; j++) {
-					if (data[j].id === datos.success.data.id) {
-						data[j].firstName = datos.success.data.attributes.first_name;
-						data[j].lastName = datos.success.data.attributes.last_name;
-						data[j].email = datos.success.data.attributes.email;
-					}
-				}
+			if (datos.action === 'firma') {
+				$scope.getInspections({
+					success: true,
+					detail: 'OK'
+				}, $scope.pagination.pages.current, $scope.filter);
 			}
 			$scope.tableParams.reload();
-		}, function() {});*/
+		}, function() {});
 	};
 
 })
 
-.controller('FirmaInspeccionInstance', function($scope, $log, $uibModalInstance, idInspection, Inspections, Validators, Utils) {
+.controller('FirmaInspeccionInstance', function($scope, $log, $uibModalInstance, Firmar, idInspection, Inspections, Validators, Utils) {
 
 	$scope.inspection = {
 		id: null,
 		empresa: {
 			text: ''
 		},
-		obra: '',
-		firstName: {
+		obra: {
 			text: ''
 		},
 		creador: {
@@ -410,6 +409,9 @@ angular.module('efindingAdminApp')
 		},
 		fecha_resolucion: {
 			text: ''
+		},
+		id: {
+			id: ''
 		}
 	};
 	$scope.elements = {
@@ -455,14 +457,20 @@ angular.module('efindingAdminApp')
 			idInspection: idInspection
 		}, function(success) {
 			if (success.data) {
-				$log.error(success.data);
+				var datos = _.groupBy(success.included, function(objeto){ return objeto.type; });
 
-				/*$scope.elements.title = success.data.attributes.first_name + ' ' + success.data.attributes.last_name;
+				$log.error(datos);
 
-				$scope.user.id = success.data.id;
-				$scope.user.firstName.text = success.data.attributes.first_name;
-				$scope.user.lastName.text = success.data.attributes.last_name;
-				$scope.user.email.text = success.data.attributes.email;
+				$scope.inspection.empresa.text = datos.companies[0].attributes.name;
+				$scope.inspection.obra.text = datos.constructions[0].attributes.name;
+				$scope.inspection.creador.text = datos.users[0].attributes.full_name;
+				$scope.inspection.fecha_creacion.text = success.data.attributes.created_at;
+				$scope.inspection.id.id = success.data.id;
+
+				//$scope.user.id = success.data.id;
+				//$scope.user.firstName.text = success.data.attributes.first_name;
+				//$scope.user.lastName.text = success.data.attributes.last_name;
+				/*$scope.user.email.text = success.data.attributes.email;
 				$scope.user.role.id = success.data.attributes.role_id;
 				$scope.user.role.text = success.data.attributes.role_name;
 				$scope.user.phoneNumber.text = success.data.attributes.phone_number;
@@ -489,7 +497,7 @@ angular.module('efindingAdminApp')
 
 	$scope.getInspectionDetail(idInspection);
 
-	$scope.ver = function(idUser) {
+	/*$scope.ver = function(idUser) {
 
 		if ($scope.elements.buttons.ver.text === 'Eliminar') {
 			$scope.elements.buttons.ver.text = 'Si, eliminar';
@@ -520,44 +528,22 @@ angular.module('efindingAdminApp')
 			});
 		}
 
-	};
+	};*/
 
-	/*$scope.firmar = function(idInspection) {
+	$scope.firmar = function(idInspection) {
 
-		if ($scope.elements.buttons.firmar.text === 'Firmar') {
-			$scope.elements.buttons.firmar.text = 'Guardar';
-			$scope.elements.buttons.firmar.border = '';
-			enableFormInputs();
-		} else {
-			$scope.elements.buttons.firmar.text = 'Editar';
-			$scope.elements.buttons.firmar.border = 'btn-border';
-			disableFormInputs();
+		if ($scope.elements.buttons.firmar.disabled === false) {
+			$log.error(idInspection);
 
-			/*Users.update({
-				data: {
-					type: 'users',
-					id: idUser,
-					attributes: {
-						first_name: $scope.user.firstName.text,
-						last_name: $scope.user.lastName.text,
-						image: '',
-						role_id: 2
-					}
-				},
-				idUser: idUser
+
+			Firmar.save({
+				idInspection: idInspection
 			}, function(success) {
 				if (success.data) {
-					$scope.elements.alert.title = 'Se han actualizado los datos del usuario';
-					$scope.elements.alert.text = '';
-					$scope.elements.alert.color = 'success';
-					$scope.elements.alert.show = true;
-
-					disableFormInputs();
-
-					$scope.getUserDetails(idUser);
+					$log.error(success);
 
 					$uibModalInstance.close({
-						action: 'editUser',
+						action: 'firma',
 						success: success
 					});
 
@@ -565,14 +551,16 @@ angular.module('efindingAdminApp')
 					$log.log(success);
 				}
 			}, function(error) {
-				$log.log(error);
+				$log.error(error);
+				if (error.status == 401) 
+				{
+					Utils.refreshToken(firmar);
+				}
 			});
-
 		}
-
 	};
 
-	$scope.ver = function(idUser) {
+	/*$scope.ver = function(idUser) {
 
 		if ($scope.elements.buttons.ver.text === 'Eliminar') {
 			$scope.elements.buttons.ver.text = 'Si, eliminar';
