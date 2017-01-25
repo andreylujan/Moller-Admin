@@ -101,6 +101,9 @@ angular.module('efindingAdminApp')
 			method: 'GET',
 			headers: {
 				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: 'construction.company,creator',
 			}
 		}
 	});
@@ -142,6 +145,22 @@ angular.module('efindingAdminApp')
 
 	});
 
+})
+
+//Firmar
+.factory('Firmar', function($resource) {
+
+	return $resource(API_URL + '/inspections/:idInspection/transition?transition_name=sign', {
+		idInspection: '@idInspection'
+	}, {
+		save: {
+			method: 'POST',
+			headers: {
+				Accept: 'application/vnd.api+json',
+				'Content-Type': 'application/vnd.api+json'
+			}
+		}
+	});
 })
 
 // TableColumns
