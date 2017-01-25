@@ -1,1 +1,1 @@
-"Administrador para eCheckit App" 
+"Administrador para eFinding App" 

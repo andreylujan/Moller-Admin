@@ -1,7 +1,7 @@
 {
-  "name": "belltech",
+  "name": "efinding",
   "version": "0.0.1",
-  "description": "belltech admin for eCheckIt app",
+  "description": "admin for eFinding app",
   "repository": {
     "type": "git",
     "url": ""
