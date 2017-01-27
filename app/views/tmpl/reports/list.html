@@ -110,7 +110,7 @@
 										<a ng-click="FirmaInspeccionInstance(report.id)" ng-if="report.state == 'first_signature_pending'">Pendiente de firma</a>
 										<label ng-if="report.state == 'first_signature_done'">Firmado</label>
 										<a ng-click="FirmaInspeccionInstance(report.id)" ng-if="report.state == 'final_signature_pending'">Pendiente de firma final</a>
-										<label ng-if="report.state == 'finish'">Teminado</label>
+										<label ng-if="report.state == 'finished'">Teminado</label>
 									</td>
 								</tr>
 
@@ -133,6 +133,9 @@
             	<h3 class="modal-title custom-font" style="text-align: center;">FIRMA INSPECCIÓN</h3>
         	</div>
          	<div class="modal-body ng-scope">
+         		<div class="alert alert-{{elements.alert.color}}" ng-show="elements.alert.show"> 
+         			<h4 class="text-md"><strong>{{elements.alert.title}}</strong></h4> {{elements.alert.text}} 
+         		</div>
          		<h4 style="text-align: center;">¿Seguro que quieres firmar la siguiente inspección?</h4>
          		<br>
          		<div style="text-align: center;">
@@ -148,7 +151,9 @@
          			-->
          			<br>
          			<br>
-         			<button class="btn btn-orange-ps {{elements.buttons.removeUser.border}}" type="button" ng-click="removeUser(user.id)" >{{elements.buttons.ver.text}}</button>
+         			<a href="{{inspection.pdf}}" style="text-decoration: none;" target="_blank">
+         				<button class="btn btn-orange-ps {{elements.buttons.removeUser.border}}" type="button">{{elements.buttons.ver.text}}</button>
+         			</a>
 					<button class="btn btn-slategray" ng-disabled="elements.buttons.firmar.disabled" type="button" ng-click="firmar(inspection.id.id)" >{{elements.buttons.firmar.text}}</button>
 					<br>
 					<label class="checkbox checkbox-custom"> <input type="checkbox" class="ng-untouched ng-valid ng-dirty ng-valid-parse ng-not-empty" ng-change="validaFirma(checkVal)" ng-model="check" aria-invalid="false" style=""><i></i> He visto el PDF </label>
