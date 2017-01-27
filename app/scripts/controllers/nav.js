@@ -91,8 +91,8 @@ angular.module('efindingAdminApp')
 
 			for (i = 0; i < success.data.length; i++) {
 				columns.reportColumns.push({
-					title: success.data[i].attributes.field_name,
-					field: success.data[i].attributes.column_name,
+					title: success.data[i].attributes.column_name,
+					field: success.data[i].attributes.field_name,
 					name: i,
 					visible: true,
 					relationshipName: success.data[i].attributes.relationship_name,

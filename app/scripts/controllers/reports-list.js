@@ -75,7 +75,7 @@ angular.module('efindingAdminApp')
 			$scope.filter[auxiliar].columnName = $scope.columns[i].title;
 			$scope.filter[auxiliar].relationshipName = $scope.columns[i].relationshipName;
 		}
-		$scope.filter.include = 'creator';
+		$scope.filter.include = 'creator,construction.company';
 		$scope.filter['page[number]'] = $scope.pagination.pages.current;
 		$scope.filter['page[size]'] = $scope.pagination.pages.size;
 
