@@ -1,7 +1,5 @@
 # config valid only for current version of Capistrano
-lock '3.6.0'
-
-
+lock '3.7.1'
 
 set :application, 'admin'
 set :repo_url, 'git@github.com:andreylujan/Moller-Admin.git'
