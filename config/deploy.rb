@@ -4,7 +4,7 @@ lock '3.6.0'
 
 
 set :application, 'admin'
-set :repo_url, 'git@github.com:andreylujan/echeckit-generic-admin.git'
+set :repo_url, 'git@github.com:andreylujan/Moller-Admin.git'
 set :branch, 'master'
 
 set :ssh_options, {
@@ -12,9 +12,6 @@ set :ssh_options, {
  forward_agent: true,
  auth_methods: ["publickey"]
 }
-
-# Default deploy_to directory is /var/www/my_app
-set :deploy_to, '/srv/http/www/echeckit/generic/admin'
 
 # Default value for :scm is :git
 set :scm, :git
