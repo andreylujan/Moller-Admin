@@ -98,11 +98,13 @@ angular.module('efindingAdminApp')
 					relationshipName: success.data[i].attributes.relationship_name,
 					dataType: success.data[i].attributes.data_type,
 					filter: {}
+
 				});
 				columns.reportColumns[columns.reportColumns.length - 1].filter[success.data[i].attributes.field_name] = success.data[i].attributes.field_name;
 			}
 
 			Utils.setInStorage('report_columns', columns.reportColumns);
+
 
 		}, function(error) {
 			defered.reject({

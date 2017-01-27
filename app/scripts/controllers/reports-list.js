@@ -47,19 +47,35 @@ angular.module('efindingAdminApp')
 		filterTimeoutDuration = 1000;
 
 	$scope.columns = Utils.getInStorage('report_columns');
+	$log.error($scope.columns);
 
 	$scope.filter = {};
 
 	for (i = 0; i < $scope.columns.length; i++) {
 
-		if ($scope.columns[i].relationshipName) { // ARREGLAR -> ignora los q contengan assigned_user
-
-			$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'] = {};
-			$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].filter = '';
-			$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].field = $scope.columns[i].field;
-			$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].name = $scope.columns[i].field;
-			$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].columnName = $scope.columns[i].title;
-			$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].relationshipName = $scope.columns[i].relationshipName;
+		if ($scope.columns[i].relationshipName) {
+			//if (!_.contains($scope.columns[i].relationshipName, '.')) {
+				$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'] = {};
+				$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].filter = '';
+				$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].field = $scope.columns[i].field;
+				$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].name = $scope.columns[i].field;
+				$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].columnName = $scope.columns[i].title;
+				$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].relationshipName = $scope.columns[i].relationshipName;
+			/*}
+			else
+			{
+				var aux = $scope.columns[i].relationshipName.split('.');
+				var texto = 'filter';
+				for (var j = 0; j <= aux.length -1; j++) {
+					texto = texto + '[' + aux[j] + ']';
+				}
+				$scope.filter[texto] = {};
+				$scope.filter[texto].filter = '';
+				$scope.filter[texto].field = $scope.columns[i].field;
+				$scope.filter[texto].name = $scope.columns[i].field;
+				$scope.filter[texto].columnName = $scope.columns[i].title;
+				$scope.filter[texto].relationshipName = $scope.columns[i].relationshipName;
+			}*/
 
 		} else {
 			var res = $scope.columns[i].field.split(".");
@@ -75,7 +91,7 @@ angular.module('efindingAdminApp')
 			$scope.filter[auxiliar].columnName = $scope.columns[i].title;
 			$scope.filter[auxiliar].relationshipName = $scope.columns[i].relationshipName;
 		}
-		$scope.filter.include = 'creator,construction.company';
+		$scope.filter.include = 'creator,construction,company';
 		$scope.filter['page[number]'] = $scope.pagination.pages.current;
 		$scope.filter['page[size]'] = $scope.pagination.pages.size;
 
@@ -96,8 +112,8 @@ angular.module('efindingAdminApp')
 		}
 	}
 
-	$log.info('$scope.columns2');
-	$log.info($scope.columns2);
+	$log.error('$scope.columns2');
+	$log.error($scope.columns2);
 
 	$log.log('$scope.filter');
 	$log.log($scope.filter);
@@ -169,14 +185,17 @@ angular.module('efindingAdminApp')
 							// Solo tiene una relacion con un objeto
 							if ($scope.columns2[j].relationshipName !== null) //&& (success.included.length > i) 
 							{	
-
 								if (success.data[i].relationships[$scope.columns2[j].relationshipName].data !== null) 
 								{
 									test[test.length - 1][$scope.columns2[j].name] = '-';
 
 									for (var x = 0; x < success.included.length; x++) 
 									{
-										if (success.included[x].id === success.data[i].relationships[$scope.columns2[j].relationshipName].data.id) 
+										//$log.error('nuevo');
+										//$log.error(success.data[i].relationships[$scope.columns2[j].relationshipName]);
+										//$log.error($scope.columns2[j]);
+										if (success.included[x].id === success.data[i].relationships[$scope.columns2[j].relationshipName].data.id &&
+											success.included[x].type === success.data[i].relationships[$scope.columns2[j].relationshipName].data.type) 
 										{
 											test[test.length - 1][$scope.columns2[j].name] = success.included[x].attributes[$scope.columns2[j].name];
 										}
@@ -267,8 +286,8 @@ angular.module('efindingAdminApp')
 
 			}
 
-			$log.log('test');
-			$log.log(test);
+			$log.error('test');
+			$log.error(test);
 			inspecciones = test;
 
 			$scope.tableParams = new NgTableParams({

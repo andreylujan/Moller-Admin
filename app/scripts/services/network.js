@@ -84,7 +84,7 @@ angular.module('efindingAdminApp')
 				Accept: 'application/vnd.api+json'
 			},
 			params: {
-				include: 'creator,construction.company',
+				include: 'creator,construction,company',
 				fieldsUsers: '@fieldsUsers',
 				fieldsReports: '@fieldsReports',
 				fieldsEquipments: '@fieldsEquipments'
