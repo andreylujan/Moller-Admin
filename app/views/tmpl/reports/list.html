@@ -98,7 +98,7 @@
 							<tbody>
 								<tr ng-repeat="report in $data | filter: filtro">
 									<td ng-repeat="column in columns2 " ng-show="column.visible">
-										{{report[column.field] | capitalize:true}}
+										{{report[column.field]}}
 									</td>
 									<td>
 										<input ng-if="report.pdfUploaded" class="text-center" type="image" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/pdf2.png" uib-tooltip="Descargar PDF" tooltip-placement="bottom" style="width: 15px" data-pdf="{{report.pdf}}" ng-click="downloadPdf($event)"/>
