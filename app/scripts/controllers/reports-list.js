@@ -413,6 +413,8 @@ angular.module('efindingAdminApp')
 		id: {
 			id: ''
 		}
+		,
+		pdf: ''
 	};
 	$scope.elements = {
 		buttons: {
@@ -458,29 +460,12 @@ angular.module('efindingAdminApp')
 		}, function(success) {
 			if (success.data) {
 				var datos = _.groupBy(success.included, function(objeto){ return objeto.type; });
-
-				$log.error(datos);
-
 				$scope.inspection.empresa.text = datos.companies[0].attributes.name;
 				$scope.inspection.obra.text = datos.constructions[0].attributes.name;
 				$scope.inspection.creador.text = datos.users[0].attributes.full_name;
 				$scope.inspection.fecha_creacion.text = success.data.attributes.created_at;
 				$scope.inspection.id.id = success.data.id;
-
-				//$scope.user.id = success.data.id;
-				//$scope.user.firstName.text = success.data.attributes.first_name;
-				//$scope.user.lastName.text = success.data.attributes.last_name;
-				/*$scope.user.email.text = success.data.attributes.email;
-				$scope.user.role.id = success.data.attributes.role_id;
-				$scope.user.role.text = success.data.attributes.role_name;
-				$scope.user.phoneNumber.text = success.data.attributes.phone_number;
-				$scope.user.rut.text = success.data.attributes.rut;
-
-				if (success.data.attributes.image) {
-					$scope.user.image = success.data.attributes.image;
-				} else {
-					$scope.user.image = 'http://dhg7r6mxe01qf.cloudfront.net/icons/admin/placeholder-user-photo.png';
-				}*/
+				$scope.inspection.pdf = success.data.attributes.pdf;
 
 			} else {
 				$log.error(success);
@@ -497,39 +482,6 @@ angular.module('efindingAdminApp')
 
 	$scope.getInspectionDetail(idInspection);
 
-	/*$scope.ver = function(idUser) {
-
-		if ($scope.elements.buttons.ver.text === 'Eliminar') {
-			$scope.elements.buttons.ver.text = 'Si, eliminar';
-
-			$scope.elements.buttons.ver.border = '';
-			$scope.elements.alert.show = true;
-			$scope.elements.alert.title = '¿Seguro que desea eliminar al usuario?';
-			$scope.elements.alert.text = 'Para eliminarlo, vuelva a presionar el botón';
-			$scope.elements.alert.color = 'danger';
-
-		} else {
-			$scope.elements.buttons.ver.text = 'Eliminar';
-
-			Users.delete({
-				idUser: idUser
-			}, function(success) {
-
-				$uibModalInstance.close({
-					action: 'removeUser',
-					idUser: idUser
-				});
-
-			}, function(error) {
-				$log.log(error);
-				if (error.status === 401) {
-					Utils.refreshToken($scope.removeUser);
-				}
-			});
-		}
-
-	};*/
-
 	$scope.firmar = function(idInspection) {
 
 		if ($scope.elements.buttons.firmar.disabled === false) {
@@ -540,8 +492,10 @@ angular.module('efindingAdminApp')
 				idInspection: idInspection
 			}, function(success) {
 				if (success.data) {
-					$log.error(success);
-
+					$scope.elements.alert.title = 'Se ha firmado el documento';
+					$scope.elements.alert.text = '';
+					$scope.elements.alert.color = 'success';
+					$scope.elements.alert.show = true;
 					$uibModalInstance.close({
 						action: 'firma',
 						success: success
@@ -556,57 +510,13 @@ angular.module('efindingAdminApp')
 				{
 					Utils.refreshToken(firmar);
 				}
+			 	$scope.elements.alert.color = 'danger';
+			 	Utils.gotoAnyPartOfPage('pageHeader');
+			 	$scope.elements.alert.title = 'Error al firmar el documento: ';
+			 	$scope.elements.alert.text = error.statusText;
+			 	$scope.elements.alert.show = true;
 			});
 		}
-	};
-
-	/*$scope.ver = function(idUser) {
-
-		if ($scope.elements.buttons.ver.text === 'Eliminar') {
-			$scope.elements.buttons.ver.text = 'Si, eliminar';
-
-			$scope.elements.buttons.ver.border = '';
-			$scope.elements.alert.show = true;
-			$scope.elements.alert.title = '¿Seguro que desea eliminar al usuario?';
-			$scope.elements.alert.text = 'Para eliminarlo, vuelva a presionar el botón';
-			$scope.elements.alert.color = 'danger';
-
-		} else {
-			$scope.elements.buttons.ver.text = 'Eliminar';
-
-			/*Users.delete({
-				idUser: idUser
-			}, function(success) {
-
-				$uibModalInstance.close({
-					action: 'removeUser',
-					idUser: idUser
-				});
-
-			}, function(error) {
-				$log.log(error);
-				if (error.status === 401) {
-					Utils.refreshToken($scope.removeUser);
-				}
-			});
-		}
-
-	};
-
-	var enableFormInputs = function() {
-		$scope.user.firstName.disabled = false;
-		$scope.user.lastName.disabled = false;
-		$scope.user.rut.disabled = false;
-		$scope.user.phoneNumber.disabled = false;
-		$scope.user.role.disabled = false;
-	};
-
-	var disableFormInputs = function() {
-		$scope.user.firstName.disabled = true;
-		$scope.user.lastName.disabled = true;
-		$scope.user.rut.disabled = true;
-		$scope.user.phoneNumber.disabled = true;
-		$scope.user.role.disabled = true;
 	};
 
 	$scope.hideAlert = function() {
@@ -614,7 +524,7 @@ angular.module('efindingAdminApp')
 		$scope.elements.alert.title = '';
 		$scope.elements.alert.text = '';
 		$scope.elements.alert.color = '';
-	};*/
+	};
 
 })
 
