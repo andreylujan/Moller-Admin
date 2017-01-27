@@ -9,6 +9,8 @@
 
 set :deploy_to, '/srv/http/www/efinding/staging/admin'
 
+set :branch, 'staging'
+
 # role-based syntax
 # ==================
 
