@@ -102,8 +102,6 @@ angular.module('efindingAdminApp')
 
 	}
 
-	//$log.error($scope.filter);
-
 	$scope.columns2 = [];
 	for (var attr in $scope.filter) {
 		if (attr.indexOf('filter') !== -1) {
@@ -136,10 +134,6 @@ angular.module('efindingAdminApp')
 		}, filterTimeoutDuration);
 	}, true);
 
-	$log.error("columnas");
-	$log.error($scope.columns2);
-
-
 	$scope.getInspections = function(e, page, filters) {
 		if (!e.success) {
 			$log.error(e.detail);
@@ -155,20 +149,14 @@ angular.module('efindingAdminApp')
 				filtersToSearch[attr] = filters[attr];
 			}
 		}
-		//$log.error("columnas");
-		//$log.error($scope.columns2);
 		Inspections.query(filtersToSearch, function(success) {
 			reportsIncluded = success.included;
 			$scope.pagination.pages.total = success.meta.page_count;
-			//$log.error('data');
-			//$log.error(success);
 
 			for (i = 0; i < success.data.length; i++) {
 				test.push({});
 
 				for (var j = 0; j < $scope.columns2.length; j++) {
-					//$log.error($scope.columns2[j].field_a);
-
 					test[test.length - 1]['pdf'] 			= success.data[i].attributes.pdf;
 					test[test.length - 1]['pdfUploaded'] 	= success.data[i].attributes.pdf_uploaded;
 					test[test.length - 1]['state'] = success.data[i].attributes.state;
@@ -213,13 +201,9 @@ angular.module('efindingAdminApp')
 						}
 					}
 				}
-				//$log.error('salida');
-				//$log.error(test);
 			}
 
 			inspecciones = test;
-			//$log.error('inspecciones');
-			//$log.error(inspecciones);
 
 			$scope.tableParams = new NgTableParams({
 				page: 1, // show first page
@@ -258,7 +242,6 @@ angular.module('efindingAdminApp')
 	};
 
 	$scope.sortBy = function(field_a) {
-		//var aux = _.sortBy(inspecciones, field_a);
 		if (sort_direction === 'asc') 
 		{
 			var aux = _.sortBy(inspecciones, field_a).reverse();
@@ -278,29 +261,6 @@ angular.module('efindingAdminApp')
 				dataset: aux
 			});
 	};
-
-	/*$scope.incrementPage = function() {
-		if ($scope.pagination.pages.current <= $scope.pagination.pages.total - 1) {
-			$scope.pagination.pages.current++;
-			$scope.getInspections({
-				success: true
-			}, $scope.pagination.pages.current);
-		}
-	};
-
-	$scope.decrementPage = function() {
-		if ($scope.pagination.pages.current > 1) {
-			$scope.pagination.pages.current--;
-			$scope.getInspections({
-				success: true
-			}, $scope.pagination.pages.current);
-		}
-	};
-
-	$scope.getInspections({
-		success: true,
-		detail: 'OK'
-	}, $scope.pagination.pages.current, $scope.filter);*/
 
 	$scope.FirmaInspeccionInstance = function(idInspection) {
 
@@ -407,9 +367,9 @@ angular.module('efindingAdminApp')
 				$scope.inspection.empresa.text = datos.companies[0].attributes.name;
 				$scope.inspection.obra.text = datos.constructions[0].attributes.name;
 				$scope.inspection.creador.text = datos.users[0].attributes.full_name;
-				$scope.inspection.fecha_creacion.text = success.data.attributes.created_at;
-				$scope.inspection.id.id = success.data.id;
-				$scope.inspection.pdf = success.data.attributes.pdf;
+				$scope.inspection.fecha_creacion.text = success.data[0].attributes.formatted_created_at;
+				$scope.inspection.id.id = success.data[0].id;
+				$scope.inspection.pdf = success.data[0].attributes.pdf;
 
 			} else {
 				$log.error(success);
@@ -429,9 +389,6 @@ angular.module('efindingAdminApp')
 	$scope.firmar = function(idInspection) {
 
 		if ($scope.elements.buttons.firmar.disabled === false) {
-			$log.error(idInspection);
-
-
 			Firmar.save({
 				idInspection: idInspection
 			}, function(success) {
