@@ -90,9 +90,15 @@ angular.module('efindingAdminApp')
 			columns.reportColumns = [];
 
 			for (i = 0; i < success.data.length; i++) {
+				/*
+					title: Titulo de la columna
+					field_a: Se utiliza para ir a ese dato en especifico
+					field: para filtrar en servicio
+				*/
 				columns.reportColumns.push({
 					title: success.data[i].attributes.column_name,
 					field: success.data[i].attributes.field_name,
+					field_a: success.data[i].attributes.column_name + '+' + success.data[i].attributes.field_name,
 					name: i,
 					visible: true,
 					relationshipName: success.data[i].attributes.relationship_name,
