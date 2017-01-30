@@ -82,12 +82,12 @@
 						<table ng-table="tableParams" show-filter="true" class="table table-custom">
 							<thead>
 								<tr>
-									<th ng-repeat="column in columns2" ng-show="column.visible" class="text-center sortable" ng-class="{'sort-asc': tableParams.isSortBy(column.name, 'asc'),'sort-desc': tableParams.isSortBy(column.name, 'desc')}" ng-click="tableParams.sorting(column.name, tableParams.isSortBy(column.name, 'asc') ? 'desc' : 'asc')"> {{column.title}} </th>
+									<th ng-repeat="column in columns2" class="text-center sortable" ng-click="sortBy(column.field_a)"> {{column.title}} </th>
 									<th class="text-center"> PDF </th>
 									<th class="text-center"> Firma </th>
 								</tr>
 								<tr>
-									<th ng-repeat="column in columns2" ng-show="column.visible" class="text-center sortable" >
+									<th ng-repeat="column in columns2" class="text-center sortable" >
 										<input type="text" class="form-control" ng-model="filter[column.filter].filter"/>
 									</th>
 									<th class="text-center" ></th>
@@ -96,24 +96,22 @@
 							</thead>
 
 							<tbody>
-								<tr ng-repeat="report in $data | filter: filtro">
-									<td ng-repeat="column in columns2 " ng-show="column.visible">
-										{{report[column.field]}}
+								<tr ng-repeat="inspection in $data | filter: filtro">
+									<td ng-repeat="column in columns2">
+										{{inspection[column.field_a]}}
 									</td>
 									<td>
-										<input ng-if="report.pdfUploaded" class="text-center" type="image" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/pdf2.png" uib-tooltip="Descargar PDF" tooltip-placement="bottom" style="width: 15px" data-pdf="{{report.pdf}}" ng-click="downloadPdf($event)"/>
-										<input ng-if="!report.pdfUploaded" class="text-center" type="image" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/denied2.png" uib-tooltip="PDF no disponible" tooltip-placement="bottom" style="width: 20px;" data-pdf="{{report.pdf}}" />
+										<input ng-if="inspection['pdfUploaded']" class="text-center" type="image" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/pdf2.png" uib-tooltip="Descargar PDF" tooltip-placement="bottom" style="width: 15px" data-pdf="{{inspection.pdf}}" ng-click="downloadPdf($event)"/>
+										<input ng-if="!inspection['pdfUploaded']" class="text-center" type="image" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/denied2.png" uib-tooltip="PDF no disponible" tooltip-placement="bottom" style="width: 20px;" data-pdf="{{inspection.pdf}}" />
 									</td>
 									<td>
-										<!--input class="text-center" type="image" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/pdf2.png" uib-tooltip="Descargar PDF" tooltip-placement="bottom" style="width: 15px" ng-click="FirmaInspeccionInstance(report.id)"/-->
-										<label ng-if="report.state == 'reports_pending'">Pendiente de envío</label>
-										<a ng-click="FirmaInspeccionInstance(report.id)" ng-if="report.state == 'first_signature_pending'">Pendiente de firma</a>
-										<label ng-if="report.state == 'first_signature_done'">Firmado</label>
-										<a ng-click="FirmaInspeccionInstance(report.id)" ng-if="report.state == 'final_signature_pending'">Pendiente de firma final</a>
-										<label ng-if="report.state == 'finished'">Teminado</label>
+										<label ng-if="inspection.state == 'reports_pending'">Pendiente de envío</label>
+										<a ng-click="FirmaInspeccionInstance(inspection.id)" ng-if="inspection.state == 'first_signature_pending'">Pendiente de firma</a>
+										<label ng-if="inspection.state == 'first_signature_done'">Firmado</label>
+										<a ng-click="FirmaInspeccionInstance(inspection.id)" ng-if="inspection.state == 'final_signature_pending'">Pendiente de firma final</a>
+										<label ng-if="inspection.state == 'finished'">Teminado</label>
 									</td>
 								</tr>
-
 							</tbody>
 						</table>
 					</div>

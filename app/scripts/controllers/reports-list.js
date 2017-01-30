@@ -33,7 +33,9 @@ angular.module('efindingAdminApp')
 		activityTypes = [],
 		users = [],
 		reportsIncluded = [],
-		inspecciones = [];
+		inspecciones = [],
+		sort_direction = 'desc';
+
 
 	var receiverName = null,
 		equipmentId = null,
@@ -46,22 +48,23 @@ angular.module('efindingAdminApp')
 		filterTimeout = null,
 		filterTimeoutDuration = 1000;
 
-	$scope.columns = Utils.getInStorage('report_columns');
-	$log.error($scope.columns);
+	$scope.columns = _.where(Utils.getInStorage('report_columns'), {visible: true});
+	//$log.error($scope.columns);
 
 	$scope.filter = {};
 
 	for (i = 0; i < $scope.columns.length; i++) {
 
 		if ($scope.columns[i].relationshipName) {
-			//if (!_.contains($scope.columns[i].relationshipName, '.')) {
+			if (!_.contains($scope.columns[i].relationshipName, '.')) {
 				$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'] = {};
 				$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].filter = '';
 				$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].field = $scope.columns[i].field;
+				$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].field_a = $scope.columns[i].field_a;
 				$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].name = $scope.columns[i].field;
 				$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].columnName = $scope.columns[i].title;
 				$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].relationshipName = $scope.columns[i].relationshipName;
-			/*}
+			}
 			else
 			{
 				var aux = $scope.columns[i].relationshipName.split('.');
@@ -72,10 +75,11 @@ angular.module('efindingAdminApp')
 				$scope.filter[texto] = {};
 				$scope.filter[texto].filter = '';
 				$scope.filter[texto].field = $scope.columns[i].field;
+				$scope.filter[texto].field_a = $scope.columns[i].field_a;
 				$scope.filter[texto].name = $scope.columns[i].field;
 				$scope.filter[texto].columnName = $scope.columns[i].title;
 				$scope.filter[texto].relationshipName = $scope.columns[i].relationshipName;
-			}*/
+			}
 
 		} else {
 			var res = $scope.columns[i].field.split(".");
@@ -87,6 +91,7 @@ angular.module('efindingAdminApp')
 			$scope.filter[auxiliar] = {};
 			$scope.filter[auxiliar].filter = '';
 			$scope.filter[auxiliar].field = $scope.columns[i].field;
+			$scope.filter[auxiliar].field_a = $scope.columns[i].field_a;
 			$scope.filter[auxiliar].name = $scope.columns[i].name;
 			$scope.filter[auxiliar].columnName = $scope.columns[i].title;
 			$scope.filter[auxiliar].relationshipName = $scope.columns[i].relationshipName;
@@ -97,6 +102,8 @@ angular.module('efindingAdminApp')
 
 	}
 
+	//$log.error($scope.filter);
+
 	$scope.columns2 = [];
 	for (var attr in $scope.filter) {
 		if (attr.indexOf('filter') !== -1) {
@@ -105,18 +112,13 @@ angular.module('efindingAdminApp')
 				visible: true,
 				filter: attr,
 				field: $scope.filter[attr].field,
+				field_a: $scope.filter[attr].field_a,
 				name: $scope.filter[attr].name,
 				title: $scope.filter[attr].columnName,
 				relationshipName: $scope.filter[attr].relationshipName
 			});
 		}
 	}
-
-	$log.error('$scope.columns2');
-	$log.error($scope.columns2);
-
-	$log.log('$scope.filter');
-	$log.log($scope.filter);
 
 	$scope.$watch('filter', function(newFilters) {
 		if (filterTimeout) {
@@ -134,16 +136,17 @@ angular.module('efindingAdminApp')
 		}, filterTimeoutDuration);
 	}, true);
 
+	$log.error("columnas");
+	$log.error($scope.columns2);
+
+
 	$scope.getInspections = function(e, page, filters) {
 		if (!e.success) {
 			$log.error(e.detail);
 			return;
 		}
-
 		data = [];
-
 		var test = [];
-
 		var filtersToSearch = {};
 		for (var attr in filters) {
 			if (attr.indexOf('filter') !== -1) {
@@ -152,154 +155,79 @@ angular.module('efindingAdminApp')
 				filtersToSearch[attr] = filters[attr];
 			}
 		}
-
+		//$log.error("columnas");
+		//$log.error($scope.columns2);
 		Inspections.query(filtersToSearch, function(success) {
-			$log.info('success');
-			$log.info(success);
 			reportsIncluded = success.included;
 			$scope.pagination.pages.total = success.meta.page_count;
+			//$log.error('data');
+			//$log.error(success);
 
 			for (i = 0; i < success.data.length; i++) {
-
 				test.push({});
 
-				for (j = 0; j < $scope.columns2.length; j++) {
-					test[test.length - 1].title = $scope.columns2[j].title;
-					test[test.length - 1].id = success.data[i].id;
-					test[test.length - 1].state = success.data[i].attributes.state;
-					test[test.length - 1][$scope.columns2[j].relationshipName + '_id'] = success.data[i].attributes[$scope.columns2[j].relationshipName + '_id'];
-					test[test.length - 1].relationships = success.data[i].relationships;
-					test[test.length - 1].pdf = success.data[i].attributes.pdf;
-					test[test.length - 1].pdfUploaded = success.data[i].attributes.pdf_uploaded;
+				for (var j = 0; j < $scope.columns2.length; j++) {
+					//$log.error($scope.columns2[j].field_a);
 
-					if (success.data[i].attributes[$scope.columns2[j].field]) {
-						test[test.length - 1][$scope.columns2[j].field] = success.data[i].attributes[$scope.columns2[j].field];
-						test[test.length - 1][$scope.columns2[j].name] = success.data[i].attributes[$scope.columns2[j].field];
-					} 
-					else 
+					test[test.length - 1]['pdf'] 			= success.data[i].attributes.pdf;
+					test[test.length - 1]['pdfUploaded'] 	= success.data[i].attributes.pdf_uploaded;
+					test[test.length - 1]['state'] = success.data[i].attributes.state;
+					//no tiene relacion
+					if ($scope.columns2[j].relationshipName === null) 
 					{
-						var res = $scope.columns2[j].field.split(".");
-
-						if (res.length === 1) 
+						if (success.data[i].attributes[$scope.columns2[j].field] != null) 
 						{
-							// Solo tiene una relacion con un objeto
-							if ($scope.columns2[j].relationshipName !== null) //&& (success.included.length > i) 
-							{	
-								if (success.data[i].relationships[$scope.columns2[j].relationshipName].data !== null) 
-								{
-									test[test.length - 1][$scope.columns2[j].name] = '-';
-
-									for (var x = 0; x < success.included.length; x++) 
-									{
-										//$log.error('nuevo');
-										//$log.error(success.data[i].relationships[$scope.columns2[j].relationshipName]);
-										//$log.error($scope.columns2[j]);
-										if (success.included[x].id === success.data[i].relationships[$scope.columns2[j].relationshipName].data.id &&
-											success.included[x].type === success.data[i].relationships[$scope.columns2[j].relationshipName].data.type) 
-										{
-											test[test.length - 1][$scope.columns2[j].name] = success.included[x].attributes[$scope.columns2[j].name];
-										}
-									}
-								}
-								else
-								{
-									test[test.length - 1][$scope.columns2[j].name] = '-';
-								}
-							}
-							else
-							{
-								test[test.length - 1][$scope.columns2[j].name] = '-';
-							}
-						}
-						else if (res.length > 2) 
-						{
-							// Llama a un dynamic_attribute 
-							var aux = res;
-							var flag = success.data[i].attributes.dynamic_attributes;
-
-							//valida que existe el objeto dentro de los dynamic_attributes
-							if (flag.hasOwnProperty(aux[1])) 
-							{
-								//Valida que exista el objeto text
-								if (flag[aux[1]].hasOwnProperty('text')) 
-								{
-									test[test.length - 1][$scope.columns2[j].field] = flag[aux[1]].text;
-									test[test.length - 1][$scope.columns2[j].name] = flag[aux[1]].text;
-								}
-								else
-								{
-									test[test.length - 1][$scope.columns2[j].field] = '-';
-									test[test.length - 1][$scope.columns2[j].name] = '-';
-								}
-							}
-							else
-							{
-								test[test.length - 1][$scope.columns2[j].field] = '-';
-								test[test.length - 1][$scope.columns2[j].name] = '-';
-							}
-							
+							test[test.length - 1][$scope.columns2[j].field_a] =	success.data[i].attributes[$scope.columns2[j].field]
 						}
 						else
 						{
-							test[test.length - 1][$scope.columns2[j].field] = '';
-							test[test.length - 1][$scope.columns2[j].name] = '';
+							test[test.length - 1][$scope.columns2[j].field_a] =	'-';
 						}
-
 					}
-
-				}
-			}
-
-			for (i = 0; i < test.length; i++) {
-
-				for (j = 0; j < $scope.columns2.length; j++) {
-
-					if (test[i][$scope.columns2[j].field] === '') {
-
-						var seRelacionaCon = $scope.columns2[j].relationshipName;
-
-						if (seRelacionaCon) {
-
-							if (test[i].relationships[$scope.columns2[j].relationshipName].data) {
-
-								var tipoRelacionado = test[i].relationships[$scope.columns2[j].relationshipName].data.type;
-								var idRelacionado = test[i].relationships[$scope.columns2[j].relationshipName].data.id;
-
-								for (k = 0; k < reportsIncluded.length; k++) {
-
-									if (reportsIncluded[k].type === tipoRelacionado && (parseInt(reportsIncluded[k].id) === parseInt(idRelacionado))) {
-
-										test[i][$scope.columns2[j].field] = reportsIncluded[k].attributes[$scope.columns2[j].field];
-										test[i][$scope.columns2[j].name] = reportsIncluded[k].attributes[$scope.columns2[j].field];
-
+					else
+					{
+						var relationships = $scope.columns2[j].relationshipName.split('.');
+						//tiene relacion a solo un objeto
+						if (relationships.length == 1) 
+						{
+							//$log.error('2');
+							for (k = 0; k < success.included.length; k++) {
+								if (success.data[i].relationships[$scope.columns2[j].relationshipName].data.id === success.included[k].id &&
+									success.data[i].relationships[$scope.columns2[j].relationshipName].data.type === success.included[k].type) 
+								{
+	
+									if (success.included[k].attributes[$scope.columns2[j].field] != null) 
+									{
+										test[test.length - 1][$scope.columns2[j].field_a] = success.included[k].attributes[$scope.columns2[j].field];
 									}
-
+									else
+									{
+										test[test.length - 1][$scope.columns2[j].field_a] = '-';
+									}
 								}
-
 							}
-
 						}
-
+						else
+						{
+							//Es una relacion dentro de otra.
+						}
 					}
-
 				}
-
+				//$log.error('salida');
+				//$log.error(test);
 			}
 
-			$log.error('test');
-			$log.error(test);
 			inspecciones = test;
+			//$log.error('inspecciones');
+			//$log.error(inspecciones);
 
 			$scope.tableParams = new NgTableParams({
 				page: 1, // show first page
-				count: 25, // count per page
-				sorting: {
-					'finishedAt': 'desc' // initial sorting
-				}
+				count: 25 // count per page
 			}, {
 				counts: [],
-				total: test.length, // length of test
-				dataset: test
+				total: inspecciones.length, // length of test
+				dataset: inspecciones
 			});
 
 		}, function(error) {
@@ -310,31 +238,6 @@ angular.module('efindingAdminApp')
 		});
 	};
 
-
-
-	var getActivityTypes = function() {
-		activityTypes = [];
-
-		Activities.query({
-			idActivity: ''
-		}, function(success) {
-
-			if (success.data) {
-				activityTypes = [];
-				for (var i = 0; i < success.data.length; i++) {
-					activityTypes.push({
-						id: success.data[i].id,
-						name: success.data[i].attributes.name
-					});
-				}
-
-			} else {
-				$log.error(success);
-			}
-		}, function(error) {
-			$log.error(error);
-		});
-	};
 
 	$scope.downloadPdf = function(event) {
 		var pdf = angular.element(event.target).data('pdf');
@@ -354,7 +257,29 @@ angular.module('efindingAdminApp')
 		modalInstance.result.then(function() {}, function() {});
 	};
 
-	$scope.incrementPage = function() {
+	$scope.sortBy = function(field_a) {
+		//var aux = _.sortBy(inspecciones, field_a);
+		if (sort_direction === 'asc') 
+		{
+			var aux = _.sortBy(inspecciones, field_a).reverse();
+			sort_direction = 'desc';
+		}
+		else
+		{
+			var aux = _.sortBy(inspecciones, field_a);
+			sort_direction = 'asc';
+		}
+		$scope.tableParams = new NgTableParams({
+				page: 1, // show first page
+				count: 25 // count per page
+			}, {
+				counts: [],
+				total: aux.length, // length of test
+				dataset: aux
+			});
+	};
+
+	/*$scope.incrementPage = function() {
 		if ($scope.pagination.pages.current <= $scope.pagination.pages.total - 1) {
 			$scope.pagination.pages.current++;
 			$scope.getInspections({
@@ -375,7 +300,7 @@ angular.module('efindingAdminApp')
 	$scope.getInspections({
 		success: true,
 		detail: 'OK'
-	}, $scope.pagination.pages.current, $scope.filter);
+	}, $scope.pagination.pages.current, $scope.filter);*/
 
 	$scope.FirmaInspeccionInstance = function(idInspection) {
 
