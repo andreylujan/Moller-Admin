@@ -160,6 +160,7 @@ angular.module('efindingAdminApp')
 					test[test.length - 1]['pdf'] 			= success.data[i].attributes.pdf;
 					test[test.length - 1]['pdfUploaded'] 	= success.data[i].attributes.pdf_uploaded;
 					test[test.length - 1]['state'] = success.data[i].attributes.state;
+					test[test.length - 1]['id'] = success.data[i].id;
 					//no tiene relacion
 					if ($scope.columns2[j].relationshipName === null) 
 					{
@@ -367,9 +368,9 @@ angular.module('efindingAdminApp')
 				$scope.inspection.empresa.text = datos.companies[0].attributes.name;
 				$scope.inspection.obra.text = datos.constructions[0].attributes.name;
 				$scope.inspection.creador.text = datos.users[0].attributes.full_name;
-				$scope.inspection.fecha_creacion.text = success.data[0].attributes.formatted_created_at;
-				$scope.inspection.id.id = success.data[0].id;
-				$scope.inspection.pdf = success.data[0].attributes.pdf;
+				$scope.inspection.fecha_creacion.text = success.data.attributes.formatted_created_at;
+				$scope.inspection.id.id = success.data.id;
+				$scope.inspection.pdf = success.data.attributes.pdf;
 
 			} else {
 				$log.error(success);
@@ -387,7 +388,6 @@ angular.module('efindingAdminApp')
 	$scope.getInspectionDetail(idInspection);
 
 	$scope.firmar = function(idInspection) {
-
 		if ($scope.elements.buttons.firmar.disabled === false) {
 			Firmar.save({
 				idInspection: idInspection

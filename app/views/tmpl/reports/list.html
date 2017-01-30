@@ -105,11 +105,12 @@
 										<input ng-if="!inspection['pdfUploaded']" class="text-center" type="image" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/denied2.png" uib-tooltip="PDF no disponible" tooltip-placement="bottom" style="width: 20px;" data-pdf="{{inspection.pdf}}" />
 									</td>
 									<td>
-										<label ng-if="inspection.state == 'reports_pending'">Pendiente de envío</label>
+										<!--label ng-if="inspection.state == 'reports_pending'">Pendiente de envío</label>
 										<a ng-click="FirmaInspeccionInstance(inspection.id)" ng-if="inspection.state == 'first_signature_pending'">Pendiente de firma</a>
 										<label ng-if="inspection.state == 'first_signature_done'">Firmado</label>
 										<a ng-click="FirmaInspeccionInstance(inspection.id)" ng-if="inspection.state == 'final_signature_pending'">Pendiente de firma final</a>
-										<label ng-if="inspection.state == 'finished'">Teminado</label>
+										<label ng-if="inspection.state == 'finished'">Teminado</label-->
+										<a ng-click="FirmaInspeccionInstance(inspection.id)">Pendiente de firma</a>
 									</td>
 								</tr>
 							</tbody>
