@@ -25,7 +25,7 @@ angular.module('efindingAdminApp')
 		pages: {
 			current: 1,
 			total: 0,
-			size: 100
+			size: 25
 		}
 	};
 
@@ -273,12 +273,11 @@ angular.module('efindingAdminApp')
 					}
 				}
 			}
-
 			inspecciones = test;
 
 			$scope.tableParams = new NgTableParams({
 				page: 1, // show first page
-				count: 25 // count per page
+				count: inspecciones.length // count per page
 			}, {
 				counts: [],
 				total: inspecciones.length, // length of test
@@ -331,6 +330,26 @@ angular.module('efindingAdminApp')
 				total: aux.length, // length of test
 				dataset: aux
 			});
+	};
+
+	$scope.incrementPage = function() {
+		if ($scope.pagination.pages.current <= $scope.pagination.pages.total - 1) {
+			$scope.pagination.pages.current++;
+			$scope.filter['page[number]'] = $scope.pagination.pages.current;
+			$scope.getInspections({
+				success: true
+			}, $scope.pagination.pages.current, $scope.filter);
+		}
+	};
+
+	$scope.decrementPage = function() {
+		if ($scope.pagination.pages.current > 1) {
+			$scope.pagination.pages.current--;
+			$scope.filter['page[number]'] = $scope.pagination.pages.current;
+			$scope.getInspections({
+				success: true
+			}, $scope.pagination.pages.current, $scope.filter);
+		}
 	};
 
 	$scope.FirmaInspeccionInstance = function(idInspection) {

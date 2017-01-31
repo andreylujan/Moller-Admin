@@ -114,6 +114,11 @@
 								</tr>
 							</tbody>
 						</table>
+						<div class="row">
+							<div class="col-md-6" style="margin: 0 auto;float: none;">
+								<pager prev="decrementPage()" next="incrementPage()" change-page="getReports({success:true,detail:'OK'},pagination.pages.current)" current="pagination.pages.current" total="pagination.pages.total"></pager>
+							</div>
+						</div>
 					</div>
 					<!-- /tile body -->
 				</section>
