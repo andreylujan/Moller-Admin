@@ -49,9 +49,8 @@ angular.module('efindingAdminApp')
 		filterTimeoutDuration = 1000;
 
 	$scope.columns = _.where(Utils.getInStorage('report_columns'), {visible: true});
-	//$log.error($scope.columns);
-
 	$scope.filter = {};
+	var included = Utils.getInStorage('menu');
 
 	for (i = 0; i < $scope.columns.length; i++) {
 
@@ -72,6 +71,7 @@ angular.module('efindingAdminApp')
 				for (var j = 0; j <= aux.length -1; j++) {
 					texto = texto + '[' + aux[j] + ']';
 				}
+				texto = texto + '[' + $scope.columns[i].field + ']';
 				$scope.filter[texto] = {};
 				$scope.filter[texto].filter = '';
 				$scope.filter[texto].field = $scope.columns[i].field;
@@ -96,10 +96,9 @@ angular.module('efindingAdminApp')
 			$scope.filter[auxiliar].columnName = $scope.columns[i].title;
 			$scope.filter[auxiliar].relationshipName = $scope.columns[i].relationshipName;
 		}
-		$scope.filter.include = 'creator,construction,company';
+		$scope.filter.include = _.findWhere(_.findWhere(included, { name: 'Inspecciones'}).items, { path: 'efinding.inspecciones.list'}).included;
 		$scope.filter['page[number]'] = $scope.pagination.pages.current;
 		$scope.filter['page[size]'] = $scope.pagination.pages.size;
-
 	}
 
 	$scope.columns2 = [];
@@ -179,26 +178,97 @@ angular.module('efindingAdminApp')
 						//tiene relacion a solo un objeto
 						if (relationships.length == 1) 
 						{
-							//$log.error('2');
 							for (k = 0; k < success.included.length; k++) {
-								if (success.data[i].relationships[$scope.columns2[j].relationshipName].data.id === success.included[k].id &&
-									success.data[i].relationships[$scope.columns2[j].relationshipName].data.type === success.included[k].type) 
+								if (success.data[i].relationships[$scope.columns2[j].relationshipName].data != null) 
 								{
-	
-									if (success.included[k].attributes[$scope.columns2[j].field] != null) 
+									if (success.data[i].relationships[$scope.columns2[j].relationshipName].data.id === success.included[k].id &&
+									success.data[i].relationships[$scope.columns2[j].relationshipName].data.type === success.included[k].type) 
 									{
-										test[test.length - 1][$scope.columns2[j].field_a] = success.included[k].attributes[$scope.columns2[j].field];
+		
+										if (success.included[k].attributes[$scope.columns2[j].field] != null) 
+										{
+											test[test.length - 1][$scope.columns2[j].field_a] = success.included[k].attributes[$scope.columns2[j].field];
+										}
+										else
+										{
+											test[test.length - 1][$scope.columns2[j].field_a] = '-';
+										}
+										break;
 									}
-									else
-									{
-										test[test.length - 1][$scope.columns2[j].field_a] = '-';
-									}
+								}
+								else
+								{
+									test[test.length - 1][$scope.columns2[j].field_a] = '-';
+									break;
 								}
 							}
 						}
 						else
 						{
 							//Es una relacion dentro de otra.
+							//se debe encontrar el relationship y buscar dentro de el todos los relationships, 
+							//despues de eso se debe volver a buscar en includes para encontrar a los que estan asociados.
+							var relacion = success.data[i].relationships[relationships[0]].data;
+							var relaciones = {};
+
+							for (k = 0; k < success.included.length; k++) {
+								if (relacion.id === success.included[k].id &&
+									relacion.type === success.included[k].type) {
+									
+									relaciones = success.included[k].relationships;
+									break;
+								}
+							}
+							if (relationships.length === 2) 
+							{
+								//Al ser solo una relacion doble, se busca el padre y luego al hijo
+								for (k = 0; k < success.included.length; k++) {
+									if ( relaciones[relationships[1]].data.id === success.included[k].id &&
+									 relaciones[relationships[1]].data.type === success.included[k].type) 
+									{
+										if (success.included[k].attributes[$scope.columns2[j].field] != null) 
+										{
+											test[test.length - 1][$scope.columns2[j].field_a] = success.included[k].attributes[$scope.columns2[j].field];
+										}
+										else
+										{
+											test[test.length - 1][$scope.columns2[j].field_a] = '-';
+										}
+										break;
+									}
+								}
+							}
+							else
+							{
+								//Al ser una relacion multiple, se busca el padre y todas sus relaciones, luego al hijo y sus relaciones
+								//y asi segun el numero de relaciones, luego de encontrar la ultima relacion, 
+								//se busca en el include a quien corresponde como el ultimo hijo
+								for (k = 1; k < relationships.length-1; k++) {
+									for (var l = 0; l < success.included.length; l++) {
+										if ( relaciones[relationships[k]].data.id === success.included[l].id &&
+										 relaciones[relationships[k]].data.type === success.included[l].type) 
+										{
+											relaciones = success.included[l].relationships;
+											break;
+										}
+									}
+								}
+								for (k = 0; k < success.included.length; k++) {
+									if ( relaciones[relationships[relationships.length-1]].data.id === success.included[k].id &&
+									 relaciones[relationships[relationships.length-1]].data.type === success.included[k].type) 
+									{
+										if (success.included[k].attributes[$scope.columns2[j].field] != null) 
+										{
+											test[test.length - 1][$scope.columns2[j].field_a] = success.included[k].attributes[$scope.columns2[j].field];
+										}
+										else
+										{
+											test[test.length - 1][$scope.columns2[j].field_a] = '-';
+										}
+										break;
+									}
+								}
+							}
 						}
 					}
 				}

@@ -54,13 +54,14 @@ angular.module('efindingAdminApp')
 									menu[i].items[j].path = success.included[k].attributes.admin_path;
 								}
 							}
+							if (success.included[k].id === menu[i].items[j].id) 
+							{
+								menu[i].items[j].included= success.included[k].attributes.url_include;
+							}
 						}
 					}
 				}
-				Utils.setInStorage('collection_name', success.included[0].attributes.collection_name);
-
-				$log.log('menu');
-				$log.log(menu);
+				Utils.setInStorage('menu', menu);
 				$scope.page.menu = menu;
 				$scope.page.menuLoaded = true;
 			} else {
