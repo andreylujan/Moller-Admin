@@ -117,9 +117,7 @@ angular.module('efindingAdminApp')
 
 	};
 
-	var sendInvitations = function() {
-
-		// $log.log($scope.page.formGroups.invite);
+	$scope.sendInvitations = function() {
 
 		$scope.responseInvitations = [];
 		$scope.page.msg.color = 'orange-ps';
