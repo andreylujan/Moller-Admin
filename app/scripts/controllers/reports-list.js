@@ -311,6 +311,18 @@ angular.module('efindingAdminApp')
 		modalInstance.result.then(function() {}, function() {});
 	};
 
+	$scope.openModalDownloadPdfsByMonth = function() {
+		var modalInstance = $uibModal.open({
+			animation: true,
+			backdrop: false,
+			templateUrl: 'modalDownloadPdfsByMonth.html',
+			controller: 'DownloadPdfsByMonthModalInstance',
+			resolve: {}
+		});
+
+		modalInstance.result.then(function() {}, function() {});
+	};
+
 	$scope.sortBy = function(field_a) {
 		if (sort_direction === 'asc') 
 		{
@@ -514,6 +526,60 @@ angular.module('efindingAdminApp')
 		$scope.elements.alert.title = '';
 		$scope.elements.alert.text = '';
 		$scope.elements.alert.color = '';
+	};
+
+})
+
+.controller('DownloadPdfsByMonthModalInstance', function($scope, $log, $timeout, $moment, $uibModalInstance, Utils, ReportsByMonth) {
+
+	$scope.modal = {
+		alert: {
+			color: null,
+			show: null,
+			title: null,
+			text: null
+		},
+		month: {
+			date: new Date()
+		},
+		datepicker: {
+			opened: false
+		},
+		buttons: {
+			download: {
+				disabled: false,
+				text: ''
+			}
+		}
+	};
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');
+	};
+
+	$scope.removeMessage = function() {
+		$scope.modal.alert.show = false;
+	};
+
+	$scope.openDatePicker = function($event) {
+		$event.preventDefault();
+		$event.stopPropagation();
+		$scope.modal.datepicker.opened = !$scope.modal.datepicker.opened;
+	};
+
+	$scope.downloadReports = function() {
+		var month = $scope.modal.month.date.getMonth() + 1;
+		var year = $scope.modal.month.date.getFullYear();
+
+		$scope.modal.buttons.download.disabled = true;
+		$scope.modal.buttons.download.text = 'Descargando...';
+
+		ReportsByMonth.getFile('#downloadReportsByMonth', 'reportes_' + month + '_' + year, month, year);
+
+		$timeout(function() {
+			$scope.modal.buttons.download.disabled = false;
+			$scope.modal.buttons.download.text = '';
+		}, 3500);
 	};
 
 })

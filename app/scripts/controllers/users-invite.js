@@ -9,7 +9,7 @@
  */
 angular.module('efindingAdminApp')
 
-.controller('UsersInviteCtrl', function($scope, $log, $filter, $window, $uibModal, Users, Invitations, Csv, Utils) {
+.controller('UsersInviteCtrl', function($scope, $log, $filter, $window, $uibModal, Roles, Users, Invitations, Csv, Utils) {
 
 	$scope.page = {
 		title: 'Invitar usuarios',
@@ -18,6 +18,7 @@ angular.module('efindingAdminApp')
 				faIcon: 'plus',
 				email: '',
 				index: 0,
+				roleId: null,
 				showIcon: false
 			}]
 		},
@@ -28,37 +29,54 @@ angular.module('efindingAdminApp')
 			color: ''
 		}
 	};
-
-	$log.error(Utils.getInStorage('role_id'));
-
+	$scope.roles = [];
 	$scope.responseInvitations = [];
+
+	var getRoles = function(e) {
+		// Valida si el parametro e.success se seteó true para el refresh token
+		if (!e.success) {
+			$log.error(e.detail);
+			return;
+		}
+
+		$scope.roles = [];
+
+		Roles.query({
+			idOrganization: 1
+		}, function(success) {
+			// $log.log(success);
+
+			if (success.data) {
+				for (var i = 0; i < success.data.length; i++) {
+					$scope.roles.push({
+						name: success.data[i].attributes.name,
+						id: success.data[i].id,
+						index: i
+					});
+				}
+			} else {
+				$log.log('error al obtener los roles');
+			}
+
+		}, function(error) {
+			$log.log(error);
+			if (error.status === 401) {
+				Utils.refreshToken(getRoles);
+			}
+		});
+
+	};
+
+	getRoles({
+		success: true,
+		detail: 'OK'
+	});
 
 	$scope.validateMailAndRol = function(index) {
 
 		if ($scope.page.formGroups.invite[index].email) {
 			$scope.page.formGroups.invite[index].showIcon = true;
 		}
-	};
-
-	$scope.addFormGroup = function(index) {
-
-		if (index === ($scope.page.formGroups.invite.length - 1)) {
-			$scope.page.formGroups.invite.push({
-				faIcon: 'plus',
-				email: '',
-				index: index + 1,
-				roleId: null
-			});
-
-			// Cambia los iconos que tienen signo "+" por el icono "-" a todos MENOS el último
-			for (var i = 0; i < $scope.page.formGroups.invite.length - 1; i++) {
-				$scope.page.formGroups.invite[i].faIcon = 'minus';
-			}
-
-		} else {
-			$scope.page.formGroups.invite.splice(index, 1);
-		}
-
 	};
 
 	$scope.invite = function() {
@@ -152,6 +170,19 @@ angular.module('efindingAdminApp')
 		clearFormGroups();
 	};
 
+	$scope.openModalLoad = function() {
+
+		var modalInstance = $uibModal.open({
+			animation: true,
+			backdrop: false,
+			templateUrl: 'loadCategories.html',
+			controller: 'LoadCategoriesModalInstance',
+			resolve: {}
+		});
+
+		modalInstance.result.then(function() {}, function() {});
+	};
+
 	var clearFormGroups = function() {
 		$scope.page.formGroups.invite = [];
 		$scope.page.formGroups.invite.push({
@@ -179,6 +210,71 @@ angular.module('efindingAdminApp')
 		modalInstance.result.then(function() {}, function() {
 			// $scope.getUsers();
 		});
+	};
+
+})
+
+.controller('LoadCategoriesModalInstance', function($scope, $log, $uibModalInstance, $uibModal, Activities, Csv) {
+
+	$scope.modal = {
+		csvFile: null,
+		buttons: {
+			load: {
+				disabled: false,
+				text: 'Cargar'
+			}
+		}
+	};
+
+	$scope.loadCategories = function() {
+		if ($scope.modal.csvFile) {
+			uploadCategories();
+		}
+	};
+
+	var uploadCategories = function() {
+
+		var form = [{
+			field: 'type',
+			value: 'categories'
+		}, {
+			field: 'csv',
+			value: $scope.modal.csvFile
+		}, {
+			field: 'namespace',
+			value: 'pausa'
+		}];
+
+		$scope.modal.buttons.load.disabled = true;
+		$scope.modal.buttons.load.text = 'Subiendo...';
+
+		Csv.upload(form)
+			.success(function(success) {
+				$uibModalInstance.close();
+				openModalSummaryLoad(success);
+			}).error(function(error) {
+				$log.error(error);
+			});
+
+	};
+
+	var openModalSummaryLoad = function(data) {
+		var modalInstance = $uibModal.open({
+			animation: true,
+			templateUrl: 'summaryLoad.html',
+			controller: 'SummaryLoadCategoriesModalInstance',
+			resolve: {
+				data: function() {
+					return data;
+				}
+			}
+		});
+
+		modalInstance.result.then(function() {}, function() {});
+	};
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');
 	};
 
 })

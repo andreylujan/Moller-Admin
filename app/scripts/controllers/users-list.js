@@ -24,9 +24,6 @@ angular.module('efindingAdminApp')
 		Users.query({
 			idUser: ''
 		}, function(success) {
-
-			$log.error(success);
-
 			if (success.data) {
 				data = [];
 				for (var i = 0; i < success.data.length; i++) {
@@ -143,7 +140,7 @@ angular.module('efindingAdminApp')
 
 })
 
-.controller('UserDetailsInstance', function($scope, $log, $uibModalInstance, idUser, Users, Validators, Utils) {
+.controller('UserDetailsInstance', function($scope, $log, $uibModalInstance, idUser, Users, Roles, Validators, Utils) {
 
 	$scope.user = {
 		id: null,
@@ -174,6 +171,7 @@ angular.module('efindingAdminApp')
 			disabled: true
 		}
 	};
+	$scope.roles = [];
 	$scope.elements = {
 		buttons: {
 			editUser: {
@@ -238,6 +236,41 @@ angular.module('efindingAdminApp')
 
 	$scope.getUserDetails(idUser);
 
+	var getRoles = function(e) {
+		if (!e.success) {
+			$log.error(e.detail);
+			return;
+		}
+
+		$scope.roles = [];
+
+		Roles.query({
+			idOrganization: 1
+		}, function(success) {
+			if (success.data) {
+				for (var i = 0; i < success.data.length; i++) {
+					$scope.roles.push({
+						name: success.data[i].attributes.name,
+						id: success.data[i].id,
+						index: i
+					});
+				}
+			} else {
+				$log.log('error al obtener los roles');
+			}
+		}, function(error) {
+			$log.log(error);
+			if (error.status === 401) {
+				Utils.refreshToken(getRoles);
+			}
+		});
+	};
+
+	getRoles({
+		success: true,
+		detail: 'OK'
+	});
+
 	$scope.editUser = function(idUser) {
 
 		if ($scope.elements.buttons.editUser.text === 'Editar') {
@@ -245,13 +278,6 @@ angular.module('efindingAdminApp')
 			$scope.elements.buttons.editUser.border = '';
 			enableFormInputs();
 		} else {
-
-			// $log.log($scope.user.firstName.text);
-			// $log.log($scope.user.lastName.text);
-			// $log.log($scope.user.rut.text);
-			// $log.log($scope.user.phoneNumber.text);
-			// $log.log($scope.user.role.id);
-
 			if (!Validators.validateRequiredField($scope.user.firstName.text) || !Validators.validateRequiredField($scope.user.lastName.text)) {
 				$scope.elements.alert.title = 'Faltan datos por rellenar';
 				$scope.elements.alert.text = '';
@@ -271,8 +297,7 @@ angular.module('efindingAdminApp')
 					attributes: {
 						first_name: $scope.user.firstName.text,
 						last_name: $scope.user.lastName.text,
-						image: '',
-						role_id: 2
+						role_id: $scope.user.role.id
 					}
 				},
 				idUser: idUser

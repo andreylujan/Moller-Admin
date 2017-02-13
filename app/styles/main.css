@@ -5213,6 +5213,17 @@ button:focus {
     .btn.btn-orange-ps:active, .btn.btn-orange-ps.active {
       background-color: #d77a0e;
       border-color: #c9720d; }
+  .btn.btn-green-ps {
+    background-color: #188938;
+    color: white;
+    border-color: #188938; }
+    .btn.btn-green-ps:hover, .btn.btn-green-ps:active, .btn.btn-green-ps.active {
+      background-color: #188938;
+      border-color: #188938;
+      color: white; }
+    .btn.btn-green-ps:active, .btn.btn-green-ps.active {
+      background-color: #188938;
+      border-color: #188938; }
   .btn.btn-blue-repo-3 {
     background-color: #00aaad;
     color: white;
@@ -10215,6 +10226,20 @@ body {
     background-color: #a5dbd9 !important; }
   .bg-cyan-1-generic.bright {
     background-color: white !important; }
+
+.bg-green-1-generic {
+  background-color: #188938 !important;
+  color: white !important; }
+  .bg-green-1-generic.dk {
+    background-color: #188938 !important; }
+  .bg-green-1-generic.dker {
+    background-color: #188938 !important; }
+  .bg-green-1-generic.lt {
+    background-color: #188938 !important; }
+  .bg-green-1-generic.lter {
+    background-color: #188938 !important; }
+  .bg-green-1-generic.bright {
+    background-color: #188938 !important; }
 
 .no-bg {
   background-color: transparent !important; }

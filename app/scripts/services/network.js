@@ -1,7 +1,9 @@
 'use strict';
 
-var API_URL = 'http://50.16.161.152/efinding-staging/api/v1';//Desarrollo
-var URL_SERVER = 'http://50.16.161.152/efinding-staging/';	//Desarrollo
+var API_URL = 'http://50.16.161.152/efinding-staging/api/v1';		//Desarrollo
+var URL_SERVER = 'http://50.16.161.152/efinding-staging/';		//Desarrollo
+//var API_URL = 'http://localhost:3000/api/v1';						//Local
+//var URL_SERVER = 'http://localhost:3000/';							//Local
 
 angular.module('efindingAdminApp')
 
@@ -104,6 +106,23 @@ angular.module('efindingAdminApp')
 			},
 			params: {
 				include: 'construction.company,creator',
+			}
+		}
+	});
+
+})
+
+// ROLES
+.factory('Roles', function($resource) {
+
+	return $resource(API_URL + '/organizations/:idOrganization/roles', {
+		idOrganization: '@idOrganization'
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/vnd.api+json'
 			}
 		}
 	});
@@ -229,10 +248,38 @@ angular.module('efindingAdminApp')
 				reset_password_token: '@reset_password_token'
 			}
 		}
-
-
 	});
 
+})
+
+.factory('ReportsByMonth', function($auth) {
+	return {
+		getFile: function(elem, fileName, month, year) {
+			var downloadLink = angular.element(elem);
+			downloadLink.attr('href', API_URL + '/reports/xlsx?access_token=' + $auth.getToken() + '&month=' + month + '&year=' + year);
+			downloadLink.attr('download', fileName + '.xlsx');
+		}
+	};
+})
+
+// CHANGE PASSWORD
+.factory('ChangePassword', function($resource) {
+	return $resource(API_URL + '/users/:idUser/password', {
+		idUser: '@idUser'
+	}, {
+		save: {
+			method: 'PUT',
+			headers: {
+				Accept: 'application/vnd.api+json',
+				'Content-Type': 'application/vnd.api+json'
+			},
+			params: {
+				password: '@password',
+				password_confirmation: '@password_confirmation',
+				reset_password_token: '@reset_password_token'
+			}
+		}
+	});
 })
 
 

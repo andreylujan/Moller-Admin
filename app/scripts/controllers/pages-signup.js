@@ -182,6 +182,7 @@ angular.module('efindingAdminApp')
 					$scope.page.elements.submessage.color = 'default';
 					$scope.page.elements.submessage.text = 'puede cerrar esta página';
 					$scope.page.elements.submessage.show = true;
+					$state.go('login');
 				} else {
 					$scope.page.elements.saveBtn.disabled = false;
 					$scope.page.elements.message.color = 'danger';

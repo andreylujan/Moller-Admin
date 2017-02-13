@@ -1500,6 +1500,23 @@ button {
     }
   }
 
+  &.btn-green-ps {
+    background-color: $green-efinding;
+    color: white;
+    border-color: $green-efinding;
+
+    &:hover,&:active,&.active {
+      background-color: $green-efinding;
+      border-color: $green-efinding;
+      color: white;
+    }
+
+    &:active,&.active {
+      background-color: $green-efinding;
+      border-color: $green-efinding;
+    }
+  }
+
   &.btn-blue-repo-3 {
     background-color: $blue-repo-3;
     color: white;

@@ -663,6 +663,31 @@ body {
   }
 }
 
+.bg-green-1-generic {
+  background-color: $green-efinding!important;
+  color: white!important;
+  
+  &.dk {
+    background-color: $green-efinding!important;
+  }
+
+  &.dker {
+    background-color: $green-efinding!important;
+  }
+
+  &.lt {
+    background-color: $green-efinding!important;
+  }
+
+  &.lter {
+    background-color: $green-efinding!important;
+  }
+
+  &.bright {
+    background-color: $green-efinding!important;
+  }
+}
+
 .no-bg {
   background-color: transparent!important;
 }
