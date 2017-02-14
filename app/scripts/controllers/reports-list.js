@@ -223,18 +223,25 @@ angular.module('efindingAdminApp')
 							{
 								//Al ser solo una relacion doble, se busca el padre y luego al hijo
 								for (k = 0; k < success.included.length; k++) {
-									if ( relaciones[relationships[1]].data.id === success.included[k].id &&
-									 relaciones[relationships[1]].data.type === success.included[k].type) 
+									if (relaciones[relationships[1]].data != null) 
 									{
-										if (success.included[k].attributes[$scope.columns2[j].field] != null) 
+										if ( relaciones[relationships[1]].data.id === success.included[k].id &&
+										 relaciones[relationships[1]].data.type === success.included[k].type) 
 										{
-											test[test.length - 1][$scope.columns2[j].field_a] = success.included[k].attributes[$scope.columns2[j].field];
+											if (success.included[k].attributes[$scope.columns2[j].field] != null) 
+											{
+												test[test.length - 1][$scope.columns2[j].field_a] = success.included[k].attributes[$scope.columns2[j].field];
+											}
+											else
+											{
+												test[test.length - 1][$scope.columns2[j].field_a] = '-';
+											}
+											break;
 										}
-										else
-										{
-											test[test.length - 1][$scope.columns2[j].field_a] = '-';
-										}
-										break;
+									}
+									else
+									{
+										test[test.length - 1][$scope.columns2[j].field_a] = '-';
 									}
 								}
 							}
