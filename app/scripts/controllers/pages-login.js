@@ -104,7 +104,7 @@ angular.module('efindingAdminApp')
 
 		Users.query({
 			idUser: idUser,
-			include: 'role.organization.report_types.sections.data_parts,role.organization.report_types.sections,role.organization.roles,role.organization.organization_data'
+			include: 'role.organization.report_types.sections.data_parts.collection.collection_items,role.organization.report_types.sections,role.organization.roles'
 		}, function(success) {
 			$log.log(success);
 

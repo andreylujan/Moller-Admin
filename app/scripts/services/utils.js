@@ -99,7 +99,7 @@ angular.module('efindingAdminApp')
 						enabled: false
 					}
 				},
-				colors: ['#C3C5C9', '#6F6C73', '#35353F', '#23222B'],
+				colors: ['#F69022', '#119848', '#FDE9D3', '#EF3200'],
 				tooltip: {
 					style: {
 						padding: 10,

@@ -3143,7 +3143,7 @@ html.boxed-layout {
   color: #616f77;
   outline: 0;
   vertical-align: top;
-  background-color: #edf1f5;
+  background-color: #F3F3F4;
   filter: none !important;
   -webkit-box-shadow: none;
   box-shadow: none;
@@ -3686,7 +3686,7 @@ fieldset[disabled] .checkbox-custom input + i:before {
   border-color: #dbe0e2 !important;
   border-radius: 2px; }
   .ui-select-bootstrap > .ui-select-match > span:first-of-type {
-    color: #bfc7cb;
+    color: black;
     font-style: italic;
     font-size: 12px; }
   .ui-select-bootstrap > .ui-select-match > span:nth-of-type(2) > a {
@@ -4103,7 +4103,7 @@ check-toggler,
 #header .dropdown > .dropdown-menu {
   margin-top: -2px; }
 #header .dropdown.open > a {
-  color: white; }
+  color: #F3F3F4; }
 
 .dropdown-menu {
   -webkit-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
@@ -4589,14 +4589,14 @@ check-toggler,
     /* Button 3b */
     /* Button 3c */ }
     .btn-ef.btn-ef-3.btn-default {
-      background: #e2e2e2;
+      background: #F3F3F4;
       color: #616f77; }
       .btn-ef.btn-ef-3.btn-default:hover {
-        background: #c9c9c9; }
+        background: #F3F3F4; }
       .btn-ef.btn-ef-3.btn-default:active, .btn-ef.btn-ef-3.btn-default.active {
         background: #bcbcbc; }
       .btn-ef.btn-ef-3.btn-default:focus {
-        background: #e2e2e2;
+        background: #F3F3F4;
         color: #616f77; }
     .btn-ef.btn-ef-3:active {
       top: 2px; }
@@ -5165,14 +5165,14 @@ button:focus {
       border-color: #141414; }
   .btn.btn-default {
     color: #616f77;
-    border-color: #cdd3d7; }
+    border-color: black; }
     .btn.btn-default:focus {
       background-color: white;
-      border-color: #b1bac0; }
+      border-color: #F3F3F4; }
     .btn.btn-default:hover {
-      background-color: #f2f3f4; }
+      background-color: #F3F3F4; }
     .btn.btn-default:active, .btn.btn-default.active {
-      background-color: #eaeced; }
+      background-color: #F3F3F4; }
   .btn.btn-primary:focus {
     background-color: #428bca;
     border-color: #357ebd; }
@@ -10572,6 +10572,9 @@ body {
 
 .b-0 {
   border: 0 !important; }
+
+.b-0n {
+  border: 2 !important; }
 
 .bt-0 {
   border-top: 0 !important; }

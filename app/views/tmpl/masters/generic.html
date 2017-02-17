@@ -77,19 +77,13 @@
 						<button class="btn btn-default" ng-click="openModalNewActivity()">Nuevo</button>
 
 						<table ng-table="tableParams" show-filter="true" class="table table-custom">
-							<tr ng-repeat="activity in $data">
-								<!-- <td data-title="'ID'" sortable="'activity.id'" filter="{ 'activity.id': 'text' }">
-									{{activity.id}}
-								</td> -->
+							<tr ng-repeat="object in $data">
 								<td data-title="'Tipo'" sortable="'name'" filter="{ 'name': 'text' }">
-									{{activity.name}}
+									{{object.name}}
 								</td>
 								<td data-title="'Info'">
-                  					<img ng-click="openModalActivityDetails(activity.id)" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/info.png" style="width:24px; cursor:pointer" tooltip="Más info">
+                  					<img ng-click="openModalObjectDetails(object.id, object.padre)" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/info.png" style="width:24px; cursor:pointer" tooltip="Más info">
                 				</td>
-                <!-- <td data-title="'Info'">
-                  <img ng-click="openModalEquipmentDetails(equipment.id)" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/info.png" style="width:24px; cursor:pointer" tooltip="Más info">
-                </td> -->
 							</tr>
 						</table>
 
@@ -152,29 +146,39 @@
   </script>
 
 
-  <script type="text/ng-template" id="activityDetails.html">
+  <script type="text/ng-template" id="genericDetails.html">
     <div class="modal-header text-gray">
       <h3 class="text-center">{{elements.title}}</h3>
     </div>
     <div class="modal-body text-gray">
       <div class="alert alert-{{elements.alert.color}}" ng-show="elements.alert.show"> <h4 class="text-md"><strong>{{elements.alert.title}}</strong></h4> {{elements.alert.text}} </div>
       <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-11">
           <form name="form" class="form-validation form-horizontal" role="form" novalidate>
             <div class="form-group">
               <label class="col-sm-3 control-label">Tipo</label>
               <div class="col-md-8">
-                <input type="text" id="name" class="form-control underline-input" placeholder="Nombre de actividad..." ng-model="user.name" ng-change="hideAlert()" required>
-                <!--input type="text" id="name" class="form-control underline-input" placeholder="Nombre de actividad..." required-->
+                <input type="text" id="name" class="form-control underline-input" placeholder="Tipo..." ng-model="collection.name" ng-change="hideAlert()" required>
               </div>
             </div>
+            <div class="form-group" ng-show="parentCollection.visible">
+  				<label for="inputPassword3" class="col-sm-3 control-label">Pertenece a </label>
+  				<div class="col-sm-8">
+  					<ui-select class="bg-white b-solid br-15" ng-model="collection.selectedParent" close-on-select="true">
+  						<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.name}}</ui-select-match>
+  						<ui-select-choices repeat="parent in parentCollection.data track by parent.name | propsFilter: {name: $select.search}" refresh-delay="200">
+  							<div ng-bind-html="parent.name"></div>
+  						</ui-select-choices>
+  					</ui-select>
+  				</div>
+  			</div>
           </form>
         </div>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-danger btn-rounded-10 {{elements.buttons.removeUser.border}} mb-10" type="button" ng-click="removeActivity(user.id)" >{{elements.buttons.removeUser.text}}</button>
-      <button class="btn btn-warning btn-rounded-10 {{elements.buttons.editUser.border}} mb-10" type="button" ng-click="editActivity(user.id)" >{{elements.buttons.editUser.text}}</button>
+      <button class="btn btn-danger btn-rounded-10 {{elements.buttons.removeUser.border}} mb-10" type="button" ng-click="removeGeneric(collection.id)" >{{elements.buttons.removeUser.text}}</button>
+      <button class="btn btn-warning btn-rounded-10 {{elements.buttons.editUser.border}} mb-10" type="button" ng-click="editGeneric(collection.id)" >{{elements.buttons.editUser.text}}</button>
       <button class="btn btn-cancelRecit btn-rounded-10 mb-10" type="button" ng-click="cancel()">Cerrar</button>
     </div>
   </script>

@@ -33,18 +33,6 @@ angular.module('efindingAdminApp')
 
 })
 
-// DASHBOARD
-.factory('Dashboard', function($resource) {
-
-	return $resource(API_URL + '/dashboard', {}, {
-		query: {
-			method: 'GET',
-			'Content-Type': 'application/json'
-		}
-	});
-
-})
-
 // REPORTES
 .factory('Reports', function($resource) {
 
@@ -283,11 +271,11 @@ angular.module('efindingAdminApp')
 })
 
 
-// ACTIVIDADES
-.factory('Activities', function($resource) {
+// Comapnies
+.factory('Companies', function($resource) {
 
-	return $resource(API_URL + '/activity_types/:idActivity', {
-		idActivity: '@idActivity'
+	return $resource(API_URL + '/companies/:idCompany', {
+		idCompany: '@idCompany'
 	}, {
 		query: {
 			method: 'GET',
@@ -315,6 +303,137 @@ angular.module('efindingAdminApp')
 				Accept: 'application/vnd.api+json',
 				'Content-Type': 'application/vnd.api+json'
 			},
+		}
+	});
+})
+
+/// Constructions
+.factory('Constructions', function($resource) {
+
+	return $resource(API_URL + '/constructions/:constructionId', {
+		constructionId: '@constructionId'
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: '@include',
+				'filter[company_id]': '@constructionId',
+				'fields[constructions': 'name,company_id'
+			}
+		},
+		save: {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		update: {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		delete: {
+			method: 'DELETE',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			}
+		}
+	});
+
+})
+
+/// DASHBOARD
+.factory('Dashboard', function($resource) {
+
+	return $resource(API_URL + '/dashboard', {
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: '@include',
+				'filter[construction][name]': '@constructionName',
+				'filter[construction][company][name]': '@companyName',
+				'filter[state_name]': '@statusName',
+				'filter[creator][name]': '@supervisorName',
+				'filter[start_date]': '@startDate',
+				'filter[end_date]': '@endDate'
+			}
+		}
+	});
+
+})
+
+/// COLLECTIONS
+.factory('Collection', function($resource) {
+
+	return $resource(API_URL + '/collections/:idCollection', {
+		idCollection: '@idCollection'
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: 'collection_items',
+				'fields[collection_items]': 'parent_item_id,collection_id,name'
+			}
+		},
+		detail: {
+			method: 'GET',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: 'parent_item',
+			}
+		}
+	});
+
+})
+
+
+//COLLECTION ITEM
+.factory('Collection_Item', function($resource) {
+
+	return $resource(API_URL + '/collection_items/:idCollection', {
+		idCollection: '@idCollection'
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: 'parent_item'
+			}
+		},
+		update: {
+			method: 'PUT',
+			headers: {
+				Accept: 'application/vnd.api+json',
+				'Content-Type': 'application/vnd.api+json',
+				'include': 'collection_items'
+			}
+		},
+		delete: {
+			method: 'DELETE',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			}
 		}
 	});
 

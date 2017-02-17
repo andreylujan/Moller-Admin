@@ -9,7 +9,7 @@
  */
 angular.module('efindingAdminApp')
 
-.controller('ReportsListCtrl', function($scope, $log, $filter, $window, $timeout, $uibModal, NgTableParams, Inspections, Activities, Utils) {
+.controller('ReportsListCtrl', function($scope, $log, $filter, $window, $timeout, $uibModal, NgTableParams, Inspections, Utils) {
 
 	$scope.page = {
 		title: 'Lista de inspecciones',
