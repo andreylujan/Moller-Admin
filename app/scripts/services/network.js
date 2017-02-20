@@ -434,6 +434,13 @@ angular.module('efindingAdminApp')
 			headers: {
 				Accept: 'application/vnd.api+json'
 			}
+		},
+		save: {
+			method: 'POST',
+			headers: {
+				Accept: 'application/vnd.api+json',
+				'Content-Type': 'application/vnd.api+json'
+			}
 		}
 	});
 

@@ -17,6 +17,7 @@ angular.module('efindingAdminApp')
 	var data = [];
 
 	var id_collection = $state.params.type;
+	var auxiliar = {};
 
 
 	$scope.getCollection = function() {
@@ -36,6 +37,7 @@ angular.module('efindingAdminApp')
 						padre: success.included[i].attributes.parent_item_id
 					});
 				}
+				auxiliar = data[0];
 
 				$scope.tableParams = new NgTableParams({
 					page: 1, // show first page
@@ -60,8 +62,6 @@ angular.module('efindingAdminApp')
 	};
 
 	$scope.openModalObjectDetails = function(idObject, idParent) {
-		//$log.error(idObject);
-		//$log.error(idParent);
 		var modalInstance = $uibModal.open({
 			animation: true,
 			templateUrl: 'genericDetails.html',
@@ -96,17 +96,24 @@ angular.module('efindingAdminApp')
 		}, function() {});
 	};
 
-	/*$scope.openModalNewActivity = function() {
+	$scope.openModalNewCollectionItem = function() {
 
 		var modalInstance = $uibModal.open({
 			animation: true,
-			templateUrl: 'newActivity.html',
-			controller: 'NewActivityModalInstance',
-			resolve: {}
+			templateUrl: 'newCollectionItem.html',
+			controller: 'NewCollectionItemModalInstance',
+			resolve: {
+				CollectionObject: function() {
+					return auxiliar;
+				},
+				idCollection: function() {
+					return id_collection;
+				}
+			}
 		});
 
 		modalInstance.result.then(function(datos) {
-			if (datos.action === 'saveActivity') {
+			if (datos.action === 'save') {
 				data.push({
 					name: datos.success.data.attributes.name,
 					id: datos.success.data.id
@@ -114,7 +121,7 @@ angular.module('efindingAdminApp')
 			}
 			$scope.tableParams.reload();
 		}, function() {});
-	};*/
+	};
 
 
 	$scope.getCollection();
@@ -122,9 +129,6 @@ angular.module('efindingAdminApp')
 })
 
 .controller('genericDetailsInstance', function($scope, $log, $uibModalInstance, idObject, idParent, Validators, Utils, Collection, Collection_Item) {
-	//$log.error(idObject);
-	//$log.error(idParent);
-
 	$scope.collection = {
 		id: null,
 		name: {
@@ -164,10 +168,8 @@ angular.module('efindingAdminApp')
 	$scope.cancel = function() {
 		$uibModalInstance.dismiss('cancel');
 	};
-	//$scope.activity.name.text = 'Mantención preventiva';
 
 	$scope.getCollectionItem = function(idObject) {
-		
 		Collection_Item.query({
 			idCollection: idObject
 		}, function(success) {
@@ -246,9 +248,9 @@ angular.module('efindingAdminApp')
 			else
 			{
 				aux = { data: { type: 'collection_items', id: idObject, 
-								attributes: { name: $scope.collection.name } }, 
-						relationships: { parent_item: { data: { type: "collection_items", 
-										id: $scope.collection.selectedParent.id } } }, idCollection: idObject };
+								attributes: { name: $scope.collection.name }, 
+								relationships: { parent_item: { data: { type: "collection_items", 
+										id: $scope.collection.selectedParent.id } } } } , idCollection: idObject };
 			}
 
 			Collection_Item.update(aux, 
@@ -318,59 +320,119 @@ angular.module('efindingAdminApp')
 
 })
 
-/*.controller('NewActivityModalInstance', function($scope, $log, $uibModalInstance, Activities, Csv, Utils) {
+.controller('NewCollectionItemModalInstance', function($scope, $log, $state, $uibModalInstance, Csv, Utils, Collection_Item, CollectionObject, Collection, idCollection) {
 
 	$scope.modal = {
 		csvFile: null
 	};
 
-	$scope.saveActivity = function() {
+	$scope.collection = {
+		visible: false,
+		data: []
+	};
 
-		if ($scope.modal.csvFile) {
-			uploadCsvActivity();
-		} else 
-		{
-			//$log.error($scope.modal.activity.type);
-			Activities.save({
-			data: {
-				type: 'activity_types',
-				attributes: {
-					name: $scope.modal.activity.type
-				}
-			}
+	$scope.collection_item = {
+		name: '',
+		id: ''
+	};
+
+	if (CollectionObject.padre != null) 
+	{
+		Collection_Item.query({
+			idCollection: CollectionObject.padre
 			}, function(success) {
 				if (success.data) {
+					getCollection(success.data.attributes.collection_id);
+				} else {
+					$log.log(success);
+				}
 
-					$uibModalInstance.close({
-						action: 'saveActivity',
-						success: success
-					});
-				} 
-				else 
-				{
-					$log.error(success);
+			}, function(error) {
+				$log.error(error);
+
+		});
+
+		var getCollection = function(idParent) {
+			Collection.query({
+				idCollection: idParent
+			}, function(success) {
+				if (success.data) {
+					$scope.collection.visible = true;
+					for (var i = 0; i < success.included.length; i++) {
+						$scope.collection.data.push({
+							name: success.included[i].attributes.name,
+							id: success.included[i].id
+						});
+					}
+
+					$scope.collection.selectedParent = $scope.collection.data[0];
+
+				} else {
+					$log.log(success);
+				}
+
+			}, function(error) {
+				$log.error(error);
+
+			});
+		};
+	}
+
+	$scope.saveCollectionItem = function() {
+
+		if ($scope.modal.csvFile) {
+			//uploadCsvActivity();
+		} else 
+		{
+			var aux = {};
+			if ($scope.collection.selectedParent === undefined) 
+			{
+				aux = { 
+					data: { type: 'collection_items', attributes: { name: $scope.collection_item.name },
+							relationships: { collection: {data: {type: 'collections', id: idCollection}}}}};
+			}
+			else
+			{
+				aux = { data: { type: 'collection_items', attributes: { name: $scope.collection_item.name }, 
+								relationships: { collection: {data: {type: 'collections', id: idCollection}},
+										parent_item: { data: { type: "collection_items", 
+										id: $scope.collection.selectedParent.id }}}}};
+			}
+			Collection_Item.save(aux, 
+				function(success) {
+					if (success.data) {
+
+						$uibModalInstance.close({
+							action: 'save',
+							success: success
+						});
+					} 
+					else 
+					{
+						$log.error(success);
+						$scope.modal.alert.title = 'Error al Guardar';
+						$scope.modal.alert.text = '';
+						$scope.modal.alert.color = 'danger';
+						$scope.modal.alert.show = true;
+						return;
+					}
+				}, function(error) {
+					$log.error(error);
+					if (error.status === 401) {
+						Utils.refreshToken($scope.saveCollectionItem);
+					}
 					$scope.modal.alert.title = 'Error al Guardar';
 					$scope.modal.alert.text = '';
 					$scope.modal.alert.color = 'danger';
 					$scope.modal.alert.show = true;
 					return;
 				}
-			}, function(error) {
-				$log.error(error);
-				if (error.status === 401) {
-					Utils.refreshToken($scope.saveActivity);
-				}
-				$scope.modal.alert.title = 'Error al Guardar';
-				$scope.modal.alert.text = '';
-				$scope.modal.alert.color = 'danger';
-				$scope.modal.alert.show = true;
-				return;
-			});
+			);
 		}
 
 	};
 
-	var uploadCsvActivity = function() {
+	/*var uploadCsvActivity = function() {
 
 		$log.log($scope.modal.csvFile);
 
@@ -387,10 +449,10 @@ angular.module('efindingAdminApp')
 
 		Csv.uploadFileToUrl(form);
 
-	};
+	};*/
 
 	$scope.cancel = function() {
 		$uibModalInstance.dismiss('cancel');
 	};
 
-});*/
+});

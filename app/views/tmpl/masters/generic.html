@@ -74,7 +74,7 @@
 					<!-- tile body -->
 					<div class="tile-body">
 
-						<button class="btn btn-default" ng-click="openModalNewActivity()">Nuevo</button>
+						<button class="btn btn-default" ng-click="openModalNewCollectionItem()">Nuevo</button>
 
 						<table ng-table="tableParams" show-filter="true" class="table table-custom">
 							<tr ng-repeat="object in $data">
@@ -104,43 +104,49 @@
 	</div>
 	<!-- /page content -->
 
-	<script type="text/ng-template" id="newActivity.html">
+	<script type="text/ng-template" id="newCollectionItem.html">
 
 		<div class="modal-header text-gray">
-      		<h3 class="text-center">Nueva actividad</h3>
+      		<h3 class="text-center">{{page.title}}</h3>
     	</div>
 
     <div class="modal-body text-gray">
-     
-     	<!-- <div class="row">
-        <div class="col-md-12">
-        	<h4 class="text-center">Carga masiva (csv)</h4>
-					<input type="file" class="form-control rounded" file-model="modal.csvFile">
-        </div>
-      </div>
-	
-			<hr> -->
-      
+    	<!-- <div class="row">
+       		<div class="col-md-12">
+        		<h4 class="text-center">Carga masiva (csv)</h4>
+				<input type="file" class="form-control rounded" file-model="modal.csvFile">
+        	</div>
+      	</div>
+      	<hr> -->
       <div class="row">
         <div class="col-md-12">
         	<h4 class="text-center">Carga manual</h4>
         	<div class="alert alert-{{modal.alert.color}}" ng-show="modal.alert.show"> <h4 class="text-md"><strong>{{modal.alert.title}}</strong></h4> {{modal.alert.text}} </div>
 
-          <form name="form" class="form-validation form-horizontal" role="form" novalidate>
-            
-            <div class="form-group">
-              <label for="type" class="col-sm-3 control-label">Tipo</label>
-              <div class="col-md-8">
-                <input type="text" id="type" class="form-control underline-input" placeholder="Tipo de actividad..." ng-model="modal.activity.type" ng-change="hideAlert()" required>
-              </div>
-            </div>
-              
-          </form>
+          	<form name="form" class="form-validation form-horizontal" role="form" novalidate>
+	            <div class="form-group">
+	              <label for="type" class="col-sm-3 control-label">Tipo</label>
+	              <div class="col-md-8">
+	                <input type="text" id="type" class="form-control underline-input" placeholder="Tipo..." ng-model="collection_item.name" ng-change="hideAlert()" required>
+	              </div>
+	            </div>
+	            <div class="form-group" ng-show="collection.visible">
+	  				<label for="inputPassword3" class="col-sm-3 control-label">Pertenece a </label>
+	  				<div class="col-sm-8">
+	  					<ui-select class="bg-white b-solid br-15" ng-model="collection.selectedParent" close-on-select="true">
+	  						<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.name}}</ui-select-match>
+	  						<ui-select-choices repeat="parent in collection.data track by parent.name | propsFilter: {name: $select.search}" refresh-delay="200">
+	  							<div ng-bind-html="parent.name"></div>
+	  						</ui-select-choices>
+	  					</ui-select>
+	  				</div>
+	  			</div>
+	        </form>
         </div>
       </div>
     </div>
     <div class="modal-footer">
-    	<button class="btn btn-success br-20 pl-20 pr-20" type="submit" ng-click="saveActivity()">Cargar/Guardar</button>
+    	<button class="btn btn-success br-20 pl-20 pr-20" type="submit" ng-click="saveCollectionItem()">Cargar/Guardar</button>
       <button class="btn btn-default br-20 pl-20 pr-20" type="button" ng-click="cancel()" >Cerrar</button>
     </div>
   </script>
