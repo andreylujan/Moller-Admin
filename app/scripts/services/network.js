@@ -446,6 +446,74 @@ angular.module('efindingAdminApp')
 
 })
 
+// Checklists
+.factory('Checklists', function($resource) {
+
+	return $resource(API_URL + '/checklist_reports', {
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: 'construction.company,creator,users',
+				'fields[users]': 'full_name',
+				'fields[constructions]': 'name,company',
+				'fields[companies]': 'name'
+
+			}
+		},
+		save: {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		update: {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		}
+	});
+
+})
+
+// ChecklistActions
+.factory('ChecklistActions', function($resource) {
+
+	return $resource(API_URL + '/checklists/:idChecklist', {
+		idChecklist: '@idChecklist'
+	}, {
+		save: {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		update: {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		delete: {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+	});
+
+})
+
 // MassiveLoads
 .factory('MassiveLoads', function($resource) {
 
@@ -487,6 +555,17 @@ angular.module('efindingAdminApp')
 			var downloadLink = angular.element(elem);
 			downloadLink.attr('href', API_URL + '/reports/zip?filter[ids]=' + reportIds + '&access_token=' + $auth.getToken());
 			downloadLink.attr('download', 'reportes.zip');
+		}
+	};
+
+})
+
+.factory('ExcelMaster', function($auth) {
+	return {
+		getFile: function(elem, dashboard, fileName) {
+			var downloadLink = angular.element(elem);
+			downloadLink.attr('href', API_URL + '/dashboard/' + dashboard + '.xlsx?access_token=' + $auth.getToken());
+			downloadLink.attr('download', fileName + '.xlsx');
 		}
 	};
 

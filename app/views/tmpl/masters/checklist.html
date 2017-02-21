@@ -1,0 +1,89 @@
+<div class="page page-ng-table">
+
+
+
+
+  <!-- page header -->
+  <div class="pageheader">
+
+    <h2>{{page.title}} <span></span></h2>
+
+    <div class="page-bar">
+
+      <ul class="page-breadcrumb">
+        <li>
+          <a ui-sref="app.users.list"> {{main.title}}</a>
+        </li>
+        <li>
+          <a href="javascript:;">Checklist</a>
+        </li>
+        <li>
+          <a ui-sref="app.users.list">Lista de chequeos</a>
+        </li>
+      </ul>
+
+    </div>
+
+  </div>
+  <!-- /page header -->
+
+  <!-- page content -->
+  <div class="pagecontent">
+
+    <!-- row -->
+    <div class="row">
+
+      <!-- col -->
+      <div class="col-md-12">
+
+
+        <!-- tile -->
+        <section class="tile" fullscreen="isFullscreen06">
+          <!-- tile body -->
+          <div class="tile-body">
+
+            <table ng-table="tableParams" show-filter="true" class="table table-custom">
+              <tr ng-repeat="check in $data">
+                <td data-title="'Empresa'" sortable="'company'" filter="{ 'company': 'text' }">
+                  {{check.company}}
+                </td>
+                <td data-title="'Código de Checklist'" sortable="'code'" filter="{ 'code': 'text' }">
+                  {{check.code}}
+                </td>
+                <td data-title="'Obra'" sortable="'construction'" filter="{ 'construction': 'text' }">
+                  {{check.construction}}
+                </td>
+                <td data-title="'Usuarios asociados'" sortable="'userNames'" filter="{ 'userNames': 'text' }">
+                  {{check.userNames}}
+                </td>
+                <td data-title="'Fecha de creación'" sortable="'fechaCreacion'" filter="{ 'fechaCreacion': 'text' }">
+                  {{check.fechaCreacion}}
+                </td>
+                <td data-title="'Indicador total'" sortable="'indicator'" filter="{ 'indicator': 'text' }">
+                  {{check.indicator}}
+                </td>
+                <td data-title="'PDF'" >
+                    <input ng-if="check.pdfUploaded" class="text-center" type="image" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/pdf2.png" uib-tooltip="Descargar PDF" tooltip-placement="bottom" style="width: 15px" data-pdf="{{check.pdf}}" ng-click="downloadPdf($event)"/>
+                    
+                    <input ng-if="!check.pdfUploaded" class="text-center" type="image" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/denied2.png" uib-tooltip="PDF no disponible" tooltip-placement="bottom" style="width: 20px;" data-pdf="{{check.pdf}}" />
+                </td>
+              </tr>
+            </table>
+
+          </div>
+          <!-- /tile body -->
+
+        </section>
+        <!-- /tile -->
+
+      </div>
+      <!-- /col -->
+
+
+    </div>
+    <!-- /row -->
+
+  </div>
+  <!-- /page content -->
+
+</div>

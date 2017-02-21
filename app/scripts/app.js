@@ -172,6 +172,17 @@ angular
 				controller: 'ReportsListCtrl'
 			})
 
+		//Checklist
+		.state('efinding.checklist', {
+				url: '/checklist',
+				template: '<div ui-view></div>'
+			})
+			.state('efinding.checklist.list', {
+				url: '/lista',
+				templateUrl: 'views/tmpl/masters/checklist.html',
+				controller: 'ChecklistCtrl'
+			})
+
 		//Masters
 		.state('efinding.maestros', {
 				url: '/maestros',

@@ -36,45 +36,16 @@
 
 				<!-- tile -->
 				<section class="tile" fullscreen="isFullscreen06">
-
-					<!-- tile header -->
-					<div class="tile-header dvd dvd-btm">
-						<h1 class="custom-font"></h1>
-						<ul class="controls">
-							<li class="dropdown" dropdown on-toggle="toggled(open)">
-
-								<a href dropdown-toggle class="dropdown-toggle settings"><i class="fa fa-cog"></i></a>
-
-								<ul class="dropdown-menu pull-right with-arrow animated littleFadeInUp">
-									<li>
-										<a href tile-control-toggle>
-											<span class="minimize"><fa name="angle-down"></fa>&nbsp;&nbsp;&nbsp;Minimizar</span>
-											<span class="expand"><fa name="angle-up"></fa>&nbsp;&nbsp;&nbsp;Maximizar</span>
-										</a>
-									</li>
-									<li>
-										<a href ng-click="getReports()">
-											<fa name="refresh"></fa> Refrescar
-										</a>
-									</li>
-									<li>
-										<a href tile-control-fullscreen ng-click="isFullscreen06 = !isFullscreen06">
-											<fa name="expand"></fa> Pantalla completa
-										</a>
-									</li>
-
-								</ul>
-
-							</li>
-							<li class="remove"><a href tile-control-close><i class="fa fa-times"></i></a></li>
-						</ul>
-					</div>
-					<!-- /tile header -->
-
 					<!-- tile body -->
 					<div class="tile-body">
-
-						<button class="btn btn-default" ng-click="openModalNewCollectionItem()">Nuevo</button>
+						<div class="row">
+							<div class="col-md-1">
+								<button class="btn btn-default" ng-click="openModalNewCollectionItem()">Nuevo</button>
+							</div>
+							<!--div class="col-md-1">
+								<button id="downloadExcel" class="bg-cyan-1-generic pt-7 pb-7 pr-12 pl-12 br-15 b-0 text-white ml-20 mb-10" ng-click="getExcel({success:true,detail:'OK'})" uib-tooltip="Descargar Excel"><i class="fa fa-cloud-download"></i></button>
+							</div-->
+						</div>
 
 						<table ng-table="tableParams" show-filter="true" class="table table-custom">
 							<tr ng-repeat="object in $data">

@@ -9,7 +9,7 @@
  */
 angular.module('efindingAdminApp')
 
-.controller('MastersGenericCtrl', function($scope, $log, $state, $uibModal, NgTableParams, $filter, Utils, Collection) {
+.controller('MastersGenericCtrl', function($scope, $log, $state, $uibModal, NgTableParams, $filter, Utils, Collection, ExcelMaster) {
 
 	$scope.page = {
 		title: ''
@@ -121,6 +121,30 @@ angular.module('efindingAdminApp')
 			}
 			$scope.tableParams.reload();
 		}, function() {});
+	};
+
+	$scope.getExcel = function(e) {
+		//$log.error('hola');
+		if (!e.success) {
+			$log.error(e.detail);
+			return;
+		}
+
+		/*if ($scope.page.buttons.getExcel.disabled) {
+			return;
+		}
+		$scope.page.buttons.getExcel.disabled = true;
+		$scope.page.loader.show = true;*/
+
+		//var monthSelected = new Date($scope.page.filters.dateRange.date.startDate).getMonth();
+		//var yearSelected = new Date($scope.page.filters.dateRange.date.startDate).getFullYear();
+
+		ExcelMaster.getFile('#downloadExcel', 'goals', 'metas');
+
+		$timeout(function() {
+			//$scope.page.buttons.getExcel.disabled = false;
+			//$scope.page.loader.show = false;
+		}, 3000);
 	};
 
 
