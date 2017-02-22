@@ -225,7 +225,7 @@ angular.module('efindingAdminApp')
 	};
 
 	var gotoReportList = function() {
-		$state.go('efinding.inspecciones.list');
+		$state.go('efinding.dashboard.generic');
 	};
 
 });
