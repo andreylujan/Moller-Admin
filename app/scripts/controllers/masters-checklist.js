@@ -9,7 +9,7 @@
  */
 angular.module('efindingAdminApp')
 
-.controller('ChecklistCtrl', function($scope, $log, $uibModal, $filter, $state, NgTableParams, Checklists, Utils) {
+.controller('ChecklistCtrl', function($scope, $log, $window, $uibModal, $filter, $state, NgTableParams, Checklists, Utils) {
 
 	$scope.page = {
 		title: 'Lista de checklist'
