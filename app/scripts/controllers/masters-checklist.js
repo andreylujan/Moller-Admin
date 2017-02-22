@@ -39,6 +39,8 @@ angular.module('efindingAdminApp')
 				aux.userNames = success.data[i].attributes.user_names;
 				aux.indicator = success.data[i].attributes.total_indicator;
 				aux.fechaCreacion = success.data[i].attributes.formatted_created_at;
+				aux.company = '-';
+				aux.construction = '-';
 				
 				for (var j = 0; j < success.included.length; j++) {
 					if (success.data[i].relationships['construction'].data.type === success.included[j].type &&
@@ -87,100 +89,9 @@ angular.module('efindingAdminApp')
 		}
 	};
 
-	/*$scope.openModalDeleteChecklist = function(idChecklist) {
-
-		// var idChecklist = idChecklist;
-
-		var modalInstance = $uibModal.open({
-			animation: true,
-			templateUrl: 'messageListChecklist.html',
-			controller: 'MessageListChecklistModalInstance',
-			resolve: {
-				idChecklist: function() {
-					return idChecklist;
-				}
-			}
-		});
-
-		modalInstance.result.then(function() {
-			$scope.getChecklists({
-				success: true,
-				detail: 'OK'
-			});
-		}, function() {});
-	};
-
-	$scope.gotoNewChecklist = function(idChecklist) {
-		$state.go('app.masters.new-checklist', {
-			idChecklist: idChecklist
-		});
-	};*/
-
 	$scope.getChecklists({
 		success: true,
 		detail: 'OK'
 	});
 
 });
-
-/*.controller('MessageListChecklistModalInstance', function($scope, $log, $uibModalInstance, idChecklist, ChecklistActions, Validators, Utils) {
-
-	$scope.modal = {
-		title: {
-			text: null
-		},
-		subtitle: {
-			text: null
-		},
-		alert: {
-			color: '',
-			show: false,
-			title: '',
-			text: null
-		},
-		buttons: {
-			delete: {
-				border: false,
-				show: true,
-				text: 'Eliminar'
-			}
-		}
-	};
-
-	$scope.deleteChecklist = function(e) {
-		if (!e.success) {
-			$log.error(e.detail);
-			return;
-		}
-
-		ChecklistActions.delete({
-			idChecklist: idChecklist
-		}, function(success) {
-			$log.log(success);
-			$uibModalInstance.close();
-		}, function(error) {
-			$log.error(error);
-			if (error.status === 401) {
-				Utils.refreshToken($scope.deleteChecklist);
-			}
-		});
-
-	};
-
-	$scope.ok = function() {
-		// $uibModalInstance.close($scope.selected.item);
-		$uibModalInstance.close();
-	};
-
-	$scope.cancel = function() {
-		$uibModalInstance.dismiss('cancel');
-	};
-
-	$scope.removeAlert = function() {
-		$scope.modal.alert.color = '';
-		$scope.modal.alert.title = '';
-		$scope.modal.alert.text = '';
-		$scope.modal.alert.show = false;
-	};
-
-});*/
