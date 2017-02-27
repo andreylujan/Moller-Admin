@@ -297,7 +297,8 @@ angular.module('efindingAdminApp')
 					attributes: {
 						first_name: $scope.user.firstName.text,
 						last_name: $scope.user.lastName.text,
-						role_id: $scope.user.role.id
+						role_id: $scope.user.role.id,
+						rut: $scope.user.rut.text
 					}
 				},
 				idUser: idUser

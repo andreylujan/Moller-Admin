@@ -25,9 +25,9 @@
         <input type="email" class="form-control rounded" placeholder="Email" ng-model="page.elements.newUser.email.text" disabled required>
       </div>
 
-      <!-- <div class="form-group">
+      <div class="form-group">
         <input type="text" class="form-control rounded" placeholder="Rut" ng-model="page.elements.newUser.rut.text" ng-change="removeMsg(); enableCreateAccountBtn()" ng-blur="formatRut(page.elements.newUser.rut.text)" ng-disabled="page.elements.newUser.rut.disabled" >
-      </div> -->
+      </div>
 
       <div class="form-group">
         <input type="text" class="form-control rounded" placeholder="Nombre" ng-model="page.elements.newUser.firstName.text" ng-change="removeMsg(); enableCreateAccountBtn()" ng-disabled="page.elements.newUser.firstName.disabled" required>
@@ -36,10 +36,6 @@
       <div class="form-group">
         <input type="text" class="form-control rounded" placeholder="Apellido" ng-model="page.elements.newUser.lastName.text" ng-change="removeMsg(); enableCreateAccountBtn()" ng-disabled="page.elements.newUser.lastName.disabled" required>
       </div>
-
-      <!-- <div class="form-group">
-        <input type="tel" class="form-control rounded" placeholder="Celular" ng-model="page.elements.newUser.phoneNumber.text" ng-change="removeMsg(); enableCreateAccountBtn()" ng-disabled="page.elements.newUser.phoneNumber.disabled">
-      </div> -->
 
       <div class="form-group">
         <input type="password" placeholder="Password" class="form-control rounded" ng-model="page.elements.newUser.password.text" ng-change="removeMsg(); enableCreateAccountBtn()" ng-disabled="page.elements.newUser.password.disabled" required>

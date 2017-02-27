@@ -240,16 +240,6 @@ angular.module('efindingAdminApp')
 
 })
 
-.factory('ReportsByMonth', function($auth) {
-	return {
-		getFile: function(elem, fileName, month, year) {
-			var downloadLink = angular.element(elem);
-			downloadLink.attr('href', API_URL + '/reports/xlsx?access_token=' + $auth.getToken() + '&month=' + month + '&year=' + year);
-			downloadLink.attr('download', fileName + '.xlsx');
-		}
-	};
-})
-
 // CHANGE PASSWORD
 .factory('ChangePassword', function($resource) {
 	return $resource(API_URL + '/users/:idUser/password', {
@@ -322,7 +312,14 @@ angular.module('efindingAdminApp')
 			params: {
 				include: '@include',
 				'filter[company_id]': '@constructionId',
-				'fields[constructions': 'name,company_id'
+				'fields[constructions': 'name,company_id,contractors,administrator,expert'
+			}
+		},
+		detail: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
 			}
 		},
 		save: {
@@ -341,6 +338,61 @@ angular.module('efindingAdminApp')
 		},
 		delete: {
 			method: 'DELETE',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			}
+		}
+	});
+
+})
+
+// Personnel
+.factory('Personnel', function($resource) {
+
+	return $resource(API_URL + '/personnel/:idPersonnel', {
+		idPersonnel: '@idPersonnel'
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				'include': 'personnel_types,constructions',
+				'fields[constructions]': 'name,code'
+			}
+		},
+		save: {
+			method: 'POST',
+			headers: {
+				Accept: 'application/vnd.api+json',
+				'Content-Type': 'application/vnd.api+json'
+			}
+		},
+		update: {
+			method: 'PUT',
+			headers: {
+				Accept: 'application/vnd.api+json',
+				'Content-Type': 'application/vnd.api+json'
+			},
+		},
+		delete: {
+			method: 'DELETE',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			}
+		}
+	});
+
+})
+
+// Type Personnel
+.factory('PersonnelTypes', function($resource) {
+
+	return $resource(API_URL + '/personnel_types/', {
+	}, {
+		query: {
+			method: 'GET',
 			headers: {
 				Accept: 'application/vnd.api+json'
 			}
@@ -461,7 +513,8 @@ angular.module('efindingAdminApp')
 				include: 'construction.company,creator,users',
 				'fields[users]': 'full_name',
 				'fields[constructions]': 'name,company',
-				'fields[companies]': 'name'
+				'fields[companies]': 'name',
+				'fields[checklist_reports]': 'formatted_created_at,pdf,pdf_uploaded,code,user_names,total_indicator,users,construction,creator'
 
 			}
 		},
@@ -548,24 +601,12 @@ angular.module('efindingAdminApp')
 
 })
 
-.factory('GetPdfsZip', function($auth) {
-
+.factory('ExcelCollection', function($auth) {
 	return {
-		getFile: function(elem, reportIds) {
+		getFile: function(elem, idCollection, fileName) {
 			var downloadLink = angular.element(elem);
-			downloadLink.attr('href', API_URL + '/reports/zip?filter[ids]=' + reportIds + '&access_token=' + $auth.getToken());
-			downloadLink.attr('download', 'reportes.zip');
-		}
-	};
-
-})
-
-.factory('ExcelMaster', function($auth) {
-	return {
-		getFile: function(elem, dashboard, fileName) {
-			var downloadLink = angular.element(elem);
-			downloadLink.attr('href', API_URL + '/dashboard/' + dashboard + '.xlsx?access_token=' + $auth.getToken());
-			downloadLink.attr('download', fileName + '.xlsx');
+			downloadLink.attr('href', API_URL + '/collections/' + idCollection + '.csv?access_token=' + $auth.getToken());
+			downloadLink.attr('download', fileName + '.csv');
 		}
 	};
 
@@ -574,19 +615,16 @@ angular.module('efindingAdminApp')
 
 // CSV
 .service('Csv', function($resource, $http, $log) {
-
-	// this.uploadFileToUrl = function(form) {
-
 	var fd = new FormData();
-
 	return {
 		upload: function(form) {
 
 			for (var i = 0; i < form.length; i++) {
 				fd.append(form[i].field, form[i].value);
 			}
+			$log.error(form);
 
-			return $http.post(API_URL + '/csv', fd, {
+			return $http.put(API_URL + '/collections/' + form[0].id + '.csv', fd, {
 				transformRequest: angular.identity,
 				headers: {
 					'Content-Type': undefined

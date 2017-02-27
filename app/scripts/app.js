@@ -192,6 +192,16 @@ angular
 				url: '/generic?type',
 				templateUrl: 'views/tmpl/masters/generic.html',
 				controller: 'MastersGenericCtrl'
+			})
+			.state('efinding.maestros.construction', {
+				url: '/construction',
+				templateUrl: 'views/tmpl/masters/construction.html',
+				controller: 'MastersConstructionCtrl'
+			})
+			.state('efinding.maestros.personnel', {
+				url: '/personnel',
+				templateUrl: 'views/tmpl/masters/personnel.html',
+				controller: 'MastersPersonnelCtrl'
 			});
 
 	}

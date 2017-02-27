@@ -2,42 +2,45 @@
 
 /**
  * @ngdoc function
- * @name efindingAdminApp.controller:MastersGenericCtrl
+ * @name efindingAdminApp.controller:MastersConstructionCtrl
  * @description
- * # MastersGenericCtrl
+ * # MastersConstructionCtrl
  * Controller of the efindingAdminApp
  */
 angular.module('efindingAdminApp')
 
-.controller('MastersGenericCtrl', function($scope, $log, $timeout, $state, $uibModal, NgTableParams, $filter, Utils, Collection, ExcelCollection) {
+.controller('MastersPersonnelCtrl', function($scope, $log, $timeout, $state, $uibModal, NgTableParams, $filter, Utils, Personnel) {
 
 	$scope.page = {
-		title: ''
+		title: 'Personal'
 	};
 	var data = [];
 
-	var id_collection = $state.params.type;
 	var auxiliar = {};
 
+	$scope.getPersonnel = function(e) {
 
-	$scope.getCollection = function() {
-		data = [];
+ 		Personnel.query({
+ 		}, function(success) {
+ 			if (success.data) {
 
-		Collection.query({
-			idCollection: id_collection
-		}, function(success) {
-			if (success.data) {
-				$scope.page.title = success.data.attributes.name;
 				data = [];
-				for (var i = 0; i < success.included.length; i++) {
+				for (var i = 0; i < success.data.length; i++) {
 					data.push({
-						// AQUI VAN LOS CAMPOS DEL JSON
-						name: success.included[i].attributes.name,
-						id: success.included[i].id,
-						padre: success.included[i].attributes.parent_item_id
+						name: success.data[i].attributes.name,
+						rut: success.data[i].attributes.rut,
+						id: success.data[i].id
 					});
+
+					/*if (_.has(success.data[i].relationships, "personnel_types")) 
+					{
+						data[i].personnel_type = success.data[i].relationships['personnel_types'].data[0];
+					}
+					if (_.has(success.data[i].relationships, "constructions")) 
+					{
+						data[i].construction = success.data[i].relationships['constructions'].data[0];
+					}*/
 				}
-				auxiliar = data[0];
 
 				$scope.tableParams = new NgTableParams({
 					page: 1, // show first page
@@ -53,30 +56,27 @@ angular.module('efindingAdminApp')
 			} else {
 				$log.error(success);
 			}
-		}, function(error) {
-			$log.error(error);
-			if (error.status) {
-				Utils.refreshToken($scope.getCollection);
-			}
-		});
-	};
+ 		}, function(error) {
+ 			$log.error(error);
+ 			if (error.status === 401) {
+ 				Utils.refreshToken($scope.getConstructions);
+ 			}
+ 		});
+ 	};
 
-	$scope.openModalObjectDetails = function(idObject, idParent) {
+ 	$scope.openModalObjectDetails = function(idObject) {
 		var modalInstance = $uibModal.open({
 			animation: true,
-			templateUrl: 'genericDetails.html',
-			controller: 'genericDetailsInstance',
+			templateUrl: 'personnelDetails.html',
+			controller: 'personnelDetailsInstance',
 			resolve: {
 				idObject: function() {
 					return idObject;
-				},
-				idParent: function() {
-					return idParent;
-				},
+				}
 			}
 		});
 
-		modalInstance.result.then(function(datos) {
+		/*modalInstance.result.then(function(datos) {
 			if (datos.action === 'removeGeneric') {
 				for (var i = 0; i < data.length; i++) {
 					if (data[i].id === datos.idCollection) {
@@ -93,9 +93,13 @@ angular.module('efindingAdminApp')
 				}
 			}
 			$scope.tableParams.reload();
-		}, function() {});
+		}, function() {});*/
 	};
 
+ 	$scope.getPersonnel();
+
+
+	/*
 	$scope.openModalNewCollectionItem = function() {
 
 		var modalInstance = $uibModal.open({
@@ -155,11 +159,340 @@ angular.module('efindingAdminApp')
 	};
 
 
-	$scope.getCollection();
+	$scope.getCollection();*/
 
 })
 
-.controller('newGenericMasive', function($scope, $log, $uibModalInstance, $uibModal, Csv, idCollection) {
+.controller('personnelDetailsInstance', function($scope, $log, $uibModalInstance, idObject, Validators, Utils, Personnel, PersonnelTypes) {
+	$scope.personnel = {
+		id: null,
+		name: {
+			text: '',
+			disabled: true
+		},
+		rut: {
+			text: '',
+			disabled: true
+		},
+		personnel_type: {},
+		construction: {}
+	};
+
+	$scope.personnel_types = [];
+
+	$scope.elements = {
+		buttons: {
+			editUser: {
+				text: 'Editar',
+				border: 'btn-border'
+			},
+			removeUser: {
+				text: 'Eliminar',
+				border: 'btn-border'
+			}
+		},
+		title: '',
+		alert: {
+			show: false,
+			title: '',
+			text: '',
+			color: '',
+		}
+	};
+
+	$scope.getPersonnel = function(idObject) {
+
+ 		Personnel.query({
+ 			idPersonnel: idObject
+ 		}, function(success) {
+ 			if (success.data) {
+ 				$scope.elements.title = success.data.attributes.name;
+
+ 				$scope.personnel.name.text = success.data.attributes.name;
+ 				$scope.personnel.rut.text = success.data.attributes.rut;
+ 				$scope.personnel.id = success.data.id;
+
+ 				var personnel_type = {},
+ 					construction = {};
+ 				if (_.has(success.data.relationships, "personnel_types")) 
+				{
+					personnel_type = success.data.relationships['personnel_types'].data[0];
+
+					for (var j = 0; j < success.included.length; j++) {
+						if (success.included[j].id === personnel_type.id &&
+							success.included[j].type === personnel_type.type) 
+						{
+							$scope.personnel.personnel_type = success.included[j];
+						}
+					}
+				}
+				if (_.has(success.data.relationships, "constructions")) 
+				{
+					construction = success.data.relationships['constructions'].data[0];
+
+					for (var j = 0; j < success.included.length; j++) {
+						if (success.included[j].id === construction.id &&
+							success.included[j].type === construction.type) 
+						{
+							$scope.personnel.construction = success.included[j];
+						}
+					}
+				}
+
+				$log.error($scope.personnel);
+
+				$scope.getPersonnelTypes();
+
+			} else {
+				$log.error(success);
+			}
+ 		}, function(error) {
+ 			$log.error(error);
+ 			if (error.status === 401) {
+ 				Utils.refreshToken($scope.getPersonnel(idObject));
+ 			}
+ 		});
+ 	};
+
+ 	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');
+	};
+
+ 	$scope.getPersonnel(idObject);
+
+ 	
+ 	$scope.getPersonnelTypes = function() {
+
+		PersonnelTypes.query({
+		}, function(success) {
+			if (success.data) {
+				var data = [];
+				$log.error(success.data);
+				/*for (var i = 0; i < success.data.length; i++) {
+					data.push({
+						id: success.data[i].id,
+						name: success.data[i].attributes.name,
+						rut: success.data[i].attributes.rut,
+						personnel_type: success.data[i].relationships.personnel_types.data[0].id
+					});
+
+					if ($scope.construction.jTerreno.id === success.data[i].id) 
+					{
+						$scope.construction.selectedJefeTerreno = { name: success.data[i].attributes.name, id: success.data[i].id };
+					}
+				}
+				$scope.jefesTerreno = _.where(data, {personnel_type: "1"});*/
+				
+			} else {
+				$log.error(success);
+			}
+		}, function(error) {
+			$log.error(error);
+			if (error.status === 401) {
+				Utils.refreshToken($scope.getUsers);
+			}
+		});
+
+	};
+
+	/*
+ 	$scope.getUsersExpert = function() {
+
+		Users.query({
+			idUser: ''
+		}, function(success) {
+			if (success.data) {
+				var data = [];
+				for (var i = 0; i < success.data.length; i++) {
+					data.push({
+						id: success.data[i].id,
+						firstName: success.data[i].attributes.first_name,
+						lastName: success.data[i].attributes.last_name,
+						email: success.data[i].attributes.email,
+						roleName: success.data[i].attributes.role_name,
+						roleId: success.data[i].attributes.role_id,
+						active: success.data[i].attributes.active,
+						fullName: success.data[i].attributes.first_name + ' ' + success.data[i].attributes.last_name
+					});
+
+					if ($scope.construction.expert.id === success.data[i].id) 
+					{
+						$scope.construction.selectedExpert = {fullName: success.data[i].attributes.first_name + ' ' + success.data[i].attributes.last_name, id: success.data[i].id };
+					}
+				}
+				$scope.experts = _.where(data, {roleId: 3});
+			} else {
+				$log.error(success);
+			}
+		}, function(error) {
+			$log.error(error);
+			if (error.status === 401) {
+				Utils.refreshToken($scope.getUsers);
+			}
+		});
+
+	};
+
+ 	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');
+	};
+
+ 	$scope.getConstruction(idObject);
+
+	/*$scope.selectedParent = null;
+
+	$scope.getCollectionItem = function(idObject) {
+		Collection_Item.query({
+			idCollection: idObject
+		}, function(success) {
+			if (success.data) {
+				$scope.collection.id 		= success.data.id;
+				$scope.collection.name 		= success.data.attributes.name;
+				$scope.collection.parent_item_id = success.data.attributes.parent_item_id;
+				if ($scope.collection.parent_item_id != null) 
+				{
+					$scope.getCollection(success.included[0].attributes.collection_id);
+				}
+
+
+			} else {
+				$log.log(success);
+			}
+
+		}, function(error) {
+			$log.error(error);
+
+		});
+	};
+
+	$scope.getCollection = function(idParent) {
+		Collection.query({
+			idCollection: idParent
+		}, function(success) {
+			if (success.data) {
+				$scope.parentCollection.visible = true;
+
+				for (var i = 0; i < success.included.length; i++) {
+					$scope.parentCollection.data.push({
+						name: success.included[i].attributes.name,
+						id: success.included[i].id
+					});
+					if ($scope.collection.parent_item_id === success.included[i].id) 
+					{
+						$scope.collection.selectedParent = {name: success.included[i].attributes.name, id: success.included[i].id};
+					}
+				}
+
+			} else {
+				$log.log(success);
+			}
+
+		}, function(error) {
+			$log.error(error);
+
+		});
+	};
+
+	$scope.getCollectionItem(idObject);
+
+	$scope.editGeneric = function(idObject) {
+
+		if ($scope.elements.buttons.editUser.text === 'Editar') {
+			$scope.elements.buttons.editUser.text = 'Guardar';
+			$scope.elements.buttons.editUser.border = '';
+		} else {
+			if (!Validators.validateRequiredField($scope.collection.name)) {
+				$scope.elements.alert.title = 'Faltan datos por rellenar';
+				$scope.elements.alert.text = '';
+				$scope.elements.alert.color = 'danger';
+				$scope.elements.alert.show = true;
+				return;
+			}
+
+			$scope.elements.buttons.editUser.text = 'Editar';
+			$scope.elements.buttons.editUser.border = 'btn-border';
+			var aux = {};
+			if ($scope.collection.selectedParent === undefined) 
+			{
+				aux = { data: { type: 'collection_items', id: idObject, 
+								attributes: { name: $scope.collection.name } }, idCollection: idObject };
+			}
+			else
+			{
+				aux = { data: { type: 'collection_items', id: idObject, 
+								attributes: { name: $scope.collection.name }, 
+								relationships: { parent_item: { data: { type: "collection_items", 
+										id: $scope.collection.selectedParent.id } } } } , idCollection: idObject };
+			}
+
+			Collection_Item.update(aux, 
+				function(success) {
+					if (success.data) {
+						$scope.elements.alert.title = 'Se han actualizado los datos de la actividad';
+						$scope.elements.alert.text = '';
+						$scope.elements.alert.color = 'success';
+						$scope.elements.alert.show = true;
+						$scope.getCollectionItem(idObject);
+
+						$uibModalInstance.close({
+							action: 'editGeneric',
+							success: success
+						});
+
+					} else {
+						$log.log(success);
+					}
+				}, function(error) {
+					$log.log(error);
+				}
+			);
+		}
+	};*/
+
+	/*$scope.removeGeneric = function(idObject) {
+
+		if ($scope.elements.buttons.removeUser.text === 'Eliminar') {
+			$scope.elements.buttons.removeUser.text = 'Si, eliminar';
+
+			$scope.elements.buttons.removeUser.border = '';
+			$scope.elements.alert.show = true;
+			$scope.elements.alert.title = '¿Seguro que desea eliminar la actividad?';
+			$scope.elements.alert.text = 'Para eliminarla, vuelva a presionar el botón';
+			$scope.elements.alert.color = 'danger';
+
+		} else {
+			$scope.elements.buttons.removeUser.text = 'Eliminar';
+
+			Collection_Item.delete({
+				idCollection: idObject
+			}, function(success) {
+
+				$uibModalInstance.close({
+					action: 'removeGeneric',
+					idCollection: idObject
+				});
+
+			}, function(error) {
+				$log.log(error);
+				if (error.status === 401) {
+					Utils.refreshToken($scope.removeGeneric);
+				}
+			});
+		}
+
+	};
+
+	$scope.hideAlert = function() {
+		$scope.elements.alert.show = false;
+		$scope.elements.alert.title = '';
+		$scope.elements.alert.text = '';
+		$scope.elements.alert.color = '';
+	};
+	*/
+
+});
+
+/*.controller('newGenericMasive', function($scope, $log, $uibModalInstance, $uibModal, Csv, idCollection) {
 	$scope.modal = {
 		csvFile: null,
 		btns: {
@@ -285,197 +618,7 @@ angular.module('efindingAdminApp')
 
 })
 
-.controller('genericDetailsInstance', function($scope, $log, $uibModalInstance, idObject, idParent, Validators, Utils, Collection, Collection_Item) {
-	$scope.collection = {
-		id: null,
-		name: {
-			text: '',
-			disabled: true
-		},
-		parent_item_id: null
-	};
 
-	$scope.parentCollection = {
-		visible: false,
-		data: []
-	};
-
-	$scope.elements = {
-		buttons: {
-			editUser: {
-				text: 'Editar',
-				border: 'btn-border'
-			},
-			removeUser: {
-				text: 'Eliminar',
-				border: 'btn-border'
-			}
-		},
-		title: '',
-		alert: {
-			show: false,
-			title: '',
-			text: '',
-			color: '',
-		}
-	};
-
-	$scope.selectedParent = null;
-
-	$scope.cancel = function() {
-		$uibModalInstance.dismiss('cancel');
-	};
-
-	$scope.getCollectionItem = function(idObject) {
-		Collection_Item.query({
-			idCollection: idObject
-		}, function(success) {
-			if (success.data) {
-				$scope.collection.id 		= success.data.id;
-				$scope.collection.name 		= success.data.attributes.name;
-				$scope.collection.parent_item_id = success.data.attributes.parent_item_id;
-				if ($scope.collection.parent_item_id != null) 
-				{
-					$scope.getCollection(success.included[0].attributes.collection_id);
-				}
-
-
-			} else {
-				$log.log(success);
-			}
-
-		}, function(error) {
-			$log.error(error);
-
-		});
-	};
-
-	$scope.getCollection = function(idParent) {
-		Collection.query({
-			idCollection: idParent
-		}, function(success) {
-			if (success.data) {
-				$scope.parentCollection.visible = true;
-
-				for (var i = 0; i < success.included.length; i++) {
-					$scope.parentCollection.data.push({
-						name: success.included[i].attributes.name,
-						id: success.included[i].id
-					});
-					if ($scope.collection.parent_item_id === success.included[i].id) 
-					{
-						$scope.collection.selectedParent = {name: success.included[i].attributes.name, id: success.included[i].id};
-					}
-				}
-
-			} else {
-				$log.log(success);
-			}
-
-		}, function(error) {
-			$log.error(error);
-
-		});
-	};
-
-	$scope.getCollectionItem(idObject);
-
-	$scope.editGeneric = function(idObject) {
-
-		if ($scope.elements.buttons.editUser.text === 'Editar') {
-			$scope.elements.buttons.editUser.text = 'Guardar';
-			$scope.elements.buttons.editUser.border = '';
-		} else {
-			if (!Validators.validateRequiredField($scope.collection.name)) {
-				$scope.elements.alert.title = 'Faltan datos por rellenar';
-				$scope.elements.alert.text = '';
-				$scope.elements.alert.color = 'danger';
-				$scope.elements.alert.show = true;
-				return;
-			}
-
-			$scope.elements.buttons.editUser.text = 'Editar';
-			$scope.elements.buttons.editUser.border = 'btn-border';
-			var aux = {};
-			if ($scope.collection.selectedParent === undefined) 
-			{
-				aux = { data: { type: 'collection_items', id: idObject, 
-								attributes: { name: $scope.collection.name } }, idCollection: idObject };
-			}
-			else
-			{
-				aux = { data: { type: 'collection_items', id: idObject, 
-								attributes: { name: $scope.collection.name }, 
-								relationships: { parent_item: { data: { type: "collection_items", 
-										id: $scope.collection.selectedParent.id } } } } , idCollection: idObject };
-			}
-
-			Collection_Item.update(aux, 
-				function(success) {
-					if (success.data) {
-						$scope.elements.alert.title = 'Se han actualizado los datos de la actividad';
-						$scope.elements.alert.text = '';
-						$scope.elements.alert.color = 'success';
-						$scope.elements.alert.show = true;
-						$scope.getCollectionItem(idObject);
-
-						$uibModalInstance.close({
-							action: 'editGeneric',
-							success: success
-						});
-
-					} else {
-						$log.log(success);
-					}
-				}, function(error) {
-					$log.log(error);
-				}
-			);
-		}
-	};
-
-	$scope.removeGeneric = function(idObject) {
-
-		if ($scope.elements.buttons.removeUser.text === 'Eliminar') {
-			$scope.elements.buttons.removeUser.text = 'Si, eliminar';
-
-			$scope.elements.buttons.removeUser.border = '';
-			$scope.elements.alert.show = true;
-			$scope.elements.alert.title = '¿Seguro que desea eliminar la actividad?';
-			$scope.elements.alert.text = 'Para eliminarla, vuelva a presionar el botón';
-			$scope.elements.alert.color = 'danger';
-
-		} else {
-			$scope.elements.buttons.removeUser.text = 'Eliminar';
-
-			Collection_Item.delete({
-				idCollection: idObject
-			}, function(success) {
-
-				$uibModalInstance.close({
-					action: 'removeGeneric',
-					idCollection: idObject
-				});
-
-			}, function(error) {
-				$log.log(error);
-				if (error.status === 401) {
-					Utils.refreshToken($scope.removeGeneric);
-				}
-			});
-		}
-
-	};
-
-
-	$scope.hideAlert = function() {
-		$scope.elements.alert.show = false;
-		$scope.elements.alert.title = '';
-		$scope.elements.alert.text = '';
-		$scope.elements.alert.color = '';
-	};
-
-})
 
 .controller('NewCollectionItemModalInstance', function($scope, $log, $state, $uibModalInstance, Csv, Utils, Collection_Item, CollectionObject, Collection, idCollection) {
 
@@ -596,4 +739,4 @@ angular.module('efindingAdminApp')
 		$uibModalInstance.dismiss('cancel');
 	};
 
-});
+});*/

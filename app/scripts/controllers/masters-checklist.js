@@ -9,24 +9,87 @@
  */
 angular.module('efindingAdminApp')
 
-.controller('ChecklistCtrl', function($scope, $log, $window, $uibModal, $filter, $state, NgTableParams, Checklists, Utils) {
+.controller('ChecklistCtrl', function($scope, $log, $timeout, $window, $uibModal, $filter, $state, NgTableParams, Checklists, Utils) {
 
 	$scope.page = {
 		title: 'Lista de checklist'
 	};
 
-	var checklists = [];
+	$scope.pagination = {
+		pages: {
+			current: 1,
+			total: 0,
+			size: 25
+		}
+	};
 
-	$scope.getChecklists = function(e) {
+	$scope.filter = {};
+
+	var filterTimeout = null,
+	filterTimeoutDuration = 1000;
+
+	$scope.columns = [];
+	$scope.columns.push({title: 'Empresa', filter: 'filter[construction][company][name]'});
+	$scope.columns.push({title: 'Código de checklist', filter: 'filter[code]'});
+	$scope.columns.push({title: 'Obra', filter: 'filter[construction][name]'});
+	$scope.columns.push({title: 'Usuarios asociados', filter: 'filter[user_names]'});
+	$scope.columns.push({title: 'Fecha de creación', filter: 'filter[formatted_created_at]'});
+	$scope.columns.push({title: 'Indicador total', filter: 'filter[total_indicator]'});
+
+
+	$scope.filter['page[number]'] = $scope.pagination.pages.current;
+	$scope.filter['page[size]'] = $scope.pagination.pages.size;
+
+	$scope.filter['filter[construction][name]'] = {};
+	$scope.filter['filter[construction][name]'].filter = '';
+
+	$scope.filter['filter[construction][company][name]'] = {};
+	$scope.filter['filter[construction][company][name]'].filter = '';
+
+	$scope.filter['filter[code]'] = {};
+	$scope.filter['filter[code]'].filter = '';
+
+	$scope.filter['filter[user_names]'] = {};
+	$scope.filter['filter[user_names]'].filter = '';
+
+	$scope.filter['filter[formatted_created_at]'] = {};
+	$scope.filter['filter[formatted_created_at]'].filter = '';
+
+	$scope.filter['filter[total_indicator]'] = {};
+	$scope.filter['filter[total_indicator]'].filter = '';
+
+
+	$scope.$watch('filter', function(newFilters) {
+		if (filterTimeout) {
+			$timeout.cancel(filterTimeout);
+		}
+
+		filterTimeout = $timeout(function() {
+			$scope.getChecklists({
+				success: true,
+				detail: 'OK'
+			}, $scope.pagination.pages.current, $scope.filter);
+
+		}, $scope.filter);
+	}, true);
+
+	$scope.getChecklists = function(e, page, filters) {
 		if (!e.success) {
 			$log.error(e.detail);
 			return;
 		}
+		var checklists = [];
+		var filtersToSearch = {};
+		for (var attr in filters) {
+			if (attr.indexOf('filter') !== -1) {
+				filtersToSearch[attr] = filters[attr].filter;
+			} else {
+				filtersToSearch[attr] = filters[attr];
+			}
+		}
 
-		checklists = [];
-
-		Checklists.query({
-		}, function(success) {
+		Checklists.query(filtersToSearch, function(success) {
+			$scope.pagination.pages.total = success.meta.page_count;
 
 			for (var i = 0; i < success.data.length; i++) {
 
@@ -64,12 +127,10 @@ angular.module('efindingAdminApp')
 
 			$scope.tableParams = new NgTableParams({
 				page: 1, // show first page
-				count: 25, // count per page
-				sorting: {
-					name: 'desc' // initial sorting
-				}
+				count: checklists.length // count per page
 			}, {
-				total: checklists.length, // length of checklists
+				counts: [],
+				total: checklists.length, // length of test
 				dataset: checklists
 			});
 
@@ -89,9 +150,24 @@ angular.module('efindingAdminApp')
 		}
 	};
 
-	$scope.getChecklists({
-		success: true,
-		detail: 'OK'
-	});
+	$scope.incrementPage = function() {
+		if ($scope.pagination.pages.current <= $scope.pagination.pages.total - 1) {
+			$scope.pagination.pages.current++;
+			$scope.filter['page[number]'] = $scope.pagination.pages.current;
+			$scope.getChecklists({
+				success: true
+			}, $scope.pagination.pages.current, $scope.filter);
+		}
+	};
+
+	$scope.decrementPage = function() {
+		if ($scope.pagination.pages.current > 1) {
+			$scope.pagination.pages.current--;
+			$scope.filter['page[number]'] = $scope.pagination.pages.current;
+			$scope.getChecklists({
+				success: true
+			}, $scope.pagination.pages.current, $scope.filter);
+		}
+	};
 
 });

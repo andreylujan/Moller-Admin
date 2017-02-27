@@ -31,7 +31,7 @@
 				<section class="tile" fullscreen="isFullscreen06">
 					<!-- tile body -->
 					<div class="tile-body">
-						<div class="row">
+						<!--div class="row">
 							<div class="col-md-1">
 								<button class="btn btn-default" ng-click="openModalNewCollectionItem()">Nuevo</button>
 							</div>
@@ -45,14 +45,14 @@
 									<img src="https://s3-sa-east-1.amazonaws.com/efinding/icons/arriba.png">
 								</a>
 							</div>
-						</div>
+						</div-->
 						<table ng-table="tableParams" show-filter="true" class="table table-custom">
 							<tr ng-repeat="object in $data">
-								<td data-title="'Tipo'" sortable="'name'" filter="{ 'name': 'text' }">
+								<td data-title="'Obra'" sortable="'name'" filter="{ 'name': 'text' }">
 									{{object.name}}
 								</td>
 								<td data-title="'Info'">
-                  					<img ng-click="openModalObjectDetails(object.id, object.padre)" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/info.png" style="width:24px; cursor:pointer" tooltip="Más info">
+                  					<img ng-click="openModalObjectDetails(object.id, object.company)" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/info.png" style="width:24px; cursor:pointer" tooltip="Más info">
                 				</td>
 							</tr>
 						</table>
@@ -66,18 +66,11 @@
 		<!-- /row -->
 	</div>
 	<!-- /page content -->
-	<script type="text/ng-template" id="newCollectionItem.html">
+	<!--script type="text/ng-template" id="newCollectionItem.html">
 		<div class="modal-header text-gray">
       		<h3 class="text-center">{{page.title}}</h3>
     	</div>
 	    <div class="modal-body text-gray">
-	    	<!-- <div class="row">
-	       		<div class="col-md-12">
-	        		<h4 class="text-center">Carga masiva (csv)</h4>
-					<input type="file" class="form-control rounded" file-model="modal.csvFile">
-	        	</div>
-	      	</div>
-	      	<hr> -->
 	      <div class="row">
 	        <div class="col-md-12">
 	        	<h4 class="text-center">Carga manual</h4>
@@ -115,10 +108,10 @@
 	    	<button class="btn btn-success br-20 pl-20 pr-20" type="submit" ng-click="saveCollectionItem()">Cargar/Guardar</button>
 	      <button class="btn btn-default br-20 pl-20 pr-20" type="button" ng-click="cancel()" >Cerrar</button>
 	    </div>
-  </script>
+  </script-->
 
 
-  <script type="text/ng-template" id="genericDetails.html">
+  <script type="text/ng-template" id="constructionDetails.html">
     <div class="modal-header text-gray">
       <h3 class="text-center">{{elements.title}}</h3>
     </div>
@@ -128,33 +121,68 @@
         <div class="col-md-11">
           <form name="form" class="form-validation form-horizontal" role="form" novalidate>
             <div class="form-group">
-              <label class="col-sm-3 control-label">Tipo</label>
+              <label class="col-sm-3 control-label">Nombre</label>
               <div class="col-md-8">
-                <input type="text" id="name" class="form-control underline-input" placeholder="Tipo..." ng-model="collection.name" ng-change="hideAlert()" required>
+                <input type="text" id="name" class="form-control underline-input" placeholder="Nombre" ng-model="construction.name.text" ng-change="hideAlert()" required>
               </div>
             </div>
-            <div class="form-group" ng-show="parentCollection.visible">
-  				<label for="inputPassword3" class="col-sm-3 control-label">Pertenece a </label>
-  				<div class="col-sm-8">
-  					<ui-select class="bg-white b-solid br-15" ng-model="collection.selectedParent" close-on-select="true">
-  						<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.name}}</ui-select-match>
-  						<ui-select-choices repeat="parent in parentCollection.data track by parent.name | propsFilter: {name: $select.search}" refresh-delay="200">
-  							<div ng-bind-html="parent.name"></div>
-  						</ui-select-choices>
-  					</ui-select>
-  				</div>
-  			</div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label">Administrador de obra</label>
+              <div class="col-md-8">
+                <input type="text" id="name" class="form-control underline-input" placeholder="Nombre" value="{{construction.administrator.attributes.full_name}} - {{construction.administrator.attributes.rut}}" readonly>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label">Visitador</label>
+              <div class="col-md-8">
+                <input type="text" id="name" class="form-control underline-input" placeholder="Nombre" value="{{construction.visitador.attributes.name}} - {{construction.visitador.attributes.rut}}" readonly>
+              </div>
+            </div>
+            <div class="form-group">
+		  		<label for="inputPassword3" class="col-sm-3 control-label">Jefe de terreno</label>
+		  		<div class="col-sm-8">
+		  			<ui-select class="bg-white b-solid br-15" ng-model="construction.selectedJefeTerreno" close-on-select="true">
+		  				<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.name}}</ui-select-match>
+		  				<ui-select-choices repeat="jefe in jefesTerreno track by jefe.name | propsFilter: {name: $select.search}" refresh-delay="200">
+		  					<div ng-bind-html="jefe.name"></div>
+		  				</ui-select-choices>
+		  			</ui-select>
+		  		</div>
+		  	</div>
+            <div class="form-group">
+		  		<label for="inputPassword3" class="col-sm-3 control-label">Experto SSOMA</label>
+		  		<div class="col-sm-8">
+		  			<ui-select class="bg-white b-solid br-15" ng-model="construction.selectedExpert" close-on-select="true">
+		  				<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.fullName}}</ui-select-match>
+		  				<ui-select-choices repeat="expert in experts track by expert.fullName | propsFilter: {fullName: $select.search}" refresh-delay="200">
+		  					<div ng-bind-html="expert.fullName"></div>
+		  				</ui-select-choices>
+		  			</ui-select>
+		  		</div>
+		  	</div>
+            <div class="form-group">
+              <label for="userRole" class="col-sm-3 control-label">Contratistas</label>
+              <div class="col-md-8" ng-show="construction.contractors">
+                <ul class="list-group"> 
+                  <li class="list-group-item" ng-repeat="contratistas in construction.contractors" >{{contratistas.name}}</li> 
+                </ul>
+              </div>
+              <div class="col-md-8" ng-show="!construction.contractors">
+                <input type="text" id="name" class="form-control underline-input" value="No existen datos" readonly>
+              </div>
+            </div>
           </form>
         </div>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-danger btn-rounded-10 {{elements.buttons.removeUser.border}} mb-10" type="button" ng-click="removeGeneric(collection.id)" >{{elements.buttons.removeUser.text}}</button>
       <button class="btn btn-warning btn-rounded-10 {{elements.buttons.editUser.border}} mb-10" type="button" ng-click="editGeneric(collection.id)" >{{elements.buttons.editUser.text}}</button>
       <button class="btn btn-cancelRecit btn-rounded-10 mb-10" type="button" ng-click="cancel()">Cerrar</button>
     </div>
   </script>
-  <script type="text/ng-template" id="newGenericMasive.html">
+
+
+  <!--script type="text/ng-template" id="newGenericMasive.html">
 
 		<div class="overlay br-30" ng-show="modal.overlay.show">
 			<div style="position:absolute;top: 50%;left:50%;transform: translate(-50%, -50%);">
@@ -225,6 +253,6 @@
 			<button class="btn btn-default btn-rounded-10 mb-10" type="button" ng-click="cancel()">Cerrar</button>
 		</div>
 
-	</script>
+	</script-->
 
 </div>
