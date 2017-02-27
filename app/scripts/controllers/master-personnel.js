@@ -426,8 +426,6 @@ angular.module('efindingAdminApp')
 						});
 					} 
 					else 
-					{
-						$log.error(success);
 						$scope.modal.alert.title = 'Error al Guardar';
 						$scope.modal.alert.text = '';
 						$scope.modal.alert.color = 'danger';
