@@ -31,15 +31,6 @@ angular.module('efindingAdminApp')
 						rut: success.data[i].attributes.rut,
 						id: success.data[i].id
 					});
-
-					/*if (_.has(success.data[i].relationships, "personnel_types")) 
-					{
-						data[i].personnel_type = success.data[i].relationships['personnel_types'].data[0];
-					}
-					if (_.has(success.data[i].relationships, "constructions")) 
-					{
-						data[i].construction = success.data[i].relationships['constructions'].data[0];
-					}*/
 				}
 
 				$scope.tableParams = new NgTableParams({
@@ -76,43 +67,38 @@ angular.module('efindingAdminApp')
 			}
 		});
 
-		/*modalInstance.result.then(function(datos) {
-			if (datos.action === 'removeGeneric') {
+		modalInstance.result.then(function(datos) {
+			if (datos.action === 'remove') {
 				for (var i = 0; i < data.length; i++) {
-					if (data[i].id === datos.idCollection) {
+					if (data[i].id === datos.idPersonnel) {
 						data.splice(i, 1);
 					}
 				}
 			}
-			else if (datos.action === 'editGeneric') {				
+			else if (datos.action === 'edit') {				
 				for (var j = 0; j < data.length; j++) {
 					if (data[j].id === datos.success.data.id) {
 						data[j].name = datos.success.data.attributes.name;
+						data[j].rut = datos.success.data.attributes.rut;
 						break;
 					}
 				}
 			}
 			$scope.tableParams.reload();
-		}, function() {});*/
+		}, function() {});
 	};
 
  	$scope.getPersonnel();
 
 
-	/*
-	$scope.openModalNewCollectionItem = function() {
+	
+	$scope.openModalNewPersonnel = function() {
 
 		var modalInstance = $uibModal.open({
 			animation: true,
-			templateUrl: 'newCollectionItem.html',
-			controller: 'NewCollectionItemModalInstance',
+			templateUrl: 'newPersonnel.html',
+			controller: 'NewPersonnelModalInstance',
 			resolve: {
-				CollectionObject: function() {
-					return auxiliar;
-				},
-				idCollection: function() {
-					return id_collection;
-				}
 			}
 		});
 
@@ -127,26 +113,7 @@ angular.module('efindingAdminApp')
 		}, function() {});
 	};
 
-	$scope.openModalNewGeneric = function() {
-
-		var modalInstance = $uibModal.open({
-			animation: true,
-			backdrop: false,
-			templateUrl: 'newGenericMasive.html',
-			controller: 'newGenericMasive',
-			resolve: {
-				idCollection: function() {
-					return id_collection;
-				}
-			}
-		});
-
-		modalInstance.result.then(function() {
-			$scope.getCollection();
-		}, function() {});
-	};
-
-	$scope.getExcel = function(e) {
+	/*$scope.getExcel = function(e) {
 		if (!e.success) {
 			$log.error(e.detail);
 			return;
@@ -175,7 +142,8 @@ angular.module('efindingAdminApp')
 			disabled: true
 		},
 		personnel_type: {},
-		construction: {}
+		construction: {},
+		personnel_types: []
 	};
 
 	$scope.personnel_types = [];
@@ -239,7 +207,7 @@ angular.module('efindingAdminApp')
 					}
 				}
 
-				$log.error($scope.personnel);
+				//$log.error($scope.personnel);
 
 				$scope.getPersonnelTypes();
 
@@ -262,26 +230,21 @@ angular.module('efindingAdminApp')
 
  	
  	$scope.getPersonnelTypes = function() {
-
 		PersonnelTypes.query({
 		}, function(success) {
 			if (success.data) {
 				var data = [];
-				$log.error(success.data);
-				/*for (var i = 0; i < success.data.length; i++) {
+				for (var i = 0; i < success.data.length; i++) {
 					data.push({
 						id: success.data[i].id,
-						name: success.data[i].attributes.name,
-						rut: success.data[i].attributes.rut,
-						personnel_type: success.data[i].relationships.personnel_types.data[0].id
+						name: success.data[i].attributes.name
 					});
-
-					if ($scope.construction.jTerreno.id === success.data[i].id) 
+					if ($scope.personnel.personnel_type.id === success.data[i].id) 
 					{
-						$scope.construction.selectedJefeTerreno = { name: success.data[i].attributes.name, id: success.data[i].id };
+						$scope.personnel.selectedPersonnelType = { name: success.data[i].attributes.name, id: success.data[i].id };
 					}
 				}
-				$scope.jefesTerreno = _.where(data, {personnel_type: "1"});*/
+				$scope.personnel_types = data;
 				
 			} else {
 				$log.error(success);
@@ -289,119 +252,20 @@ angular.module('efindingAdminApp')
 		}, function(error) {
 			$log.error(error);
 			if (error.status === 401) {
-				Utils.refreshToken($scope.getUsers);
+				Utils.refreshToken($scope.getPersonnelTypes);
 			}
 		});
 
 	};
 
-	/*
- 	$scope.getUsersExpert = function() {
-
-		Users.query({
-			idUser: ''
-		}, function(success) {
-			if (success.data) {
-				var data = [];
-				for (var i = 0; i < success.data.length; i++) {
-					data.push({
-						id: success.data[i].id,
-						firstName: success.data[i].attributes.first_name,
-						lastName: success.data[i].attributes.last_name,
-						email: success.data[i].attributes.email,
-						roleName: success.data[i].attributes.role_name,
-						roleId: success.data[i].attributes.role_id,
-						active: success.data[i].attributes.active,
-						fullName: success.data[i].attributes.first_name + ' ' + success.data[i].attributes.last_name
-					});
-
-					if ($scope.construction.expert.id === success.data[i].id) 
-					{
-						$scope.construction.selectedExpert = {fullName: success.data[i].attributes.first_name + ' ' + success.data[i].attributes.last_name, id: success.data[i].id };
-					}
-				}
-				$scope.experts = _.where(data, {roleId: 3});
-			} else {
-				$log.error(success);
-			}
-		}, function(error) {
-			$log.error(error);
-			if (error.status === 401) {
-				Utils.refreshToken($scope.getUsers);
-			}
-		});
-
-	};
-
- 	$scope.cancel = function() {
-		$uibModalInstance.dismiss('cancel');
-	};
-
- 	$scope.getConstruction(idObject);
-
-	/*$scope.selectedParent = null;
-
-	$scope.getCollectionItem = function(idObject) {
-		Collection_Item.query({
-			idCollection: idObject
-		}, function(success) {
-			if (success.data) {
-				$scope.collection.id 		= success.data.id;
-				$scope.collection.name 		= success.data.attributes.name;
-				$scope.collection.parent_item_id = success.data.attributes.parent_item_id;
-				if ($scope.collection.parent_item_id != null) 
-				{
-					$scope.getCollection(success.included[0].attributes.collection_id);
-				}
-
-
-			} else {
-				$log.log(success);
-			}
-
-		}, function(error) {
-			$log.error(error);
-
-		});
-	};
-
-	$scope.getCollection = function(idParent) {
-		Collection.query({
-			idCollection: idParent
-		}, function(success) {
-			if (success.data) {
-				$scope.parentCollection.visible = true;
-
-				for (var i = 0; i < success.included.length; i++) {
-					$scope.parentCollection.data.push({
-						name: success.included[i].attributes.name,
-						id: success.included[i].id
-					});
-					if ($scope.collection.parent_item_id === success.included[i].id) 
-					{
-						$scope.collection.selectedParent = {name: success.included[i].attributes.name, id: success.included[i].id};
-					}
-				}
-
-			} else {
-				$log.log(success);
-			}
-
-		}, function(error) {
-			$log.error(error);
-
-		});
-	};
-
-	$scope.getCollectionItem(idObject);
-
+	
 	$scope.editGeneric = function(idObject) {
 
 		if ($scope.elements.buttons.editUser.text === 'Editar') {
 			$scope.elements.buttons.editUser.text = 'Guardar';
 			$scope.elements.buttons.editUser.border = '';
 		} else {
-			if (!Validators.validateRequiredField($scope.collection.name)) {
+			if (!Validators.validateRequiredField($scope.personnel.name)) {
 				$scope.elements.alert.title = 'Faltan datos por rellenar';
 				$scope.elements.alert.text = '';
 				$scope.elements.alert.color = 'danger';
@@ -411,65 +275,59 @@ angular.module('efindingAdminApp')
 
 			$scope.elements.buttons.editUser.text = 'Editar';
 			$scope.elements.buttons.editUser.border = 'btn-border';
-			var aux = {};
-			if ($scope.collection.selectedParent === undefined) 
-			{
-				aux = { data: { type: 'collection_items', id: idObject, 
-								attributes: { name: $scope.collection.name } }, idCollection: idObject };
-			}
-			else
-			{
-				aux = { data: { type: 'collection_items', id: idObject, 
-								attributes: { name: $scope.collection.name }, 
-								relationships: { parent_item: { data: { type: "collection_items", 
-										id: $scope.collection.selectedParent.id } } } } , idCollection: idObject };
-			}
-
-			Collection_Item.update(aux, 
+			var aux = { data: { type: 'personnel', id: idObject, 
+							attributes: { name: $scope.personnel.name.text, rut: $scope.personnel.rut.text } }, 
+								idPersonnel: idObject };
+			/*aux = { data: { type: 'collection_items', id: idObject, 
+							attributes: { name: $scope.collection.name }, 
+							relationships: { parent_item: { data: { type: "collection_items", 
+									id: $scope.collection.selectedParent.id } } } } , idCollection: idObject };*/
+			//FALTA EL RELATIONSHIP CON TYPE PERSONNEL
+			Personnel.update(aux, 
 				function(success) {
 					if (success.data) {
 						$scope.elements.alert.title = 'Se han actualizado los datos de la actividad';
 						$scope.elements.alert.text = '';
 						$scope.elements.alert.color = 'success';
 						$scope.elements.alert.show = true;
-						$scope.getCollectionItem(idObject);
+						$scope.getPersonnel(idObject);
 
 						$uibModalInstance.close({
-							action: 'editGeneric',
+							action: 'edit',
 							success: success
 						});
 
 					} else {
-						$log.log(success);
+						$log.error(success);
 					}
 				}, function(error) {
-					$log.log(error);
+					$log.error(error);
 				}
 			);
 		}
-	};*/
+	};
 
-	/*$scope.removeGeneric = function(idObject) {
+	$scope.removeGeneric = function(idObject) {
 
 		if ($scope.elements.buttons.removeUser.text === 'Eliminar') {
 			$scope.elements.buttons.removeUser.text = 'Si, eliminar';
 
 			$scope.elements.buttons.removeUser.border = '';
 			$scope.elements.alert.show = true;
-			$scope.elements.alert.title = '¿Seguro que desea eliminar la actividad?';
+			$scope.elements.alert.title = '¿Seguro que desea eliminar esta persona?';
 			$scope.elements.alert.text = 'Para eliminarla, vuelva a presionar el botón';
 			$scope.elements.alert.color = 'danger';
 
 		} else {
 			$scope.elements.buttons.removeUser.text = 'Eliminar';
 
-			Collection_Item.delete({
-				idCollection: idObject
+			Personnel.delete({
+				idPersonnel: idObject
 			}, function(success) {
 
 				$uibModalInstance.close({
-					action: 'removeGeneric',
-					idCollection: idObject
+					action: 'remove',
+					idPersonnel: idObject
 				});
 
 			}, function(error) {
@@ -488,220 +346,77 @@ angular.module('efindingAdminApp')
 		$scope.elements.alert.text = '';
 		$scope.elements.alert.color = '';
 	};
-	*/
-
-});
-
-/*.controller('newGenericMasive', function($scope, $log, $uibModalInstance, $uibModal, Csv, idCollection) {
-	$scope.modal = {
-		csvFile: null,
-		btns: {
-			chargeSave: {
-				disabled: false
-			}
-		},
-		overlay: {
-			show: false
-		},
-		alert: {
-			color: '',
-			show: false,
-			title: '',
-			subtitle: '',
-			text: ''
-		}
-	};
-
-	$scope.save = function() {
-
-		$scope.modal.btns.chargeSave.disabled = true;
-
-		if ($scope.modal.csvFile) {
-			uploadCsv();
-		} else {
-
-		}
-
-	};
-
-	var uploadCsv = function() {
-
-		var form = [{
-			field: 'type',
-			value: 'collections',
-			id: idCollection
-		}, {
-			field: 'csv',
-			value: $scope.modal.csvFile
-		}];
-
-		$scope.modal.overlay.show = true;
-
-		Csv.upload(form)
-			.success(function(success) {
-				$scope.modal.overlay.show = false;
-				$uibModalInstance.close();
-				openModalSummary(success);
-			}).error(function(error) {
-				$log.error(error);
-				$scope.modal.overlay.show = false;
-				$scope.modal.alert.show = true;
-				$scope.modal.alert.title = 'Error '+error.errors[0].status;
-				$scope.modal.alert.text = error.errors[0].detail;
-				$scope.modal.alert.color = 'danger';
-			});
-
-	};
-
-	var openModalSummary = function(data) {
-		var modalInstance = $uibModal.open({
-			animation: true,
-			templateUrl: 'summary.html',
-			controller: 'SummaryLoadModalInstance',
-			resolve: {
-				data: function() {
-					return data;
-				}
-			}
-		});
-
-		modalInstance.result.then(function() {}, function() {
-			// $scope.getUsers();
-		});
-	};
-
-	$scope.cancel = function() {
-		$uibModalInstance.dismiss('cancel');
-	};
-
-	$scope.ok = function() {
-		$uibModalInstance.close();
-	};
-
-
-})
-
-.controller('SummaryLoadModalInstance', function($scope, $log, $uibModalInstance, data) {
-
-	$scope.modal = {
-		countErrors: 0,
-		countSuccesses: 0,
-		countCreated: 0,
-		countChanged: 0,
-		errors: [],
-		successes: []
-	};
-	var i = 0;
-
-	for (i = 0; i < data.data.length; i++) {
-
-		if (!data.data[i].meta.success) {
-			$scope.modal.countErrors++;
-		} else if (data.data[i].meta.created) {
-			$scope.modal.countCreated++;
-		} else if (data.data[i].meta.changed) {
-			$scope.modal.countChanged++;
-		}
-
-		if (data.data[i].meta.errors) {
-			$scope.modal.errors.push({
-				rowNumber: data.data[i].meta.row_number,
-				field: Object.keys(data.data[i].meta.errors)[0]
-			});
-		}
-
-	}
-
-	$scope.cancel = function() {
-		$uibModalInstance.dismiss('cancel');
-	};
 
 })
 
 
-
-.controller('NewCollectionItemModalInstance', function($scope, $log, $state, $uibModalInstance, Csv, Utils, Collection_Item, CollectionObject, Collection, idCollection) {
+.controller('NewPersonnelModalInstance', function($scope, $log, $state, $uibModalInstance, Csv, Utils, Personnel, PersonnelTypes) {
 
 	$scope.modal = {
 		csvFile: null
 	};
 
-	$scope.collection = {
+	$scope.types = {
 		visible: false,
 		data: []
 	};
 
-	$scope.collection_item = {
+	$scope.personnel = {
 		name: '',
 		id: '',
-		code: ''
+		rut: ''
 	};
 
-	if (CollectionObject.padre != null) 
-	{
-		Collection_Item.query({
-			idCollection: CollectionObject.padre
-			}, function(success) {
-				if (success.data) {
-					getCollection(success.data.attributes.collection_id);
-				} else {
-					$log.log(success);
+	$scope.modal = {
+		title: '',
+		alert: {
+			show: false,
+			title: '',
+			text: '',
+			color: '',
+		}
+	};
+
+
+	var getPersonnelTypes = function() {
+		PersonnelTypes.query({
+		}, function(success) {
+			if (success.data) {
+				$scope.types.visible = true;
+				for (var i = 0; i < success.data.length; i++) {
+					$scope.types.data.push({
+						name: success.data[i].attributes.name,
+						id: success.data[i].id
+					});
 				}
 
-			}, function(error) {
-				$log.error(error);
+				$scope.types.selectedType = $scope.types.data[0];
+
+			} else {
+				$log.log(success);
+			}
+
+		}, function(error) {
+			$log.error(error);
 
 		});
+	};
 
-		var getCollection = function(idParent) {
-			Collection.query({
-				idCollection: idParent
-			}, function(success) {
-				if (success.data) {
-					$scope.collection.visible = true;
-					for (var i = 0; i < success.included.length; i++) {
-						$scope.collection.data.push({
-							name: success.included[i].attributes.name,
-							id: success.included[i].id
-						});
-					}
+	getPersonnelTypes();
 
-					$scope.collection.selectedParent = $scope.collection.data[0];
-
-				} else {
-					$log.log(success);
-				}
-
-			}, function(error) {
-				$log.error(error);
-
-			});
-		};
-	}
-
-	$scope.saveCollectionItem = function() {
+	$scope.savePersonnel = function() {
 
 		if ($scope.modal.csvFile) {
 			//uploadCsvActivity();
 		} else 
 		{
-			var aux = {};
-			if ($scope.collection.selectedParent === undefined) 
-			{
-				aux = { 
-					data: { type: 'collection_items', attributes: { name: $scope.collection_item.name, 
-																	code: $scope.collection_item.code },
-							relationships: { collection: {data: {type: 'collections', id: idCollection}}}}};
-			}
-			else
-			{
-				aux = { data: { type: 'collection_items', attributes: { name: $scope.collection_item.name,
-																		code: $scope.collection_item.code }, 
-								relationships: { collection: {data: {type: 'collections', id: idCollection}},
-										parent_item: { data: { type: "collection_items", 
-										id: $scope.collection.selectedParent.id }}}}};
-			}
-			Collection_Item.save(aux, 
+			var aux = { data: { type: 'personnel', 
+							attributes: { name: $scope.personnel.name, rut: $scope.personnel.rut } }};
+			/*aux = { data: { type: 'collection_items', id: idObject, 
+							attributes: { name: $scope.collection.name }, 
+							relationships: { parent_item: { data: { type: "collection_items", 
+									id: $scope.collection.selectedParent.id } } } } , idCollection: idObject };*/
+			Personnel.save(aux, 
 				function(success) {
 					if (success.data) {
 
@@ -722,10 +437,10 @@ angular.module('efindingAdminApp')
 				}, function(error) {
 					$log.error(error);
 					if (error.status === 401) {
-						Utils.refreshToken($scope.saveCollectionItem);
+						Utils.refreshToken($scope.savePersonnel);
 					}
 					$scope.modal.alert.title = 'Error al Guardar';
-					$scope.modal.alert.text = '';
+					$scope.modal.alert.text = error.data.errors[0].detail;
 					$scope.modal.alert.color = 'danger';
 					$scope.modal.alert.show = true;
 					return;
@@ -739,4 +454,4 @@ angular.module('efindingAdminApp')
 		$uibModalInstance.dismiss('cancel');
 	};
 
-});*/
+});

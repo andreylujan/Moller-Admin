@@ -31,11 +31,11 @@
 				<section class="tile" fullscreen="isFullscreen06">
 					<!-- tile body -->
 					<div class="tile-body">
-						<!--div class="row">
+						<div class="row">
 							<div class="col-md-1">
-								<button class="btn btn-default" ng-click="openModalNewCollectionItem()">Nuevo</button>
+								<button class="btn btn-default" ng-click="openModalNewPersonnel()">Nuevo</button>
 							</div>
-							<div class="col-md-1">
+							<!--div class="col-md-1">
 								<a id="downloadExcel" ng-click="getExcel({success:true,detail:'OK'})" uib-tooltip="Descargar Excel">
 									<img src="https://s3-sa-east-1.amazonaws.com/efinding/icons/abajo.png">
 								</a>
@@ -44,8 +44,8 @@
 								<a id="downloadExcel" ng-click="openModalNewGeneric()" uib-tooltip="Carga Masiva">
 									<img src="https://s3-sa-east-1.amazonaws.com/efinding/icons/arriba.png">
 								</a>
-							</div>
-						</div-->
+							</div-->
+						</div>
 						<table ng-table="tableParams" show-filter="true" class="table table-custom">
 							<tr ng-repeat="object in $data">
 								<td data-title="'Nombre'" sortable="'name'" filter="{ 'name': 'text' }">
@@ -69,7 +69,7 @@
 		<!-- /row -->
 	</div>
 	<!-- /page content -->
-	<!--script type="text/ng-template" id="newCollectionItem.html">
+	<script type="text/ng-template" id="newPersonnel.html">
 		<div class="modal-header text-gray">
       		<h3 class="text-center">{{page.title}}</h3>
     	</div>
@@ -81,24 +81,24 @@
 
 	          	<form name="form" class="form-validation form-horizontal" role="form" novalidate>
 		            <div class="form-group">
-		              <label for="type" class="col-sm-3 control-label">Tipo</label>
+		              <label for="type" class="col-sm-3 control-label">Nombre</label>
 		              <div class="col-md-8">
-		                <input type="text" id="type" class="form-control underline-input" placeholder="Tipo..." ng-model="collection_item.name" ng-change="hideAlert()" required>
+		                <input type="text" id="type" class="form-control underline-input" placeholder="Nombre..." ng-model="personnel.name" ng-change="hideAlert()" required>
 		              </div>
 		            </div>
 		            <div class="form-group">
-		              <label for="type" class="col-sm-3 control-label">Código</label>
+		              <label for="type" class="col-sm-3 control-label">Rut</label>
 		              <div class="col-md-8">
-		                <input type="text" id="type" class="form-control underline-input" placeholder="Código..." ng-model="collection_item.code" ng-change="hideAlert()" required>
+		                <input type="text" id="type" class="form-control underline-input" placeholder="Rut..." ng-model="personnel.rut" ng-change="hideAlert()" required>
 		              </div>
 		            </div>
-		            <div class="form-group" ng-show="collection.visible">
-		  				<label for="inputPassword3" class="col-sm-3 control-label">Pertenece a </label>
+		            <div class="form-group" ng-show="types.visible">
+		  				<label for="inputPassword3" class="col-sm-3 control-label">Cargo en la obra </label>
 		  				<div class="col-sm-8">
-		  					<ui-select class="bg-white b-solid br-15" ng-model="collection.selectedParent" close-on-select="true">
+		  					<ui-select class="bg-white b-solid br-15" ng-model="types.selectedType" close-on-select="true">
 		  						<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.name}}</ui-select-match>
-		  						<ui-select-choices repeat="parent in collection.data track by parent.name | propsFilter: {name: $select.search}" refresh-delay="200">
-		  							<div ng-bind-html="parent.name"></div>
+		  						<ui-select-choices repeat="type in types.data track by type.name | propsFilter: {name: $select.search}" refresh-delay="200">
+		  							<div ng-bind-html="type.name"></div>
 		  						</ui-select-choices>
 		  					</ui-select>
 		  				</div>
@@ -108,10 +108,10 @@
 	      </div>
 	    </div>
 	    <div class="modal-footer">
-	    	<button class="btn btn-success br-20 pl-20 pr-20" type="submit" ng-click="saveCollectionItem()">Cargar/Guardar</button>
+	    	<button class="btn btn-success br-20 pl-20 pr-20" type="submit" ng-click="savePersonnel()">Cargar/Guardar</button>
 	      <button class="btn btn-default br-20 pl-20 pr-20" type="button" ng-click="cancel()" >Cerrar</button>
 	    </div>
-  </script-->
+  </script>
 
 
   <script type="text/ng-template" id="personnelDetails.html">
@@ -138,43 +138,22 @@
             <div class="form-group">
 		  		<label for="inputPassword3" class="col-sm-3 control-label">Tipo de personal</label>
 		  		<div class="col-sm-8">
-		  			<ui-select class="bg-white b-solid br-15" ng-model="construction.selectedJefeTerreno" close-on-select="true">
+		  			<ui-select class="bg-white b-solid br-15" ng-model="personnel.selectedPersonnelType" close-on-select="true">
 		  				<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.name}}</ui-select-match>
-		  				<ui-select-choices repeat="jefe in jefesTerreno track by jefe.name | propsFilter: {name: $select.search}" refresh-delay="200">
-		  					<div ng-bind-html="jefe.name"></div>
+		  				<ui-select-choices repeat="personnel in personnel_types track by personnel.name | propsFilter: {name: $select.search}" refresh-delay="200">
+		  					<div ng-bind-html="personnel.name"></div>
 		  				</ui-select-choices>
 		  			</ui-select>
 		  		</div>
 		  	</div>
-            <div class="form-group">
-		  		<label for="inputPassword3" class="col-sm-3 control-label">Experto SSOMA</label>
-		  		<div class="col-sm-8">
-		  			<ui-select class="bg-white b-solid br-15" ng-model="construction.selectedExpert" close-on-select="true">
-		  				<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.fullName}}</ui-select-match>
-		  				<ui-select-choices repeat="expert in experts track by expert.fullName | propsFilter: {fullName: $select.search}" refresh-delay="200">
-		  					<div ng-bind-html="expert.fullName"></div>
-		  				</ui-select-choices>
-		  			</ui-select>
-		  		</div>
-		  	</div>
-            <div class="form-group">
-              <label for="userRole" class="col-sm-3 control-label">Contratistas</label>
-              <div class="col-md-8" ng-show="construction.contractors">
-                <ul class="list-group"> 
-                  <li class="list-group-item" ng-repeat="contratistas in construction.contractors" >{{contratistas.name}}</li> 
-                </ul>
-              </div>
-              <div class="col-md-8" ng-show="!construction.contractors">
-                <input type="text" id="name" class="form-control underline-input" value="No existen datos" readonly>
-              </div>
-            </div>
           </form>
         </div>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-warning btn-rounded-10 {{elements.buttons.editUser.border}} mb-10" type="button" ng-click="editGeneric(collection.id)" >{{elements.buttons.editUser.text}}</button>
-      <button class="btn btn-cancelRecit btn-rounded-10 mb-10" type="button" ng-click="cancel()">Cerrar</button>
+    	<button class="btn btn-danger btn-rounded-10 {{elements.buttons.removeUser.border}} mb-10" type="button" ng-click="removeGeneric(personnel.id)" >{{elements.buttons.removeUser.text}}</button>
+      	<button class="btn btn-warning btn-rounded-10 {{elements.buttons.editUser.border}} mb-10" type="button" ng-click="editGeneric(personnel.id)" >{{elements.buttons.editUser.text}}</button>
+      	<button class="btn btn-cancelRecit btn-rounded-10 mb-10" type="button" ng-click="cancel()">Cerrar</button>
     </div>
   </script>
 
