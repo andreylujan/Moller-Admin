@@ -27,6 +27,9 @@ angular.module('efindingAdminApp')
 	this.clearAllStorage = function() {
 		return localStorageService.clearAll();
 	};
+	this.getStorageType = function() {
+		return localStorageService.getStorageType();
+	};
 
 	this.gotoPage = function(page) {
 		$state.go(page);

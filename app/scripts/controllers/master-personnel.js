@@ -10,7 +10,8 @@
 angular.module('efindingAdminApp')
 
 .controller('MastersPersonnelCtrl', function($scope, $log, $timeout, $state, $uibModal, NgTableParams, $filter, Utils, Personnel) {
-
+	$log.error(Utils.getStorageType());
+	
 	$scope.page = {
 		title: 'Personal'
 	};
@@ -425,7 +426,7 @@ angular.module('efindingAdminApp')
 							success: success
 						});
 					} 
-					else 
+					else {
 						$scope.modal.alert.title = 'Error al Guardar';
 						$scope.modal.alert.text = '';
 						$scope.modal.alert.color = 'danger';
