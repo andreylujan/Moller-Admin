@@ -363,9 +363,7 @@
 				},
 				cumplimientoHallazgos = {
 					inspeccion: [],
-					unchecked: [],
-					resolved: [],
-					pending: []
+					datos: []
 				};
 
 				// INI grado de riesgo
@@ -397,12 +395,19 @@
 				// FIN grado de riesgo
 
 				//INI cumplimiento de hallazgos
-				angular.forEach(success.data.attributes.report_fulfillment, function(value, key) {
+
+		        angular.forEach(success.data.attributes.report_fulfillment, function(value, key) {
 		        	cumplimientoHallazgos.inspeccion.push(value.inspection_id);
-		        	cumplimientoHallazgos.unchecked.push(value.num_unchecked);
-		        	cumplimientoHallazgos.resolved.push(value.num_resolved);
-		        	cumplimientoHallazgos.pending.push(value.num_pending);
 		        });
+		        cumplimientoHallazgos.datos.push({name: "No revisados", data:[]})
+		        cumplimientoHallazgos.datos.push({name: "Resueltos", data:[]})
+		        cumplimientoHallazgos.datos.push({name: "Pendientes", data:[]})
+
+		        for (var i = 0; i < success.data.attributes.report_fulfillment.length; i++) {
+		        	cumplimientoHallazgos.datos[0].data.push(success.data.attributes.report_fulfillment[i].num_unchecked);
+		        	cumplimientoHallazgos.datos[1].data.push(success.data.attributes.report_fulfillment[i].num_resolved);
+		        	cumplimientoHallazgos.datos[2].data.push(success.data.attributes.report_fulfillment[i].num_pending);
+				}
 
 				$scope.charCumplimientoHallazgos = Utils.setChartConfig('column', 513, {
 			    	column: {
@@ -435,33 +440,19 @@
 	    			title: {
 	    				text: 'Zonas'
 	    			}
-	    		}, 
-	    		[{
-			        name: 'No revisados',
-			        data: cumplimientoHallazgos.unchecked
-			    }, {
-			        name: 'Resueltas',
-			        data: cumplimientoHallazgos.resolved
-			    }, {
-			        name: 'Pendientes',
-			        data: cumplimientoHallazgos.pending
-			    }]);
-
+	    		},cumplimientoHallazgos.datos);
 			    //FIN cumplimiento de hallazgos
 
 			    //INI ratio de hallazgos
 			    $scope.ratioHallazgos = Utils.setChartConfig('pie', 513, {
-			    	column: {
-			    		stacking: 'normal',
-			    		dataLabels: {
-			    			enabled: true,
-			    			color: 'white',
-			    			style: {
-			    				textShadow: '0 0 3px black',
-			    				fontWeight: 'normal'
-			    			}
-			    		}
-			    	}
+			    	pie: {
+		                allowPointSelect: true,
+		                cursor: 'pointer',
+		                dataLabels: {
+		                    enabled: false
+		                },
+		                showInLegend: true
+		            }
 			    }, 
 			    {
 			    	min: 0,
@@ -484,7 +475,7 @@
 	    		}, 
 	    		[
 	    			{
-			        	name: 'Numero Hallazgos',
+			        	name: 'Número Hallazgos',
 			        	colorByPoint: true,
 				        data: [{
 				            name: 'Pendientes',

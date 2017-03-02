@@ -9,7 +9,7 @@
  */
 angular.module('efindingAdminApp')
 
-.controller('MastersConstructionCtrl', function($scope, $log, $timeout, $state, $uibModal, NgTableParams, $filter, Utils, Constructions) {
+.controller('MastersConstructionCtrl', function($scope, $log, $timeout, $state, $uibModal, NgTableParams, $filter, Utils, Constructions, ExcelConstruction) {
 
 	$scope.page = {
 		title: 'Obras'
@@ -70,91 +70,34 @@ angular.module('efindingAdminApp')
 				},
 			}
 		});
-
-		/*modalInstance.result.then(function(datos) {
-			if (datos.action === 'removeGeneric') {
-				for (var i = 0; i < data.length; i++) {
-					if (data[i].id === datos.idCollection) {
-						data.splice(i, 1);
-					}
-				}
-			}
-			else if (datos.action === 'editGeneric') {				
-				for (var j = 0; j < data.length; j++) {
-					if (data[j].id === datos.success.data.id) {
-						data[j].name = datos.success.data.attributes.name;
-						break;
-					}
-				}
-			}
-			$scope.tableParams.reload();
-		}, function() {});*/
 	};
 
  	$scope.getConstructions();
-
-
-	/*
-	$scope.openModalNewCollectionItem = function() {
-
-		var modalInstance = $uibModal.open({
-			animation: true,
-			templateUrl: 'newCollectionItem.html',
-			controller: 'NewCollectionItemModalInstance',
-			resolve: {
-				CollectionObject: function() {
-					return auxiliar;
-				},
-				idCollection: function() {
-					return id_collection;
-				}
-			}
-		});
-
-		modalInstance.result.then(function(datos) {
-			if (datos.action === 'save') {
-				data.push({
-					name: datos.success.data.attributes.name,
-					id: datos.success.data.id
-				});
-			}
-			$scope.tableParams.reload();
-		}, function() {});
-	};
-
-	$scope.openModalNewGeneric = function() {
-
-		var modalInstance = $uibModal.open({
-			animation: true,
-			backdrop: false,
-			templateUrl: 'newGenericMasive.html',
-			controller: 'newGenericMasive',
-			resolve: {
-				idCollection: function() {
-					return id_collection;
-				}
-			}
-		});
-
-		modalInstance.result.then(function() {
-			$scope.getCollection();
-		}, function() {});
-	};
 
 	$scope.getExcel = function(e) {
 		if (!e.success) {
 			$log.error(e.detail);
 			return;
 		}
-		ExcelCollection.getFile('#downloadExcel', id_collection, $scope.page.title);
+		ExcelConstruction.getFile('#downloadExcel', 'construction_personel');
 		$timeout(function() {
-			//$scope.page.buttons.getExcel.disabled = false;
-			//$scope.page.loader.show = false;
 		}, 3000);
 	};
 
+	$scope.openModalNewGeneric = function() {
+		var modalInstance = $uibModal.open({
+			animation: true,
+			backdrop: false,
+			templateUrl: 'newGenericMasive.html',
+			controller: 'newGenericMasive',
+			resolve: {
+			}
+		});
 
-	$scope.getCollection();*/
+		modalInstance.result.then(function() {
+			$scope.getConstructions();
+		}, function() {});
+	};
 
 })
 
@@ -204,7 +147,7 @@ angular.module('efindingAdminApp')
  			if (success.data) {
  				var administrador 	= success.data.relationships.administrator.data,
  				    experto 		= success.data.relationships.expert.data,
- 				    personal 		= success.data.relationships.construction_personnel.data;
+ 				  	personal 		= success.data.relationships.construction_personnel.data;
 
  				$scope.construction.id = success.data.id;
  				$scope.construction.name.text = success.data.attributes.name;
@@ -219,31 +162,37 @@ angular.module('efindingAdminApp')
 					});
 				}
 
-				for (var i = 0; i < success.included.length; i++) {
-					if (success.included[i].id === administrador.id && success.included[i].type === administrador.type) 
-					{
-						$scope.construction.administrator = success.included[i];
-					}
-					else if (success.included[i].id === experto.id && success.included[i].type === experto.type) 
-					{
-						$scope.construction.expert = success.included[i];
-						$scope.getUsersExpert();
+				contratistas.length>0? $scope.construction.contractors = contratistas : $scope.construction.contractors = null;
+
+
+				if (_.has(success, "included")) 
+				{
+					for (var i = 0; i < success.included.length; i++) {
+						if (success.included[i].id === administrador.id && success.included[i].type === administrador.type) 
+						{
+							$scope.construction.administrator = success.included[i];
+						}
+						if (success.included[i].id === experto.id && success.included[i].type === experto.type) 
+						{
+							$scope.construction.expert = success.included[i];
+						}
 					}
 				}
-				contratistas.length>0? $scope.construction.contractors = contratistas : $scope.construction.contractors = null;
 
 				for (var i = 0; i < personal.length; i++) {
 					for (var j = 0; j < success.included.length; j++) {
 						if (success.included[j].id === personal[i].id && success.included[j].type === personal[i].type) 
 						{
+							//$log.error(personal[i]);
 							var aux = success.included[j];
 						 	for (var k = 0; k < success.included.length; k++) {
+						 		//$log.error(success.included[j]);
 								if (success.included[k].id === aux.relationships.personnel.data.id 
 									&& success.included[k].type === aux.relationships.personnel.data.type
 									&& aux.relationships.personnel_type.data.id === "1") 
 								{
 									$scope.construction.jTerreno = success.included[k];
-								}	
+								}
 								else if (success.included[k].id === aux.relationships.personnel.data.id 
 									&& success.included[k].type === aux.relationships.personnel.data.type
 									&& aux.relationships.personnel_type.data.id === "2") 
@@ -278,8 +227,7 @@ angular.module('efindingAdminApp')
 					data.push({
 						id: success.data[i].id,
 						name: success.data[i].attributes.name,
-						rut: success.data[i].attributes.rut,
-						personnel_type: success.data[i].relationships.personnel_types.data[0].id
+						rut: success.data[i].attributes.rut
 					});
 
 					if ($scope.construction.jTerreno.id === success.data[i].id) 
@@ -287,7 +235,7 @@ angular.module('efindingAdminApp')
 						$scope.construction.selectedJefeTerreno = { name: success.data[i].attributes.name, id: success.data[i].id };
 					}
 				}
-				$scope.jefesTerreno = _.where(data, {personnel_type: "1"});
+				$scope.jefesTerreno = data;
 				
 			} else {
 				$log.error(success);
@@ -325,7 +273,9 @@ angular.module('efindingAdminApp')
 						$scope.construction.selectedExpert = {fullName: success.data[i].attributes.first_name + ' ' + success.data[i].attributes.last_name, id: success.data[i].id };
 					}
 				}
-				$scope.experts = _.where(data, {roleId: 3});
+
+				$scope.experts = _.reject(data, function(object){ return object.id === ""; });
+				//$scope.experts = _.where(data, {roleId: 3});
 			} else {
 				$log.error(success);
 			}
@@ -344,100 +294,42 @@ angular.module('efindingAdminApp')
 
  	$scope.getConstruction(idObject);
 
-	/*$scope.selectedParent = null;
-
-	$scope.getCollectionItem = function(idObject) {
-		Collection_Item.query({
-			idCollection: idObject
-		}, function(success) {
-			if (success.data) {
-				$scope.collection.id 		= success.data.id;
-				$scope.collection.name 		= success.data.attributes.name;
-				$scope.collection.parent_item_id = success.data.attributes.parent_item_id;
-				if ($scope.collection.parent_item_id != null) 
-				{
-					$scope.getCollection(success.included[0].attributes.collection_id);
-				}
-
-
-			} else {
-				$log.log(success);
-			}
-
-		}, function(error) {
-			$log.error(error);
-
-		});
-	};
-
-	$scope.getCollection = function(idParent) {
-		Collection.query({
-			idCollection: idParent
-		}, function(success) {
-			if (success.data) {
-				$scope.parentCollection.visible = true;
-
-				for (var i = 0; i < success.included.length; i++) {
-					$scope.parentCollection.data.push({
-						name: success.included[i].attributes.name,
-						id: success.included[i].id
-					});
-					if ($scope.collection.parent_item_id === success.included[i].id) 
-					{
-						$scope.collection.selectedParent = {name: success.included[i].attributes.name, id: success.included[i].id};
-					}
-				}
-
-			} else {
-				$log.log(success);
-			}
-
-		}, function(error) {
-			$log.error(error);
-
-		});
-	};
-
-	$scope.getCollectionItem(idObject);
-
-	$scope.editGeneric = function(idObject) {
-
+ 	$scope.editGeneric = function(idObject) {
 		if ($scope.elements.buttons.editUser.text === 'Editar') {
 			$scope.elements.buttons.editUser.text = 'Guardar';
 			$scope.elements.buttons.editUser.border = '';
 		} else {
-			if (!Validators.validateRequiredField($scope.collection.name)) {
-				$scope.elements.alert.title = 'Faltan datos por rellenar';
-				$scope.elements.alert.text = '';
-				$scope.elements.alert.color = 'danger';
-				$scope.elements.alert.show = true;
-				return;
-			}
-
 			$scope.elements.buttons.editUser.text = 'Editar';
 			$scope.elements.buttons.editUser.border = 'btn-border';
-			var aux = {};
-			if ($scope.collection.selectedParent === undefined) 
-			{
-				aux = { data: { type: 'collection_items', id: idObject, 
-								attributes: { name: $scope.collection.name } }, idCollection: idObject };
-			}
-			else
-			{
-				aux = { data: { type: 'collection_items', id: idObject, 
-								attributes: { name: $scope.collection.name }, 
-								relationships: { parent_item: { data: { type: "collection_items", 
-										id: $scope.collection.selectedParent.id } } } } , idCollection: idObject };
-			}
+			var aux = { 
+						data: { 
+							type: 'constructions', 
+							id: idObject, 
+							attributes: { 
+								name: $scope.construction.name.text,
+								construction_personnel_attributes: [
+									{ personnel_type_id: "1", personnel_id: $scope.construction.selectedJefeTerreno.id },
+									{ personnel_type_id: "2", personnel_id: $scope.construction.visitador.id }
+								]
+							}, 
+							relationships: { 
+								expert: { 
+									data: { 
+										type: "users", 
+										id: $scope.construction.selectedExpert.id
+									} 
+								} 
+							} 
+						} , constructionId: idObject };
 
-			Collection_Item.update(aux, 
+			Constructions.update(aux, 
 				function(success) {
 					if (success.data) {
-						$scope.elements.alert.title = 'Se han actualizado los datos de la actividad';
+						$scope.elements.alert.title = 'Se han actualizado los datos de la obra';
 						$scope.elements.alert.text = '';
 						$scope.elements.alert.color = 'success';
 						$scope.elements.alert.show = true;
-						$scope.getCollectionItem(idObject);
+						$scope.getConstruction(idObject);
 
 						$uibModalInstance.close({
 							action: 'editGeneric',
@@ -452,41 +344,7 @@ angular.module('efindingAdminApp')
 				}
 			);
 		}
-	};*/
-
-	/*$scope.removeGeneric = function(idObject) {
-
-		if ($scope.elements.buttons.removeUser.text === 'Eliminar') {
-			$scope.elements.buttons.removeUser.text = 'Si, eliminar';
-
-			$scope.elements.buttons.removeUser.border = '';
-			$scope.elements.alert.show = true;
-			$scope.elements.alert.title = '¿Seguro que desea eliminar la actividad?';
-			$scope.elements.alert.text = 'Para eliminarla, vuelva a presionar el botón';
-			$scope.elements.alert.color = 'danger';
-
-		} else {
-			$scope.elements.buttons.removeUser.text = 'Eliminar';
-
-			Collection_Item.delete({
-				idCollection: idObject
-			}, function(success) {
-
-				$uibModalInstance.close({
-					action: 'removeGeneric',
-					idCollection: idObject
-				});
-
-			}, function(error) {
-				$log.log(error);
-				if (error.status === 401) {
-					Utils.refreshToken($scope.removeGeneric);
-				}
-			});
-		}
-
-	};*/
-
+	};
 
 	$scope.hideAlert = function() {
 		$scope.elements.alert.show = false;
@@ -495,9 +353,9 @@ angular.module('efindingAdminApp')
 		$scope.elements.alert.color = '';
 	};
 
-});
+})
 
-/*.controller('newGenericMasive', function($scope, $log, $uibModalInstance, $uibModal, Csv, idCollection) {
+.controller('newGenericMasive', function($scope, Utils, $log, $uibModalInstance, $uibModal, CsvContructions) {
 	$scope.modal = {
 		csvFile: null,
 		btns: {
@@ -530,19 +388,14 @@ angular.module('efindingAdminApp')
 	};
 
 	var uploadCsv = function() {
-
 		var form = [{
-			field: 'type',
-			value: 'collections',
-			id: idCollection
-		}, {
 			field: 'csv',
 			value: $scope.modal.csvFile
 		}];
 
 		$scope.modal.overlay.show = true;
 
-		Csv.upload(form)
+		CsvContructions.upload(form)
 			.success(function(success) {
 				$scope.modal.overlay.show = false;
 				$uibModalInstance.close();
@@ -621,11 +474,11 @@ angular.module('efindingAdminApp')
 		$uibModalInstance.dismiss('cancel');
 	};
 
-})
+});
 
 
 
-.controller('NewCollectionItemModalInstance', function($scope, $log, $state, $uibModalInstance, Csv, Utils, Collection_Item, CollectionObject, Collection, idCollection) {
+/*.controller('NewCollectionItemModalInstance', function($scope, $log, $state, $uibModalInstance, Csv, Utils, Collection_Item, CollectionObject, Collection, idCollection) {
 
 	$scope.modal = {
 		csvFile: null

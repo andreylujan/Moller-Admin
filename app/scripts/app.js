@@ -202,6 +202,16 @@ angular
 				url: '/personnel',
 				templateUrl: 'views/tmpl/masters/personnel.html',
 				controller: 'MastersPersonnelCtrl'
+			})
+			.state('efinding.maestros.checklist', {
+				url: '/checklist',
+				templateUrl: 'views/tmpl/masters/master-checklist.html',
+				controller: 'MasterChecklistCtrl'
+			})
+			.state('efinding.maestros-checklist', {
+				url: '/new-checklist?idChecklist',
+				controller: 'NewChecklistCtrl',
+				templateUrl: 'views/tmpl/masters/new-checklist.html'
 			});
 
 	}

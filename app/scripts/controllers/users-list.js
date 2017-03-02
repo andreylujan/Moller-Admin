@@ -36,6 +36,8 @@ angular.module('efindingAdminApp')
 						roleId: success.data[i].attributes.role_id,
 						active: success.data[i].attributes.active
 					});
+					data[i].firstName===null?data[i].firstName='': data[i].firstName=data[i].firstName;
+					data[i].lastName===null?data[i].lastName='': data[i].lastName=data[i].lastName;
 				}
 
 				$scope.tableParams = new NgTableParams({

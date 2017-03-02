@@ -5164,8 +5164,7 @@ button:focus {
       background-color: #1c1c1c;
       border-color: #141414; }
   .btn.btn-default {
-    color: #616f77;
-    border-color: black; }
+    color: #616f77; }
     .btn.btn-default:focus {
       background-color: white;
       border-color: #F3F3F4; }
@@ -10276,7 +10275,10 @@ body {
   color: #a2d200; }
 
 .text-orange {
-  color: #ffc100; }
+  color: #F19122; }
+
+.text-green {
+  color: #188938; }
 
 .text-red {
   color: #ff4a43; }

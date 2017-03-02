@@ -563,7 +563,7 @@
 
     &.btn-default {
       background: #F3F3F4;
-    color: $font-color;
+      color: $font-color;
 
       &:hover {
         background: #F3F3F4;
@@ -575,7 +575,7 @@
 
       &:focus {
         background: #F3F3F4;
-      color: $font-color;
+        color: $font-color;
       }
     }
 
@@ -1392,7 +1392,6 @@ button {
 
   &.btn-default {
     color: $font-color;
-    border-color: black;
 
     &:focus {
       background-color: white;

@@ -10,8 +10,6 @@
 angular.module('efindingAdminApp')
 
 .controller('MastersPersonnelCtrl', function($scope, $log, $timeout, $state, $uibModal, NgTableParams, $filter, Utils, Personnel) {
-	$log.error(Utils.getStorageType());
-	
 	$scope.page = {
 		title: 'Personal'
 	};
@@ -107,31 +105,16 @@ angular.module('efindingAdminApp')
 			if (datos.action === 'save') {
 				data.push({
 					name: datos.success.data.attributes.name,
+					rut: datos.success.data.attributes.rut,
 					id: datos.success.data.id
 				});
 			}
 			$scope.tableParams.reload();
 		}, function() {});
 	};
-
-	/*$scope.getExcel = function(e) {
-		if (!e.success) {
-			$log.error(e.detail);
-			return;
-		}
-		ExcelCollection.getFile('#downloadExcel', id_collection, $scope.page.title);
-		$timeout(function() {
-			//$scope.page.buttons.getExcel.disabled = false;
-			//$scope.page.loader.show = false;
-		}, 3000);
-	};
-
-
-	$scope.getCollection();*/
-
 })
 
-.controller('personnelDetailsInstance', function($scope, $log, $uibModalInstance, idObject, Validators, Utils, Personnel, PersonnelTypes) {
+.controller('personnelDetailsInstance', function($scope, $log, $uibModalInstance, idObject, Validators, Utils, Personnel) {
 	$scope.personnel = {
 		id: null,
 		name: {
@@ -142,12 +125,8 @@ angular.module('efindingAdminApp')
 			text: '',
 			disabled: true
 		},
-		personnel_type: {},
-		construction: {},
-		personnel_types: []
+		construction: {}
 	};
-
-	$scope.personnel_types = [];
 
 	$scope.elements = {
 		buttons: {
@@ -181,37 +160,6 @@ angular.module('efindingAdminApp')
  				$scope.personnel.rut.text = success.data.attributes.rut;
  				$scope.personnel.id = success.data.id;
 
- 				var personnel_type = {},
- 					construction = {};
- 				if (_.has(success.data.relationships, "personnel_types")) 
-				{
-					personnel_type = success.data.relationships['personnel_types'].data[0];
-
-					for (var j = 0; j < success.included.length; j++) {
-						if (success.included[j].id === personnel_type.id &&
-							success.included[j].type === personnel_type.type) 
-						{
-							$scope.personnel.personnel_type = success.included[j];
-						}
-					}
-				}
-				if (_.has(success.data.relationships, "constructions")) 
-				{
-					construction = success.data.relationships['constructions'].data[0];
-
-					for (var j = 0; j < success.included.length; j++) {
-						if (success.included[j].id === construction.id &&
-							success.included[j].type === construction.type) 
-						{
-							$scope.personnel.construction = success.included[j];
-						}
-					}
-				}
-
-				//$log.error($scope.personnel);
-
-				$scope.getPersonnelTypes();
-
 			} else {
 				$log.error(success);
 			}
@@ -228,37 +176,6 @@ angular.module('efindingAdminApp')
 	};
 
  	$scope.getPersonnel(idObject);
-
- 	
- 	$scope.getPersonnelTypes = function() {
-		PersonnelTypes.query({
-		}, function(success) {
-			if (success.data) {
-				var data = [];
-				for (var i = 0; i < success.data.length; i++) {
-					data.push({
-						id: success.data[i].id,
-						name: success.data[i].attributes.name
-					});
-					if ($scope.personnel.personnel_type.id === success.data[i].id) 
-					{
-						$scope.personnel.selectedPersonnelType = { name: success.data[i].attributes.name, id: success.data[i].id };
-					}
-				}
-				$scope.personnel_types = data;
-				
-			} else {
-				$log.error(success);
-			}
-		}, function(error) {
-			$log.error(error);
-			if (error.status === 401) {
-				Utils.refreshToken($scope.getPersonnelTypes);
-			}
-		});
-
-	};
-
 	
 	$scope.editGeneric = function(idObject) {
 
@@ -279,11 +196,7 @@ angular.module('efindingAdminApp')
 			var aux = { data: { type: 'personnel', id: idObject, 
 							attributes: { name: $scope.personnel.name.text, rut: $scope.personnel.rut.text } }, 
 								idPersonnel: idObject };
-			/*aux = { data: { type: 'collection_items', id: idObject, 
-							attributes: { name: $scope.collection.name }, 
-							relationships: { parent_item: { data: { type: "collection_items", 
-									id: $scope.collection.selectedParent.id } } } } , idCollection: idObject };*/
-			//FALTA EL RELATIONSHIP CON TYPE PERSONNEL
+
 			Personnel.update(aux, 
 				function(success) {
 					if (success.data) {
@@ -351,15 +264,10 @@ angular.module('efindingAdminApp')
 })
 
 
-.controller('NewPersonnelModalInstance', function($scope, $log, $state, $uibModalInstance, Csv, Utils, Personnel, PersonnelTypes) {
+.controller('NewPersonnelModalInstance', function($scope, $log, $state, $uibModalInstance, Csv, Utils, Personnel) {
 
 	$scope.modal = {
 		csvFile: null
-	};
-
-	$scope.types = {
-		visible: false,
-		data: []
 	};
 
 	$scope.personnel = {
@@ -378,33 +286,6 @@ angular.module('efindingAdminApp')
 		}
 	};
 
-
-	var getPersonnelTypes = function() {
-		PersonnelTypes.query({
-		}, function(success) {
-			if (success.data) {
-				$scope.types.visible = true;
-				for (var i = 0; i < success.data.length; i++) {
-					$scope.types.data.push({
-						name: success.data[i].attributes.name,
-						id: success.data[i].id
-					});
-				}
-
-				$scope.types.selectedType = $scope.types.data[0];
-
-			} else {
-				$log.log(success);
-			}
-
-		}, function(error) {
-			$log.error(error);
-
-		});
-	};
-
-	getPersonnelTypes();
-
 	$scope.savePersonnel = function() {
 
 		if ($scope.modal.csvFile) {
@@ -413,10 +294,6 @@ angular.module('efindingAdminApp')
 		{
 			var aux = { data: { type: 'personnel', 
 							attributes: { name: $scope.personnel.name, rut: $scope.personnel.rut } }};
-			/*aux = { data: { type: 'collection_items', id: idObject, 
-							attributes: { name: $scope.collection.name }, 
-							relationships: { parent_item: { data: { type: "collection_items", 
-									id: $scope.collection.selectedParent.id } } } } , idCollection: idObject };*/
 			Personnel.save(aux, 
 				function(success) {
 					if (success.data) {

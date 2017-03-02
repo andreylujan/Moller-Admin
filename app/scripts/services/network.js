@@ -517,20 +517,6 @@ angular.module('efindingAdminApp')
 				'fields[checklist_reports]': 'formatted_created_at,pdf,pdf_uploaded,code,user_names,total_indicator,users,construction,creator'
 
 			}
-		},
-		save: {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/vnd.api+json',
-				Accept: 'application/vnd.api+json'
-			}
-		},
-		update: {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/vnd.api+json',
-				Accept: 'application/vnd.api+json'
-			}
 		}
 	});
 
@@ -542,6 +528,23 @@ angular.module('efindingAdminApp')
 	return $resource(API_URL + '/checklists/:idChecklist', {
 		idChecklist: '@idChecklist'
 	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				'fields[checklists]': 'name,formatted_created_at'
+			}
+		},
+		detail: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
 		save: {
 			method: 'POST',
 			headers: {
@@ -612,6 +615,17 @@ angular.module('efindingAdminApp')
 
 })
 
+.factory('ExcelConstruction', function($auth) {
+	return {
+		getFile: function(elem, fileName) {
+			var downloadLink = angular.element(elem);
+			downloadLink.attr('href', API_URL + '/constructions/construction_personnel.csv?access_token=' + $auth.getToken());
+			downloadLink.attr('download', fileName + '.csv');
+		}
+	};
+
+})
+
 
 // CSV
 .service('Csv', function($resource, $http, $log) {
@@ -622,9 +636,29 @@ angular.module('efindingAdminApp')
 			for (var i = 0; i < form.length; i++) {
 				fd.append(form[i].field, form[i].value);
 			}
-			$log.error(form);
 
 			return $http.put(API_URL + '/collections/' + form[0].id + '.csv', fd, {
+				transformRequest: angular.identity,
+				headers: {
+					'Content-Type': undefined
+				}
+			});
+		}
+	};
+
+})
+
+// CSV
+.service('CsvContructions', function($resource, $http, $log) {
+	var fd = new FormData();
+	return {
+		upload: function(form) {
+
+			for (var i = 0; i < form.length; i++) {
+				fd.append(form[i].field, form[i].value);
+			}
+
+			return $http.post(API_URL + '/constructions/construction_personnel.csv', fd, {
 				transformRequest: angular.identity,
 				headers: {
 					'Content-Type': undefined

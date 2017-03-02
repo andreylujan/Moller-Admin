@@ -33,9 +33,9 @@ angular.module('efindingAdminApp')
 		activityTypes = [],
 		users = [],
 		reportsIncluded = [],
-		inspecciones = [],
-		sort_direction = 'desc';
+		inspecciones = []
 
+	$scope.sort_direction = 'asc';
 
 	var receiverName = null,
 		equipmentId = null,
@@ -331,15 +331,15 @@ angular.module('efindingAdminApp')
 	};
 
 	$scope.sortBy = function(field_a) {
-		if (sort_direction === 'asc') 
+		if ($scope.sort_direction === 'asc') 
 		{
-			var aux = _.sortBy(inspecciones, field_a).reverse();
-			sort_direction = 'desc';
+			var aux = _.sortBy(inspecciones, function(insp){ return insp[field_a].toLowerCase();});
+			$scope.sort_direction = 'desc';
 		}
 		else
 		{
-			var aux = _.sortBy(inspecciones, field_a);
-			sort_direction = 'asc';
+			var aux = _.sortBy(inspecciones, function(insp){ return insp[field_a].toLowerCase();}).reverse();
+			$scope.sort_direction = 'asc';
 		}
 		$scope.tableParams = new NgTableParams({
 				page: 1, // show first page

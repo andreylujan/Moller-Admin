@@ -53,7 +53,7 @@
 			</div>
 			<div class="col-md-3 mt-5">
 				<div class="gray-ps-1 br-15 b-0">
-					<input style="cursor:pointer; border-color: black!important;" id="daterangeDashGoals2" date-range-picker class="bg-gray-ps-1 br-15 text-sm form-control b-0n date-picker" type="text" ng-model="page.filters.dateRange.date" options="page.filters.dateRange.options" />
+					<input style="cursor:pointer;" id="daterangeDashGoals2" date-range-picker class="bg-gray-ps-1 br-15 text-sm form-control b-0n date-picker" type="text" ng-model="page.filters.dateRange.date" options="page.filters.dateRange.options" />
 				</div>
 			</div>
 		</div>
@@ -112,6 +112,18 @@
 					    </marker>
 					 </ng-map>
 				</div>
+				<table class="table" style="width: 50%; margin: 0 auto;">
+					<tbody>
+						<tr>
+							<td class="text-center" style="border-top:0">
+								<i class="fa fa-circle text-orange"></i> Pendientes
+							</td>
+							<td class="text-center" style="border-top:0">
+								<i class="fa fa-circle text-green"></i> Resueltos
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</section>
 		</div>
 	</div>
