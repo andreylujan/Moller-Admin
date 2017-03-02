@@ -379,6 +379,7 @@
 						actividadVsRiesgo.riesgo[i].data.push(success.data.attributes.grupos_actividad_vs_riesgo[j][i]);
 					}
 				}
+				$scope.page.charts.actividadVsRiesgo.data = actividadVsRiesgo;
 
 				$scope.page.charts.actividadVsRiesgo.chartConfig = Utils.setChartConfig('column', 400, {}, {
 					min: 0,
@@ -441,9 +442,11 @@
 	    				text: 'Zonas'
 	    			}
 	    		},cumplimientoHallazgos.datos);
+				$scope.charCumplimientoHallazgos.data = cumplimientoHallazgos.inspeccion;
 			    //FIN cumplimiento de hallazgos
 
 			    //INI ratio de hallazgos
+			    
 			    $scope.ratioHallazgos = Utils.setChartConfig('pie', 513, {
 			    	pie: {
 		                allowPointSelect: true,
