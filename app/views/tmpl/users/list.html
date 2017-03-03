@@ -57,11 +57,11 @@
                   {{user.roleName}}
                 </td>
                 <td data-title="'Activo'" sortable="'active'" filter="{ 'active': 'text' }" class="text-center">
-                  <img  ng-if="user.active" ng-src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/check2.png" style="width:24px">
-                  <img  ng-if="!user.active" ng-src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/send2.png" style="width:24px; cursor:pointer" ng-click="resendInvitation(user.email, user.roleId, {success: true, detail: 'OK'})" uib-tooltip="Reenviar invitación">
+                  <img  ng-if="user.active" ng-src="https://s3-sa-east-1.amazonaws.com/efinding/icons/USUARIOS_ACTIVO.png" style="width:24px">
+                  <img  ng-if="!user.active" ng-src="https://s3-sa-east-1.amazonaws.com/efinding/icons/USUARIOS_ENVIADO.png" style="width:24px; cursor:pointer" ng-click="resendInvitation(user.email, user.roleId, {success: true, detail: 'OK'})" uib-tooltip="Reenviar invitación">
                 </td>
                 <td data-title="'Info'">
-                  <img ng-if="user.active" ng-click="openModalUserDetails(user.id)" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/info2.png" style="width:24px; cursor:pointer" uib-tooltip="Más info">
+                  <img ng-if="user.active" ng-click="openModalUserDetails(user.id)" src="https://s3-sa-east-1.amazonaws.com/efinding/icons/USUARIOS_INFO.png" style="width:24px; cursor:pointer" uib-tooltip="Más info">
                 </td>
               </tr>
             </table>
@@ -139,7 +139,7 @@
 
   <script type="text/ng-template" id="sendInvitation.html">
     <div class="modal-body text-gray text-center ">
-      <img class="img-responsive center-block mt-10 mb-20" src="images/envelope.png" width="75" alt="envelope_img">
+      <img class="img-responsive center-block mt-10 mb-20" src="https://s3-sa-east-1.amazonaws.com/efinding/icons/USUARIOS_ACTIVO.png" width="50" alt="envelope_img">
       <h4>La invitación a <strong>{{user.email}}</strong> ha sido reenviada</h4>
     </div>
     <div class="modal-footer">

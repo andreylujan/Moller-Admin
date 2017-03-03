@@ -79,50 +79,6 @@
 					row3: []
 				},
 				chartConfig: Utils.setChartConfig('column', 400, {}, {}, {}, [])
-			},
-			lastWeekComparison: {
-				loaded: false,
-				table: {
-					lastWeekOfYearName: 0,
-					currentWeekOfYearName: 0,
-					headers: [],
-					row1: [],
-					row2: [],
-					row3: []
-				},
-				chartConfig: Utils.setChartConfig('column', 400, {}, {}, {}, []),
-				lastWeekOfYear: null,
-				currentWeekOfYear: null
-			},
-			weeklySalesComparison: {
-				loaded: false,
-				table: {
-					lastYearName: 0,
-					currentYearName: 0,
-					headers: [],
-					row1: [],
-					row2: [],
-					row3: []
-				},
-				chartConfig: Utils.setChartConfig('column', 400, {}, {}, {}, []),
-				lastYear: null,
-				currentYear: null
-
-			},
-			monthlySalesComparison: {
-				loaded: false,
-				table: {
-					lastYearName: 0,
-					currentYearName: 0,
-					headers: [],
-					row1: [],
-					row2: [],
-					row3: []
-				},
-				chartConfig: Utils.setChartConfig('column', 400, {}, {}, {}, []),
-				lastYear: null,
-				currentYear: null
-
 			}
 		},
 		markers: {
@@ -132,6 +88,11 @@
  	};
 
  	$scope.map = { center: { latitude: 45, longitude: -73 }, zoom: 8 };
+
+ 	/*$scope.ratioHallazgos = {
+ 		chartConfig:[],
+ 		data: []
+ 	}*/
 
  	var storesIncluded = [],
  	i = 0,
@@ -439,15 +400,22 @@
 			    {
 	    			categories: cumplimientoHallazgos.inspeccion,
 	    			title: {
-	    				text: 'Zonas'
+	    				text: 'Inspecciones'
 	    			}
 	    		},cumplimientoHallazgos.datos);
 				$scope.charCumplimientoHallazgos.data = cumplimientoHallazgos.inspeccion;
 			    //FIN cumplimiento de hallazgos
 
 			    //INI ratio de hallazgos
-			    
-			    $scope.ratioHallazgos = Utils.setChartConfig('pie', 513, {
+
+			    var unchecked = success.data.attributes.report_ratios[0].num_reports;
+			    var resolved = success.data.attributes.report_ratios[1].num_reports;
+
+			    $scope.ratioHallazgosShow = false;
+
+			    unchecked>0? $scope.ratioHallazgosShow=true:$scope.ratioHallazgosShow=false;
+
+			    $scope.ratioHallazgos = Utils.setChartConfig('pie', 500, {
 			    	pie: {
 		                allowPointSelect: true,
 		                cursor: 'pointer',
@@ -482,10 +450,10 @@
 			        	colorByPoint: true,
 				        data: [{
 				            name: 'Pendientes',
-				            y: success.data.attributes.report_ratios[0].num_reports
+				            y: unchecked
 				        }, {
 				            name: 'Resueltos',
-				            y: success.data.attributes.report_ratios[1].num_reports
+				            y: resolved
 				        }]
 			    	}
 			    ]

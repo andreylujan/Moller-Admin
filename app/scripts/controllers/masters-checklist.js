@@ -26,15 +26,18 @@ angular.module('efindingAdminApp')
 	$scope.filter = {};
 
 	var filterTimeout = null,
-	filterTimeoutDuration = 1000;
+	filterTimeoutDuration = 1000,
+	checklists = [];
+
+	$scope.sort_direction = 'asc';
 
 	$scope.columns = [];
-	$scope.columns.push({title: 'Empresa', filter: 'filter[construction][company][name]'});
-	$scope.columns.push({title: 'Código de checklist', filter: 'filter[code]'});
-	$scope.columns.push({title: 'Obra', filter: 'filter[construction][name]'});
-	$scope.columns.push({title: 'Usuarios asociados', filter: 'filter[user_names]'});
-	$scope.columns.push({title: 'Fecha de creación', filter: 'filter[formatted_created_at]'});
-	$scope.columns.push({title: 'Indicador total', filter: 'filter[total_indicator]'});
+	$scope.columns.push({title: 'Empresa', field_a:'company', filter: 'filter[construction][company][name]'});
+	$scope.columns.push({title: 'Código de checklist', field_a:'code', filter: 'filter[code]'});
+	$scope.columns.push({title: 'Obra', field_a:'construction', filter: 'filter[construction][name]'});
+	$scope.columns.push({title: 'Usuarios asociados', field_a:'userNames', filter: 'filter[user_names]'});
+	$scope.columns.push({title: 'Fecha de creación', field_a:'fechaCreacion', filter: 'filter[formatted_created_at]'});
+	$scope.columns.push({title: 'Indicador total', field_a:'indicator', filter: 'filter[total_indicator]'});
 
 
 	$scope.filter['page[number]'] = $scope.pagination.pages.current;
@@ -78,7 +81,6 @@ angular.module('efindingAdminApp')
 			$log.error(e.detail);
 			return;
 		}
-		var checklists = [];
 		var filtersToSearch = {};
 		for (var attr in filters) {
 			if (attr.indexOf('filter') !== -1) {
@@ -98,7 +100,7 @@ angular.module('efindingAdminApp')
 				aux.id = success.data[i].id;
 				aux.pdf = success.data[i].attributes.pdf;
 				aux.pdfUploaded = success.data[i].attributes.pdf_uploaded;
-				aux.code = success.data[i].attributes.code;
+				aux.code = success.data[i].attributes.code.toString();
 				aux.userNames = success.data[i].attributes.user_names;
 				aux.indicator = success.data[i].attributes.total_indicator;
 				aux.fechaCreacion = success.data[i].attributes.formatted_created_at;
@@ -168,6 +170,28 @@ angular.module('efindingAdminApp')
 				success: true
 			}, $scope.pagination.pages.current, $scope.filter);
 		}
+	};
+
+	$scope.sortBy = function(field_a) {
+
+		if ($scope.sort_direction === 'asc') 
+		{
+			var aux = _.sortBy(checklists, function(insp){ return insp[field_a].toLowerCase();});
+			$scope.sort_direction = 'desc';
+		}
+		else
+		{
+			var aux = _.sortBy(checklists, function(insp){ return insp[field_a].toLowerCase();}).reverse();
+			$scope.sort_direction = 'asc';
+		}
+		$scope.tableParams = new NgTableParams({
+			page: 1, // show first page
+			count: 25 // count per page
+		}, {
+			counts: [],
+			total: aux.length, // length of test
+			dataset: aux
+		});
 	};
 
 });

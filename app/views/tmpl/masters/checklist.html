@@ -66,9 +66,9 @@
                   <td>{{ checklists.fechaCreacion }}</td>
                   <td>{{ checklists.indicator }}</td>
                   <td data-title="'PDF'" >
-                    <input ng-if="check.pdfUploaded" class="text-center" type="image" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/pdf2.png" uib-tooltip="Descargar PDF" tooltip-placement="bottom" style="width: 15px" data-pdf="{{check.pdf}}" ng-click="downloadPdf($event)"/>
+                    <input ng-if="checklists.pdfUploaded" class="text-center" type="image" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/pdf2.png" uib-tooltip="Descargar PDF" tooltip-placement="bottom" style="width: 15px" data-pdf="{{checklists.pdf}}" ng-click="downloadPdf($event)"/>
                     
-                    <input ng-if="!check.pdfUploaded" class="text-center" type="image" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/denied2.png" uib-tooltip="PDF no disponible" tooltip-placement="bottom" style="width: 20px;" data-pdf="{{check.pdf}}" />
+                    <input ng-if="!checklists.pdfUploaded" class="text-center" type="image" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/denied2.png" uib-tooltip="PDF no disponible" tooltip-placement="bottom" style="width: 20px;" data-pdf="{{checklists.pdf}}" />
                   </td>
                 </tr>
               </tbody>
