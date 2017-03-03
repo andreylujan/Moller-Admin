@@ -18,7 +18,7 @@
   color: $font-color;
   outline: 0;
   vertical-align: top;
-  background-color: $bright-blue-ps;
+  background-color: #F3F3F4;
   filter: none !important;
   @include box-shadow(none);
   border-radius: 2px;
@@ -730,7 +730,7 @@ fieldset[disabled] .checkbox-custom input+i:before {
 
     >span{
       &:first-of-type {
-        color: $font-color-lighter;
+        color: black;
         font-style: $font-style-italic;
         font-size: $font-size-small;
       }

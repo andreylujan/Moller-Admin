@@ -9,11 +9,17 @@
  */
 angular.module('efindingAdminApp')
 
-.controller('NavCtrl', function($scope, $log, MenuSections, Utils, $q, TableColumns) {
+.controller('NavCtrl', function($scope, $log, $state, MenuSections, Utils, $q, TableColumns) {
 
 	$scope.page = {
 		menu: [],
 		menuLoaded: false
+	};
+
+	$scope.goToMaster = function(type) {
+		$state.go('efinding.maestros.tabla', {
+			type: type
+		});
 	};
 
 	$scope.loaded = false;
@@ -52,6 +58,8 @@ angular.module('efindingAdminApp')
 								if (menu[i].items[j].id === success.included[k].id) {
 									menu[i].items[j].name = success.included[k].attributes.name;
 									menu[i].items[j].path = success.included[k].attributes.admin_path;
+									menu[i].items[j].collection_id = success.included[k].attributes.collection_id;
+									//menu[i].items[j].collection_name = 'prueba';
 								}
 							}
 							if (success.included[k].id === menu[i].items[j].id) 

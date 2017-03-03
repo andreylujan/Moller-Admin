@@ -30,7 +30,8 @@ angular
 		'satellizer',
 		'highcharts-ng',
 		'angularjs-dropdown-multiselect',
-		'daterangepicker'
+		'daterangepicker',
+		'ngMap'
 	])
 
 .run(['$rootScope', '$state', '$stateParams', 'Utils', '$log',
@@ -172,10 +173,46 @@ angular
 				controller: 'ReportsListCtrl'
 			})
 
+		//Checklist
+		.state('efinding.checklist', {
+				url: '/checklist',
+				template: '<div ui-view></div>'
+			})
+			.state('efinding.checklist.list', {
+				url: '/lista',
+				templateUrl: 'views/tmpl/masters/checklist.html',
+				controller: 'ChecklistCtrl'
+			})
+
 		//Masters
-		.state('efinding.masters', {
+		.state('efinding.maestros', {
 				url: '/maestros',
 				template: '<div ui-view></div>'
+			})
+			.state('efinding.maestros.tabla', {
+				url: '/generic?type',
+				templateUrl: 'views/tmpl/masters/generic.html',
+				controller: 'MastersGenericCtrl'
+			})
+			.state('efinding.maestros.construction', {
+				url: '/construction',
+				templateUrl: 'views/tmpl/masters/construction.html',
+				controller: 'MastersConstructionCtrl'
+			})
+			.state('efinding.maestros.personnel', {
+				url: '/personnel',
+				templateUrl: 'views/tmpl/masters/personnel.html',
+				controller: 'MastersPersonnelCtrl'
+			})
+			.state('efinding.maestros.checklist', {
+				url: '/checklist',
+				templateUrl: 'views/tmpl/masters/master-checklist.html',
+				controller: 'MasterChecklistCtrl'
+			})
+			.state('efinding.maestros-checklist', {
+				url: '/new-checklist?idChecklist',
+				controller: 'NewChecklistCtrl',
+				templateUrl: 'views/tmpl/masters/new-checklist.html'
 			});
 
 	}

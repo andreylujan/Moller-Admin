@@ -54,20 +54,51 @@
   </uib-accordion> -->
 
 <uib-accordion close-others="oneAtTime" ng-if="page.menuLoaded" >
-    <uib-accordion-group is-open="status.isFirstOpen" nav-collapse>
+    <uib-accordion-group is-open="true" nav-collapse>
 
-      <uib-accordion-heading>
+      <!--uib-accordion-heading>
         <div class="info-account">
           Menú <i class="fa" ng-class="{'fa-angle-up': status.isFirstOpen, 'fa-angle-down': !status.isFirstOpen}"></i>
         </div>
-      </uib-accordion-heading>
+      </uib-accordion-heading-->
 
       <ul id="navigation"  ripple>
 
         <li ui-sref-active="active" ng-repeat="section in page.menu" ng-class="{'open':$state.includes('{{section.path}}')}" >
           <a ui-sref="{{section.path}}"><fa name="{{section.icon}}"></fa> <span>{{section.name}}</span></a>
           <ul>
-            <li ui-sref-active="active" ng-repeat="item in section.items"><a ui-sref="{{item.path}}"><fa name="caret-right"></fa> {{item.name}}</a></li>
+            <div ng-repeat="item in section.items">
+              <li ui-sref-active="active" ng-if="item.path != 'efinding.maestros.tabla'"> 
+                <a ui-sref="{{item.path}}">
+                  <fa name="caret-right"></fa> {{item.name}}
+                </a>
+              </li>
+              <li ui-sref-active="active" ng-if="item.path === 'efinding.maestros.tabla'">
+                <a ng-click="goToMaster(item.collection_id)">
+                  <fa name="caret-right"></fa> {{item.name}}
+                </a>
+              </li>
+            </div>
+          </ul>
+        </li>
+        <li ui-sref-active="active" ng-class="{'open':$state.includes('{{section.path}}')}" >
+          <a ui-sref="efinding.maestros"><fa name="list"></fa> <span>Maestro de obra</span></a>
+          <ul>
+            <li ui-sref-active="active"> 
+              <a ui-sref="efinding.maestros.construction">
+                <fa name="caret-right"></fa> obra
+              </a>
+            </li>
+            <li ui-sref-active="active"> 
+              <a ui-sref="efinding.maestros.personnel">
+                <fa name="caret-right"></fa> personal
+              </a>
+            </li>
+            <li ui-sref-active="active"> 
+              <a ui-sref="efinding.maestros.checklist">
+                <fa name="caret-right"></fa> checklist
+              </a>
+            </li>
           </ul>
         </li>
       </ul>
