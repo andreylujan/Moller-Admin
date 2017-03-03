@@ -29,6 +29,8 @@ angular.module('efindingAdminApp')
 					data.push({
 						// AQUI VAN LOS CAMPOS DEL JSON
 						name: success.data[i].attributes.name,
+						code: success.data[i].attributes.code,
+						fullname: success.data[i].attributes.code + ' - ' + success.data[i].attributes.name,
 						id: success.data[i].id,
 						company: success.data[i].attributes.company_id
 					});
@@ -151,6 +153,7 @@ angular.module('efindingAdminApp')
 
  				$scope.construction.id = success.data.id;
  				$scope.construction.name.text = success.data.attributes.name;
+ 				$scope.construction.code = success.data.attributes.code;
 
 				var contratistas = [];
 

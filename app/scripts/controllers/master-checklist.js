@@ -32,10 +32,6 @@ angular.module('efindingAdminApp')
 					id: success.data[i].id,
 					name: success.data[i].attributes.name
 				});
-				if (checklists[i].name === null) 
-				{
-					checklists[i].name = 'hola';
-				}
 			}
 
 			$scope.tableParams = new NgTableParams({
