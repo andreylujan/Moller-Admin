@@ -9,7 +9,7 @@
  */
 angular.module('efindingAdminApp')
 
-.controller('ReportsListCtrl', function($scope, $log, $filter, $window, $timeout, $uibModal, NgTableParams, Inspections, Activities, Utils) {
+.controller('ReportsListCtrl', function($scope, $log, $filter, $window, $timeout, $uibModal, NgTableParams, Inspections, Utils) {
 
 	$scope.page = {
 		title: 'Lista de inspecciones',
@@ -33,9 +33,9 @@ angular.module('efindingAdminApp')
 		activityTypes = [],
 		users = [],
 		reportsIncluded = [],
-		inspecciones = [],
-		sort_direction = 'desc';
+		inspecciones = []
 
+	$scope.sort_direction = 'asc';
 
 	var receiverName = null,
 		equipmentId = null,
@@ -223,18 +223,25 @@ angular.module('efindingAdminApp')
 							{
 								//Al ser solo una relacion doble, se busca el padre y luego al hijo
 								for (k = 0; k < success.included.length; k++) {
-									if ( relaciones[relationships[1]].data.id === success.included[k].id &&
-									 relaciones[relationships[1]].data.type === success.included[k].type) 
+									if (relaciones[relationships[1]].data != null) 
 									{
-										if (success.included[k].attributes[$scope.columns2[j].field] != null) 
+										if ( relaciones[relationships[1]].data.id === success.included[k].id &&
+										 relaciones[relationships[1]].data.type === success.included[k].type) 
 										{
-											test[test.length - 1][$scope.columns2[j].field_a] = success.included[k].attributes[$scope.columns2[j].field];
+											if (success.included[k].attributes[$scope.columns2[j].field] != null) 
+											{
+												test[test.length - 1][$scope.columns2[j].field_a] = success.included[k].attributes[$scope.columns2[j].field];
+											}
+											else
+											{
+												test[test.length - 1][$scope.columns2[j].field_a] = '-';
+											}
+											break;
 										}
-										else
-										{
-											test[test.length - 1][$scope.columns2[j].field_a] = '-';
-										}
-										break;
+									}
+									else
+									{
+										test[test.length - 1][$scope.columns2[j].field_a] = '-';
 									}
 								}
 							}
@@ -324,15 +331,15 @@ angular.module('efindingAdminApp')
 	};
 
 	$scope.sortBy = function(field_a) {
-		if (sort_direction === 'asc') 
+		if ($scope.sort_direction === 'asc') 
 		{
-			var aux = _.sortBy(inspecciones, field_a).reverse();
-			sort_direction = 'desc';
+			var aux = _.sortBy(inspecciones, function(insp){ return insp[field_a].toLowerCase();});
+			$scope.sort_direction = 'desc';
 		}
 		else
 		{
-			var aux = _.sortBy(inspecciones, field_a);
-			sort_direction = 'asc';
+			var aux = _.sortBy(inspecciones, function(insp){ return insp[field_a].toLowerCase();}).reverse();
+			$scope.sort_direction = 'asc';
 		}
 		$scope.tableParams = new NgTableParams({
 				page: 1, // show first page

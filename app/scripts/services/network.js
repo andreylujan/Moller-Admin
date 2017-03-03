@@ -33,18 +33,6 @@ angular.module('efindingAdminApp')
 
 })
 
-// DASHBOARD
-.factory('Dashboard', function($resource) {
-
-	return $resource(API_URL + '/dashboard', {}, {
-		query: {
-			method: 'GET',
-			'Content-Type': 'application/json'
-		}
-	});
-
-})
-
 // REPORTES
 .factory('Reports', function($resource) {
 
@@ -252,16 +240,6 @@ angular.module('efindingAdminApp')
 
 })
 
-.factory('ReportsByMonth', function($auth) {
-	return {
-		getFile: function(elem, fileName, month, year) {
-			var downloadLink = angular.element(elem);
-			downloadLink.attr('href', API_URL + '/reports/xlsx?access_token=' + $auth.getToken() + '&month=' + month + '&year=' + year);
-			downloadLink.attr('download', fileName + '.xlsx');
-		}
-	};
-})
-
 // CHANGE PASSWORD
 .factory('ChangePassword', function($resource) {
 	return $resource(API_URL + '/users/:idUser/password', {
@@ -283,11 +261,11 @@ angular.module('efindingAdminApp')
 })
 
 
-// ACTIVIDADES
-.factory('Activities', function($resource) {
+// Comapnies
+.factory('Companies', function($resource) {
 
-	return $resource(API_URL + '/activity_types/:idActivity', {
-		idActivity: '@idActivity'
+	return $resource(API_URL + '/companies/:idCompany', {
+		idCompany: '@idCompany'
 	}, {
 		query: {
 			method: 'GET',
@@ -316,6 +294,278 @@ angular.module('efindingAdminApp')
 				'Content-Type': 'application/vnd.api+json'
 			},
 		}
+	});
+})
+
+/// Constructions
+.factory('Constructions', function($resource) {
+
+	return $resource(API_URL + '/constructions/:constructionId', {
+		constructionId: '@constructionId'
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: '@include',
+				'filter[company_id]': '@constructionId',
+				'fields[constructions': 'name,company_id,contractors,administrator,expert'
+			}
+		},
+		detail: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		save: {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		update: {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		delete: {
+			method: 'DELETE',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			}
+		}
+	});
+
+})
+
+// Personnel
+.factory('Personnel', function($resource) {
+
+	return $resource(API_URL + '/personnel/:idPersonnel', {
+		idPersonnel: '@idPersonnel'
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				'include': 'personnel_types,constructions',
+				'fields[constructions]': 'name,code'
+			}
+		},
+		save: {
+			method: 'POST',
+			headers: {
+				Accept: 'application/vnd.api+json',
+				'Content-Type': 'application/vnd.api+json'
+			}
+		},
+		update: {
+			method: 'PUT',
+			headers: {
+				Accept: 'application/vnd.api+json',
+				'Content-Type': 'application/vnd.api+json'
+			},
+		},
+		delete: {
+			method: 'DELETE',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			}
+		}
+	});
+
+})
+
+// Type Personnel
+.factory('PersonnelTypes', function($resource) {
+
+	return $resource(API_URL + '/personnel_types/', {
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			}
+		}
+	});
+
+})
+
+/// DASHBOARD
+.factory('Dashboard', function($resource) {
+
+	return $resource(API_URL + '/dashboard', {
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: '@include',
+				'filter[construction][name]': '@constructionName',
+				'filter[construction][company][name]': '@companyName',
+				'filter[state_name]': '@statusName',
+				'filter[creator][name]': '@supervisorName',
+				'filter[start_date]': '@startDate',
+				'filter[end_date]': '@endDate'
+			}
+		}
+	});
+
+})
+
+/// COLLECTIONS
+.factory('Collection', function($resource) {
+
+	return $resource(API_URL + '/collections/:idCollection', {
+		idCollection: '@idCollection'
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: 'collection_items',
+				'fields[collection_items]': 'parent_item_id,collection_id,name'
+			}
+		},
+		detail: {
+			method: 'GET',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: 'parent_item',
+			}
+		}
+	});
+
+})
+
+
+//COLLECTION ITEM
+.factory('Collection_Item', function($resource) {
+
+	return $resource(API_URL + '/collection_items/:idCollection', {
+		idCollection: '@idCollection'
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: 'parent_item'
+			}
+		},
+		update: {
+			method: 'PUT',
+			headers: {
+				Accept: 'application/vnd.api+json',
+				'Content-Type': 'application/vnd.api+json',
+				'include': 'collection_items'
+			}
+		},
+		delete: {
+			method: 'DELETE',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		save: {
+			method: 'POST',
+			headers: {
+				Accept: 'application/vnd.api+json',
+				'Content-Type': 'application/vnd.api+json'
+			}
+		}
+	});
+
+})
+
+// Checklists
+.factory('Checklists', function($resource) {
+
+	return $resource(API_URL + '/checklist_reports', {
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: 'construction.company,creator,users',
+				'fields[users]': 'full_name',
+				'fields[constructions]': 'name,company',
+				'fields[companies]': 'name',
+				'fields[checklist_reports]': 'formatted_created_at,pdf,pdf_uploaded,code,user_names,total_indicator,users,construction,creator'
+
+			}
+		}
+	});
+
+})
+
+// ChecklistActions
+.factory('ChecklistActions', function($resource) {
+
+	return $resource(API_URL + '/checklists/:idChecklist', {
+		idChecklist: '@idChecklist'
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				'fields[checklists]': 'name,formatted_created_at'
+			}
+		},
+		detail: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		save: {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		update: {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		delete: {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
 	});
 
 })
@@ -354,13 +604,23 @@ angular.module('efindingAdminApp')
 
 })
 
-.factory('GetPdfsZip', function($auth) {
-
+.factory('ExcelCollection', function($auth) {
 	return {
-		getFile: function(elem, reportIds) {
+		getFile: function(elem, idCollection, fileName) {
 			var downloadLink = angular.element(elem);
-			downloadLink.attr('href', API_URL + '/reports/zip?filter[ids]=' + reportIds + '&access_token=' + $auth.getToken());
-			downloadLink.attr('download', 'reportes.zip');
+			downloadLink.attr('href', API_URL + '/collections/' + idCollection + '.csv?access_token=' + $auth.getToken());
+			downloadLink.attr('download', fileName + '.csv');
+		}
+	};
+
+})
+
+.factory('ExcelConstruction', function($auth) {
+	return {
+		getFile: function(elem, fileName) {
+			var downloadLink = angular.element(elem);
+			downloadLink.attr('href', API_URL + '/constructions/construction_personnel.csv?access_token=' + $auth.getToken());
+			downloadLink.attr('download', fileName + '.csv');
 		}
 	};
 
@@ -369,11 +629,7 @@ angular.module('efindingAdminApp')
 
 // CSV
 .service('Csv', function($resource, $http, $log) {
-
-	// this.uploadFileToUrl = function(form) {
-
 	var fd = new FormData();
-
 	return {
 		upload: function(form) {
 
@@ -381,7 +637,28 @@ angular.module('efindingAdminApp')
 				fd.append(form[i].field, form[i].value);
 			}
 
-			return $http.post(API_URL + '/csv', fd, {
+			return $http.put(API_URL + '/collections/' + form[0].id + '.csv', fd, {
+				transformRequest: angular.identity,
+				headers: {
+					'Content-Type': undefined
+				}
+			});
+		}
+	};
+
+})
+
+// CSV
+.service('CsvContructions', function($resource, $http, $log) {
+	var fd = new FormData();
+	return {
+		upload: function(form) {
+
+			for (var i = 0; i < form.length; i++) {
+				fd.append(form[i].field, form[i].value);
+			}
+
+			return $http.post(API_URL + '/constructions/construction_personnel.csv', fd, {
 				transformRequest: angular.identity,
 				headers: {
 					'Content-Type': undefined

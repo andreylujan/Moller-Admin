@@ -562,11 +562,11 @@
   &.btn-ef-3 {
 
     &.btn-default {
-      background: #e2e2e2;
-    color: $font-color;
+      background: #F3F3F4;
+      color: $font-color;
 
       &:hover {
-        background: darken(#e2e2e2, 10%);
+        background: #F3F3F4;
       }
 
       &:active,&.active {
@@ -574,8 +574,8 @@
       }
 
       &:focus {
-        background: #e2e2e2;
-      color: $font-color;
+        background: #F3F3F4;
+        color: $font-color;
       }
     }
 
@@ -1392,19 +1392,18 @@ button {
 
   &.btn-default {
     color: $font-color;
-    border-color: lighten($brand-default, 40%);
 
     &:focus {
       background-color: white;
-      border-color: lighten($brand-default, 30%);
+      border-color: #F3F3F4;
     }
 
     &:hover {
-      background-color: lighten($brand-default, 53%);
+      background-color: #F3F3F4;
     }
 
     &:active,&.active {
-      background-color: lighten($brand-default, 50%);
+      background-color: #F3F3F4;
     }
   }
 

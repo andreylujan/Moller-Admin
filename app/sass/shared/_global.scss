@@ -735,7 +735,11 @@ body {
 }
 
 .text-orange {
-  color: $orange;
+  color: #F19122;
+}
+
+.text-green {
+  color: #188938;
 }
 
 .text-red {
@@ -1140,6 +1144,9 @@ body {
 
 .b-0 {
   border: 0!important;
+}
+.b-0n {
+  border: 2!important;
 }
 
 .bt-0 {

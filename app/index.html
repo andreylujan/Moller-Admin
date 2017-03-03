@@ -31,7 +31,7 @@
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
-  <body id="repoImagenes" class="{{main.settings.navbarHeaderColor}} {{main.settings.activeColor}} {{containerClass}} header-fixed aside-fixed">
+  <body id="repoImagenes" class="{{main.settings.navbarHeaderColor}} {{main.settings.activeColor}} {{containerClass}} header-fixed aside-fixed" style="background-color: #F9FAFB;">
 
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
@@ -110,9 +110,11 @@
     <script src="bower_components/highcharts/modules/exporting.js"></script>
     <script src="bower_components/myforce-angularjs-dropdown-multiselect/src/angularjs-dropdown-multiselect.js"></script>
     <script src="bower_components/angular-daterangepicker/js/angular-daterangepicker.js"></script>
+    <script src="bower_components/ngmap/build/scripts/ng-map.js"></script>
     <!-- endbower -->
     <script src="bower_components/moment/locale/es.js"></script>
     <script src="bower_components/angular-i18n/angular-locale_es-cl.js"></script>
+    <script src="bower_components/ngmap/build/scripts/ng-map.min.js"></script>
     
 
     <!-- endbuild -->
@@ -162,15 +164,22 @@
     
     <script src="scripts/controllers/reports-list.js"></script>
     <script src="scripts/controllers/tasks-program.js"></script>
-    <script src="scripts/controllers/master-activities.js"></script>
+    <script src="scripts/controllers/master-generic.js"></script>
     <script src="scripts/controllers/master-history-massive-loads.js"></script>
     <script src="scripts/controllers/users-list.js"></script>
     <script src="scripts/controllers/users-invite.js"></script>
     <script src="scripts/controllers/dashboard.js"></script>
+    <script src="scripts/controllers/masters-checklist.js"></script>
+    <script src="scripts/controllers/master-checklist.js"></script>
+    <script src="scripts/controllers/masters-new-checklist.js"></script>
+    <script src="scripts/controllers/master-construction.js"></script>
+    <script src="scripts/controllers/master-personnel.js"></script>
 
     <script src="scripts/filters/capitalize.js"></script>
     <script src="scripts/filters/props-filter.js"></script>
     <script src="scripts/filters/cut-word.js"></script>
     <!-- endbuild -->
+
+    <script src="http://maps.google.com/maps/api/js?key=AIzaSyAyfsZ_Ly_ZQdi0PyHoo9ecCmtq3-9uWLI"></script>
 </body>
 </html>

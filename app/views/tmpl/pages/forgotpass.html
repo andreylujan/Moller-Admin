@@ -37,7 +37,7 @@
     </form>
 
     <div class="form-group text-center mt-20">
-      <button type="submit" class="btn bg-cyan-1-generic b-0 br-20 mr-5 text-md pl-20 pr-20" ng-click="sendPassToken()" ng-disabled='form.$invalid || page.sendBtn.disabled'>Enviar</button>
+      <button type="submit" class="btn bg-orange-ps b-0 br-20 mr-5 text-md pl-20 pr-20" ng-click="sendPassToken()" ng-disabled='form.$invalid || page.sendBtn.disabled'>Enviar</button>
     </div>
 
   </div>
@@ -48,7 +48,7 @@
 
     <h2 class="text-light text-black">¿Olvidaste tu contraseña?</h2>
 
-    <h4 class="text-light text-{{page.msg.color}} text-justify" ng-show="page.msg.show"> {{page.msg.text}}</h4>
+    <h4 class="text-light text-justify" ng-show="page.msg.show" style="color: #f19122"> {{page.msg.text}}</h4>
 
     <form name="formularioCodigo" class="form-validation mt-20" novalidate>
 
@@ -63,7 +63,7 @@
     </form>
 
     <div class="form-group text-center mt-20">
-      <button type="submit" class="btn bg-cyan-1-generic b-0 br-20 mr-5 text-md pl-20 pr-20" ng-click="validacodigo()" ng-disabled='form.$invalid || user.codigo.disabled'>Enviar</button>
+      <button type="submit" class="btn bg-orange-ps b-0 br-20 mr-5 text-md pl-20 pr-20" ng-click="validacodigo()" ng-disabled='form.$invalid || user.codigo.disabled'>Enviar</button>
     </div>
 
   </div>
@@ -91,7 +91,7 @@
     </form>
 
     <div class="form-group text-center mt-20">
-      <button type="submit" class="btn bg-cyan-1-generic b-0 br-20 mr-5 text-md pl-20 pr-20" ng-click="cambiaContrasena()" ng-disabled='form.$invalid || user.pass.disabled'>Enviar</button>
+      <button type="submit" class="btn bg-orange-ps b-0 br-20 mr-5 text-md pl-20 pr-20" ng-click="cambiaContrasena()" ng-disabled='form.$invalid || user.pass.disabled'>Enviar</button>
     </div>
 
   </div>

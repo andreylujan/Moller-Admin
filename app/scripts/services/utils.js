@@ -27,6 +27,9 @@ angular.module('efindingAdminApp')
 	this.clearAllStorage = function() {
 		return localStorageService.clearAll();
 	};
+	this.getStorageType = function() {
+		return localStorageService.getStorageType();
+	};
 
 	this.gotoPage = function(page) {
 		$state.go(page);
@@ -99,7 +102,7 @@ angular.module('efindingAdminApp')
 						enabled: false
 					}
 				},
-				colors: ['#C3C5C9', '#6F6C73', '#35353F', '#23222B'],
+				colors: ['#F69022', '#119848', '#EF3200'],
 				tooltip: {
 					style: {
 						padding: 10,
