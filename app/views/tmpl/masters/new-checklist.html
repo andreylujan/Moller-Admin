@@ -1,8 +1,4 @@
 <div class="page page-ng-table">
-
-
-
-
   <!-- page header -->
   <div class="pageheader">
 
@@ -12,7 +8,7 @@
 
       <ul class="page-breadcrumb">
         <li>
-          <a ui-sref="app.dashboard"> {{main.title}}</a>
+          {{main.title}}
         </li>
         <li>
           <a href="javascript:;">Maestros</a>
@@ -111,7 +107,7 @@
                     <button class="btn bg-blue-ps-1 br-15 b-0" ng-click="openModalAddOptions(item.id, item.name, checklist.name)" ng-disabled="!item.name || !checklist.name">Agregar opciones</button>
                   </td>
                   <td data-title="'Eliminar'" >
-                    <img ng-click="removeItem($index)" ng-src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/delete.png" style="width:19px; cursor:pointer" uib-tooltip="Eliminar item">
+                    <img ng-click="removeItem($index)" ng-src="https://s3-sa-east-1.amazonaws.com/efinding/icons/CHECKLIST_BASURERO.png" style="width:19px; cursor:pointer" uib-tooltip="Eliminar item">
                   </td>
                 </tr>
               </tbody>
@@ -152,7 +148,7 @@
               <input class="form-control underline-input" type="text" ng-model="item.name" >
             </td>
             <td data-title="'Eliminar'" >
-              <img ng-click="removeItem($index)" ng-src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/delete.png" style="width:19px; cursor:pointer" uib-tooltip="Eliminar item">
+              <img ng-click="removeItem($index)" ng-src="https://s3-sa-east-1.amazonaws.com/efinding/icons/CHECKLIST_BASURERO.png" style="width:19px; cursor:pointer" uib-tooltip="Eliminar item">
             </td>
           </tr>
         </tbody>

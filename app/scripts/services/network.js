@@ -314,7 +314,7 @@ angular.module('efindingAdminApp')
 			params: {
 				include: '@include',
 				'filter[company_id]': '@constructionId',
-				'fields[constructions': 'name,company_id,contractors,administrator,expert'
+				'fields[constructions': 'name,company_id,administrator,expert,construction_personnel,code'
 			}
 		},
 		detail: {

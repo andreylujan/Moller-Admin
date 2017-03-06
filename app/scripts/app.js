@@ -194,25 +194,36 @@ angular
 				templateUrl: 'views/tmpl/masters/generic.html',
 				controller: 'MastersGenericCtrl'
 			})
-			.state('efinding.maestros.construction', {
+
+		//Obras
+		.state('efinding.obras', {
+				url: '/obras',
+				template: '<div ui-view></div>'
+			})
+			.state('efinding.obras.tabla', {
 				url: '/construction',
 				templateUrl: 'views/tmpl/masters/construction.html',
 				controller: 'MastersConstructionCtrl'
 			})
-			.state('efinding.maestros.personnel', {
+			.state('efinding.obras.personal', {
 				url: '/personnel',
 				templateUrl: 'views/tmpl/masters/personnel.html',
 				controller: 'MastersPersonnelCtrl'
 			})
-			.state('efinding.maestros.checklist', {
+			.state('efinding.obras.checklist', {
 				url: '/checklist',
 				templateUrl: 'views/tmpl/masters/master-checklist.html',
 				controller: 'MasterChecklistCtrl'
 			})
-			.state('efinding.maestros-checklist', {
+			.state('efinding.new-checklist', {
 				url: '/new-checklist?idChecklist',
 				controller: 'NewChecklistCtrl',
 				templateUrl: 'views/tmpl/masters/new-checklist.html'
+			})
+			.state('efinding.obras.cargas', {
+				url: '/history-massive-loads',
+				templateUrl: 'views/tmpl/masters/history-massive-loads.html',
+				controller: 'HistoryMassiveLoadsCtrl'
 			});
 
 	}
