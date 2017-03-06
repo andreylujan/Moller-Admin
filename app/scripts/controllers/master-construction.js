@@ -344,6 +344,9 @@ angular.module('efindingAdminApp')
 					}
 				}, function(error) {
 					$log.log(error);
+					if (error.status === 401) {
+						Utils.refreshToken($scope.editGeneric);
+					}
 				}
 			);
 		}
@@ -478,126 +481,3 @@ angular.module('efindingAdminApp')
 	};
 
 });
-
-
-
-/*.controller('NewCollectionItemModalInstance', function($scope, $log, $state, $uibModalInstance, Csv, Utils, Collection_Item, CollectionObject, Collection, idCollection) {
-
-	$scope.modal = {
-		csvFile: null
-	};
-
-	$scope.collection = {
-		visible: false,
-		data: []
-	};
-
-	$scope.collection_item = {
-		name: '',
-		id: '',
-		code: ''
-	};
-
-	if (CollectionObject.padre != null) 
-	{
-		Collection_Item.query({
-			idCollection: CollectionObject.padre
-			}, function(success) {
-				if (success.data) {
-					getCollection(success.data.attributes.collection_id);
-				} else {
-					$log.log(success);
-				}
-
-			}, function(error) {
-				$log.error(error);
-
-		});
-
-		var getCollection = function(idParent) {
-			Collection.query({
-				idCollection: idParent
-			}, function(success) {
-				if (success.data) {
-					$scope.collection.visible = true;
-					for (var i = 0; i < success.included.length; i++) {
-						$scope.collection.data.push({
-							name: success.included[i].attributes.name,
-							id: success.included[i].id
-						});
-					}
-
-					$scope.collection.selectedParent = $scope.collection.data[0];
-
-				} else {
-					$log.log(success);
-				}
-
-			}, function(error) {
-				$log.error(error);
-
-			});
-		};
-	}
-
-	$scope.saveCollectionItem = function() {
-
-		if ($scope.modal.csvFile) {
-			//uploadCsvActivity();
-		} else 
-		{
-			var aux = {};
-			if ($scope.collection.selectedParent === undefined) 
-			{
-				aux = { 
-					data: { type: 'collection_items', attributes: { name: $scope.collection_item.name, 
-																	code: $scope.collection_item.code },
-							relationships: { collection: {data: {type: 'collections', id: idCollection}}}}};
-			}
-			else
-			{
-				aux = { data: { type: 'collection_items', attributes: { name: $scope.collection_item.name,
-																		code: $scope.collection_item.code }, 
-								relationships: { collection: {data: {type: 'collections', id: idCollection}},
-										parent_item: { data: { type: "collection_items", 
-										id: $scope.collection.selectedParent.id }}}}};
-			}
-			Collection_Item.save(aux, 
-				function(success) {
-					if (success.data) {
-
-						$uibModalInstance.close({
-							action: 'save',
-							success: success
-						});
-					} 
-					else 
-					{
-						$log.error(success);
-						$scope.modal.alert.title = 'Error al Guardar';
-						$scope.modal.alert.text = '';
-						$scope.modal.alert.color = 'danger';
-						$scope.modal.alert.show = true;
-						return;
-					}
-				}, function(error) {
-					$log.error(error);
-					if (error.status === 401) {
-						Utils.refreshToken($scope.saveCollectionItem);
-					}
-					$scope.modal.alert.title = 'Error al Guardar';
-					$scope.modal.alert.text = '';
-					$scope.modal.alert.color = 'danger';
-					$scope.modal.alert.show = true;
-					return;
-				}
-			);
-		}
-
-	};
-
-	$scope.cancel = function() {
-		$uibModalInstance.dismiss('cancel');
-	};
-
-});*/

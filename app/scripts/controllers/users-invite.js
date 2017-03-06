@@ -154,6 +154,9 @@ angular.module('efindingAdminApp')
 
 			}, function(error) {
 				$log.error(error);
+				if (error.status) {
+					Utils.refreshToken($scope.sendInvitations);
+				}
 
 				$scope.responseInvitations.push({
 					color: 'danger',

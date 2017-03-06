@@ -67,6 +67,9 @@ angular.module('efindingAdminApp')
 			}
 		}, function(error) {
 			$log.error(error);
+			if (error.status) {
+				Utils.refreshToken($scope.getMassiveLoads);
+			}
 		});
 	};
 

@@ -92,7 +92,8 @@ angular
 .config(['$authProvider',
 	function($authProvider) {
 		// Parametros de configuración
-		$authProvider.loginUrl = 'http://50.16.161.152/efinding-staging/oauth/token'; //Desarrollo
+		$authProvider.loginUrl = 'http://50.16.161.152/efinding/oauth/token'; //Produccion
+		//$authProvider.loginUrl = 'http://50.16.161.152/efinding-staging/oauth/token'; //Desarrollo
 		//$authProvider.loginUrl = 'http://localhost:3000/oauth/token'; 					//Local
 		$authProvider.tokenName = 'access_token';
 	}
@@ -214,7 +215,7 @@ angular
 				templateUrl: 'views/tmpl/masters/master-checklist.html',
 				controller: 'MasterChecklistCtrl'
 			})
-			.state('efinding.new-checklist', {
+			.state('efinding.obras.new-checklist', {
 				url: '/new-checklist?idChecklist',
 				controller: 'NewChecklistCtrl',
 				templateUrl: 'views/tmpl/masters/new-checklist.html'
