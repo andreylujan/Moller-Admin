@@ -49,7 +49,7 @@ angular.module('efindingAdminApp')
  		}, function(error) {
  			$log.error(error);
  			if (error.status === 401) {
- 				Utils.refreshToken($scope.getConstructions);
+ 				Utils.refreshToken($scope.getPersonnel);
  			}
  		});
  	};
@@ -216,6 +216,9 @@ angular.module('efindingAdminApp')
 					}
 				}, function(error) {
 					$log.error(error);
+					if (error.status) {
+						Utils.refreshToken($scope.editGeneric);
+					}
 				}
 			);
 		}

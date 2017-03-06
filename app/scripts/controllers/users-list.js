@@ -232,6 +232,9 @@ angular.module('efindingAdminApp')
 			}
 		}, function(error) {
 			$log.log(error);
+			if (error.status) {
+				Utils.refreshToken($scope.getUserDetails);
+			}
 		});
 
 	};
@@ -325,6 +328,9 @@ angular.module('efindingAdminApp')
 				}
 			}, function(error) {
 				$log.log(error);
+				if (error.status) {
+					Utils.refreshToken($scope.editUser);
+				}
 			});
 
 		}
