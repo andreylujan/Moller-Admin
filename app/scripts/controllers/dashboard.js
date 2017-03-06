@@ -259,17 +259,6 @@
 				var startDate = new Date($scope.page.filters.dateRange.date.startDate);
 				var endDate = new Date($scope.page.filters.dateRange.date.endDate);
 
-				if (startDate.getMonth() !== endDate.getMonth()) {
-					openModalMessage({
-						title: 'Error en el rango de fechas ',
-						message: 'El rango de fechas debe estar dentro del mismo mes.'
-					});
-
-					$scope.page.filters.dateRange.date.startDate = new Date(oldValue.startDate);
-					$scope.page.filters.dateRange.date.endDate = new Date(oldValue.endDate);
-					return;
-				}
-
 				$scope.getDashboardInfo({
 					success: true,
 					detail: 'OK'
@@ -277,23 +266,6 @@
 			});
 		}
 	});
-
-	var openModalMessage = function(data) {
-		var modalInstance = $uibModal.open({
-			animation: true,
-			backdrop: true,
-			templateUrl: 'messageModal.html',
-			controller: 'MessageModalInstance',
-			size: 'md',
-			resolve: {
-				data: function() {
-					return data;
-				}
-			}
-		});
-
-		modalInstance.result.then(function() {}, function() {});
-	};
 
  	$scope.getDashboardInfo = function(e) {
  		if (!e.success) {
