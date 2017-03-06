@@ -103,7 +103,7 @@
 					<h1 class="custom-font"><strong>Mapa de hallazgos</strong></h1>
 				</div>
 				<div class="tile-widget">
-					<ng-map center="{{page.markers.resolved[0].latitude}},{{page.markers.unchecked[0].longitude}}" zoom="10" ng-show="page.markers.resolved.length">
+					<ng-map center="-33.4724728,-70.665583" zoom="10">
 					    <marker ng-repeat="resuelto in page.markers.resolved" position="{{resuelto.latitude}},{{resuelto.longitude}}"
 					      	optimized="false"
 					      	icon="https://s3-sa-east-1.amazonaws.com/efinding/pins/pin_verde.png">
@@ -117,10 +117,10 @@
 						<tbody>
 							<tr>
 								<td class="text-center" style="border-top:0">
-									<i class="fa fa-circle text-orange"></i> Pendientes
+									<i class="fa fa-square text-orange"></i> Pendientes
 								</td>
 								<td class="text-center" style="border-top:0">
-									<i class="fa fa-circle text-green"></i> Resueltos
+									<i class="fa fa-square text-green"></i> Resueltos
 								</td>
 							</tr>
 						</tbody>

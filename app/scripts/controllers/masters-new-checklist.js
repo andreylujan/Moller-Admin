@@ -96,7 +96,6 @@ angular.module('efindingAdminApp')
 					success: true,
 					detail: 'OK'
 				});
-				$scope.page.buttons.oneMoreItem.disabled = false;
 			} else {
 				$state.go('efinding.maestros-checklist', {
 					idChecklist: idChecklist

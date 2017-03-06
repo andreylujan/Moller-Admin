@@ -12,7 +12,7 @@
 
       <ul class="page-breadcrumb">
         <li>
-          <a ui-sref="app.dashboard"> {{main.title}}</a>
+          <a ui-sref="efinding.dashboard.generic"> {{main.title}}</a>
         </li>
         <li>
           <a href="javascript:;">Maestros</a>
@@ -40,46 +40,12 @@
         <!-- tile -->
         <section class="tile" fullscreen="isFullscreen06">
 
-          <!-- tile header -->
-          <div class="tile-header dvd dvd-btm">
-            <h1 class="custom-font"></h1>
-            <ul class="controls">
-              <li class="dropdown" uib-dropdown on-toggle="toggled(open)">
-
-                <a href uib-dropdown-toggle class="dropdown-toggle settings"><i class="fa fa-cog"></i></a>
-
-                <ul class="dropdown-menu pull-right with-arrow animated littleFadeInUp">
-                  <li>
-                    <a href tile-control-toggle>
-                      <span class="minimize"><fa name="angle-down"></fa>&nbsp;&nbsp;&nbsp;Minimizar</span>
-                      <span class="expand"><fa name="angle-up"></fa>&nbsp;&nbsp;&nbsp;Maximizar</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href ng-click="getChecklists({success: true,detail: 'OK'})">
-                      <fa name="refresh"></fa> Refrescar
-                    </a>
-                  </li>
-                  <li>
-                    <a href tile-control-fullscreen ng-click="isFullscreen06 = !isFullscreen06">
-                      <fa name="expand"></fa> Pantalla completa
-                    </a>
-                  </li>
-
-                </ul>
-
-              </li>
-              <li class="remove"><a href tile-control-close><i class="fa fa-times"></i></a></li>
-            </ul>
-          </div>
-          <!-- /tile header -->
-
           <!-- tile body -->
           <div class="tile-body">
 
             <div class="row">
               <div class="col-md-2">
-                <button class="bg-blue-ps-1 pt-7 pb-7 pr-12 pl-12 br-15 b-0 text-white ml-20 mb-10" ng-click="gotoNewChecklist()" uib-tooltip="Crear nuevo checklist"><i class="fa fa-plus-circle"></i> </button>
+                <button class="btn btn-default" ng-click="gotoNewChecklist()" uib-tooltip="Crear nuevo checklist">Nuevo</button>
               </div>
             </div>
 
@@ -90,11 +56,11 @@
                 <td data-title="'Name'" sortable="'name'" filter="{ 'name': 'text' }">
                   {{checklist.name}}
                 </td>
-                <td data-title="'Editar'" >
-                  <img ng-click="gotoNewChecklist(checklist.id)" ng-src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/edit2.png" style="width:24px; cursor:pointer" uib-tooltip="Editar checklist {{checklist.name}}">
+                <td data-title="'Editar'">
+                  <img ng-click="gotoNewChecklist(checklist.id)" ng-src="https://s3-sa-east-1.amazonaws.com/efinding/icons/CHECKLIST_EDITAR.png" style="width:24px; cursor:pointer" uib-tooltip="Editar checklist {{checklist.name}}">
                 </td>
-                <td data-title="'Eliminar'" >
-                  <img ng-click="openModalDeleteChecklist(checklist.id)" ng-src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/delete.png" style="width:19px; cursor:pointer" uib-tooltip="Eliminar checklist {{checklist.name}}">
+                <td data-title="'Eliminar'" class="text-center">
+                  <img ng-click="openModalDeleteChecklist(checklist.id)" ng-src="https://s3-sa-east-1.amazonaws.com/efinding/icons/CHECKLIST_BASURERO.png" style="width:19px; cursor:pointer" uib-tooltip="Eliminar checklist {{checklist.name}}">
                 </td>
               </tr>
             </table>

@@ -259,17 +259,6 @@
 				var startDate = new Date($scope.page.filters.dateRange.date.startDate);
 				var endDate = new Date($scope.page.filters.dateRange.date.endDate);
 
-				if (startDate.getMonth() !== endDate.getMonth()) {
-					openModalMessage({
-						title: 'Error en el rango de fechas ',
-						message: 'El rango de fechas debe estar dentro del mismo mes.'
-					});
-
-					$scope.page.filters.dateRange.date.startDate = new Date(oldValue.startDate);
-					$scope.page.filters.dateRange.date.endDate = new Date(oldValue.endDate);
-					return;
-				}
-
 				$scope.getDashboardInfo({
 					success: true,
 					detail: 'OK'
@@ -277,23 +266,6 @@
 			});
 		}
 	});
-
-	var openModalMessage = function(data) {
-		var modalInstance = $uibModal.open({
-			animation: true,
-			backdrop: true,
-			templateUrl: 'messageModal.html',
-			controller: 'MessageModalInstance',
-			size: 'md',
-			resolve: {
-				data: function() {
-					return data;
-				}
-			}
-		});
-
-		modalInstance.result.then(function() {}, function() {});
-	};
 
  	$scope.getDashboardInfo = function(e) {
  		if (!e.success) {
@@ -361,14 +333,14 @@
 		        angular.forEach(success.data.attributes.report_fulfillment, function(value, key) {
 		        	cumplimientoHallazgos.inspeccion.push(value.inspection_id);
 		        });
-		        cumplimientoHallazgos.datos.push({name: "No revisados", data:[]})
-		        cumplimientoHallazgos.datos.push({name: "Resueltos", data:[]})
 		        cumplimientoHallazgos.datos.push({name: "Pendientes", data:[]})
+		        cumplimientoHallazgos.datos.push({name: "Resueltos", data:[]})
+		        cumplimientoHallazgos.datos.push({name: "No revisados", data:[]})
 
 		        for (var i = 0; i < success.data.attributes.report_fulfillment.length; i++) {
-		        	cumplimientoHallazgos.datos[0].data.push(success.data.attributes.report_fulfillment[i].num_unchecked);
-		        	cumplimientoHallazgos.datos[1].data.push(success.data.attributes.report_fulfillment[i].num_resolved);
 		        	cumplimientoHallazgos.datos[2].data.push(success.data.attributes.report_fulfillment[i].num_pending);
+		        	cumplimientoHallazgos.datos[1].data.push(success.data.attributes.report_fulfillment[i].num_resolved);
+		        	cumplimientoHallazgos.datos[0].data.push(success.data.attributes.report_fulfillment[i].num_unchecked);
 				}
 
 				$scope.charCumplimientoHallazgos = Utils.setChartConfig('column', 513, {
