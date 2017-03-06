@@ -78,7 +78,7 @@ angular.module('efindingAdminApp')
 	};
 
 	$scope.gotoNewChecklist = function(idChecklist) {
-		$state.go('efinding.maestros-checklist', {
+		$state.go('efinding.obras.new-checklist', {
 			idChecklist: idChecklist
 		});
 	};

@@ -214,7 +214,7 @@ angular
 				templateUrl: 'views/tmpl/masters/master-checklist.html',
 				controller: 'MasterChecklistCtrl'
 			})
-			.state('efinding.new-checklist', {
+			.state('efinding.obras.new-checklist', {
 				url: '/new-checklist?idChecklist',
 				controller: 'NewChecklistCtrl',
 				templateUrl: 'views/tmpl/masters/new-checklist.html'
