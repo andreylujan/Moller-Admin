@@ -154,7 +154,7 @@ angular.module('efindingAdminApp')
 
 			}, function(error) {
 				$log.error(error);
-				if (error.status) {
+				if (error.status === 401) {
 					Utils.refreshToken($scope.sendInvitations);
 				}
 
