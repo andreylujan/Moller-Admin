@@ -92,6 +92,7 @@ angular.module('efindingAdminApp')
 						data[j].firstName = datos.success.data.attributes.first_name;
 						data[j].lastName = datos.success.data.attributes.last_name;
 						data[j].email = datos.success.data.attributes.email;
+						data[j].roleName = datos.success.data.attributes.role_name;
 					}
 				}
 			}
