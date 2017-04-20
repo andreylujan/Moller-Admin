@@ -9,7 +9,7 @@
  */
 angular.module('efindingAdminApp')
 
-.controller('ReportsListCtrl', function($scope, $log, $filter, $window, $timeout, $uibModal, NgTableParams, Inspections, Utils) {
+.controller('ReportsListCtrl', function($scope, $log, $state, $filter, $window, $timeout, $uibModal, NgTableParams, Inspections, Utils) {
 
 	$scope.page = {
 		title: 'Lista de inspecciones',
@@ -402,6 +402,160 @@ angular.module('efindingAdminApp')
 		}, function() {});
 	};
 
+	$scope.openModalDownloadPdfsByMonth = function() {
+		var modalInstance = $uibModal.open({
+			animation: true,
+			backdrop: false,
+			templateUrl: 'modalDownloadPdfsByMonth.html',
+			controller: 'DownloadPdfsByMonthModalInstance',
+			resolve: {}
+		});
+
+		modalInstance.result.then(function() {}, function() {});
+	};
+
+	$scope.openModalRemoveInspection = function(idInspection) {
+		var modalInstance = $uibModal.open({
+			animation: true,
+			templateUrl: 'removeModal.html',
+			controller: 'RemoveModalInstance',
+			resolve: {
+				idInspection: function() {
+					return idInspection;
+				}
+			}
+		});
+
+		modalInstance.result.then(function() {
+			/*$scope.getInspections({
+				success: true,
+				detail: 'OK'
+			});*/
+			$state.reload();
+		}, function() {
+			// getPromotions();
+		});
+	};
+
+})
+
+.controller('RemoveModalInstance', function($scope, $filter, $log, $uibModalInstance, idInspection, Utils, Inspections, InspectionsRemove) {
+
+	$scope.modal = {
+		inspection: {
+			title: ''
+		}
+	};
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');
+	};
+
+	var getInfoInspection = function(e) {
+		if (!e.success) {
+			$log.error(e.detail);
+			return;
+		}
+
+		Inspections.query({
+			idInspection: idInspection
+		}, function(success) {
+			$log.error(success);
+			if (success.data) {
+				//$scope.modal.inspection.title = success.data.attributes.title;
+			} else {
+				$log.error('no se pudo obtener el titulo');
+				$log.error(success);
+			}
+		}, function(error) {
+			$log.log(error);
+			if (error.status === 401) {
+				Utils.refreshToken(getInfoInspection);
+			}
+		});
+	};
+
+	$scope.removeInspection = function(e) {
+		if (!e.success) {
+			$log.error(e.detail);
+			return;
+		}
+
+		InspectionsRemove.delete({
+			idInspection: idInspection
+		}, function(success) {
+			if (!success.errors) {
+				$uibModalInstance.close();
+			} else {
+				$log.log('no se puso borrar');
+				$log.log(success);
+			}
+		}, function(error) {
+			$log.log(error);
+			if (error.status === 401) {
+				Utils.refreshToken($scope.InspectionsRemove);
+			}
+		});
+	};
+
+	getInfoInspection({
+		success: true,
+		detail: 'OK'
+	});
+
+})
+
+.controller('DownloadPdfsByMonthModalInstance', function($scope, $log, $timeout, $moment, $uibModalInstance, Utils, InspectionsByMonth) {
+	$scope.modal = {
+		alert: {
+			color: null,
+			show: null,
+			title: null,
+			text: null
+		},
+		month: {
+			date: new Date()
+		},
+		datepicker: {
+			opened: false
+		},
+		buttons: {
+			download: {
+				disabled: false,
+				text: ''
+			}
+		}
+	};
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');
+	};
+
+	$scope.removeMessage = function() {
+		$scope.modal.alert.show = false;
+	};
+
+	$scope.openDatePicker = function($event) {
+		$event.preventDefault();
+		$event.stopPropagation();
+		$scope.modal.datepicker.opened = !$scope.modal.datepicker.opened;
+	};
+
+	$scope.downloadReports = function() {
+		var month = $scope.modal.month.date.getMonth() + 1;
+		var year = $scope.modal.month.date.getFullYear();
+
+		$scope.modal.buttons.download.disabled = true;
+		$scope.modal.buttons.download.text = 'Descargando...';
+
+		InspectionsByMonth.getFile('#downloadReportsByMonth', 'reportes_' + month + '_' + year, month, year);
+
+		$timeout(function() {
+			$scope.modal.buttons.download.disabled = false;
+			$scope.modal.buttons.download.text = '';
+		}, 3500);
+	};
+
 })
 
 .controller('FirmaInspeccionInstance', function($scope, $log, $uibModalInstance, Firmar, idInspection, Inspections, Validators, Utils) {
@@ -534,392 +688,5 @@ angular.module('efindingAdminApp')
 		$scope.elements.alert.text = '';
 		$scope.elements.alert.color = '';
 	};
-
-})
-
-.controller('DownloadPdfsByMonthModalInstance', function($scope, $log, $timeout, $moment, $uibModalInstance, Utils, ReportsByMonth) {
-
-	$scope.modal = {
-		alert: {
-			color: null,
-			show: null,
-			title: null,
-			text: null
-		},
-		month: {
-			date: new Date()
-		},
-		datepicker: {
-			opened: false
-		},
-		buttons: {
-			download: {
-				disabled: false,
-				text: ''
-			}
-		}
-	};
-
-	$scope.cancel = function() {
-		$uibModalInstance.dismiss('cancel');
-	};
-
-	$scope.removeMessage = function() {
-		$scope.modal.alert.show = false;
-	};
-
-	$scope.openDatePicker = function($event) {
-		$event.preventDefault();
-		$event.stopPropagation();
-		$scope.modal.datepicker.opened = !$scope.modal.datepicker.opened;
-	};
-
-	$scope.downloadReports = function() {
-		var month = $scope.modal.month.date.getMonth() + 1;
-		var year = $scope.modal.month.date.getFullYear();
-
-		$scope.modal.buttons.download.disabled = true;
-		$scope.modal.buttons.download.text = 'Descargando...';
-
-		ReportsByMonth.getFile('#downloadReportsByMonth', 'reportes_' + month + '_' + year, month, year);
-
-		$timeout(function() {
-			$scope.modal.buttons.download.disabled = false;
-			$scope.modal.buttons.download.text = '';
-		}, 3500);
-	};
-
-})
-
-.controller('DownloadPdfsModalInstance', function($scope, $log, $timeout, $moment, $uibModalInstance, Equipments, Reports, Utils, GetPdfsZip) {
-
-	$scope.modal = {
-		alert: {
-			color: null,
-			show: null,
-			title: null,
-			text: null
-		},
-		clients: {
-			list: [],
-			selected: {}
-		},
-		executers: {
-			list: [],
-			selected: []
-		},
-		territories: {
-			list: [],
-			selected: []
-		},
-		equipments: {
-			list: [],
-			selected: {}
-		},
-		classes: {
-			list: [],
-			selected: {}
-		},
-		dropdownMultiselect: {
-			settings: {
-				enableSearch: true,
-				displayProp: 'name',
-				scrollable: true,
-				scrollableHeight: 300,
-				externalIdProp: '',
-				showCheckAll: true,
-				showUncheckAll: true
-			},
-			texts: {
-				checkAll: 'Seleccionar todos',
-				uncheckAll: 'Desmarcar todos',
-				searchPlaceholder: 'Buscar',
-				buttonDefaultText: 'Seleccionar',
-				dynamicButtonTextSuffix: 'seleccionados'
-			}
-		},
-		dateRange: {
-			options: {
-				locale: {
-					format: 'DD/MM/YYYY',
-					applyLabel: 'Buscar',
-					cancelLabel: 'Cerrar',
-					fromLabel: 'Desde',
-					toLabel: 'Hasta',
-					customRangeLabel: 'Personalizado',
-					daysOfWeek: ['Dom', 'Lun', 'Mar', 'Mier', 'Jue', 'Vie', 'Sab'],
-					monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-					firstDay: 1
-				},
-				autoApply: true,
-				maxDate: $moment().add(1, 'months').date(1).subtract(1, 'days'),
-			},
-			date: {
-				startDate: new Date(),
-				endDate: new Date()
-			}
-		}
-	};
-
-	var creatorsDuplicates = [],
-		activityTypesDuplicates = [],
-		serialNumbersDuplicates = [],
-		configurationElementsDuplicates = [],
-		alternativeIdsDuplicates = [],
-		modelsDuplicates = [],
-		territoriesDuplicates = [],
-		classesDuplicates = [],
-		clientsDuplicates = [];
-
-	$scope.creatorsUnique = [];
-	$scope.activityTypesUnique = [];
-	$scope.serialNumbersUnique = [];
-	$scope.configurationElementsUnique = [];
-	$scope.alternativeIdsUnique = [];
-	$scope.modelsUnique = [];
-	$scope.territoriesUnique = [];
-	$scope.classesUnique = [];
-	$scope.clientsUnique = [];
-
-	var createdAtRange = [],
-		limitDateRange = [],
-		finishedAtRange = [],
-		i = 0,
-		j = 0,
-		k = 0,
-		reports = [],
-		reportsIncluded = [];
-
-	var getInspections = function(e) {
-		if (!e.success) {
-			$log.error(e.detail);
-			return;
-		}
-
-		Reports.query({
-			include: 'creator,report_type,equipment,activity_type,assigned_user',
-			'fields[users]': 'full_name,email',
-			all: true
-		}, function(success) {
-
-			reports = success.data;
-			reportsIncluded = success.included;
-
-			if (!success.data || !success.included) {
-				$log.error(success);
-				return;
-			}
-
-			// $log.info(success);
-
-			angular.forEach(success.included, function(value, key) {
-
-				if (value.type === 'users') {
-					creatorsDuplicates.push({
-						id: parseInt(value.id),
-						email: value.attributes.email,
-						name: value.attributes.full_name
-					});
-				}
-				if (value.type === 'activity_types') {
-					activityTypesDuplicates.push({
-						id: parseInt(value.id),
-						name: value.attributes.name
-					});
-				}
-				if (value.type === 'equipments') {
-					if (value.attributes.serial_number) {
-						serialNumbersDuplicates.push(value.attributes.serial_number);
-					}
-					if (value.attributes.configuration_element) {
-						configurationElementsDuplicates.push(value.attributes.configuration_element);
-					}
-					if (value.attributes.alternative_id) {
-						alternativeIdsDuplicates.push(value.attributes.alternative_id);
-					}
-					if (value.attributes.equipment_model) {
-						modelsDuplicates.push(value.attributes.equipment_model);
-					}
-					if (value.attributes.territory) {
-						territoriesDuplicates.push(value.attributes.territory);
-					}
-					if (value.attributes.equipment_class) {
-						classesDuplicates.push(value.attributes.equipment_class);
-					}
-					if (value.attributes.client) {
-						clientsDuplicates.push(value.attributes.client);
-					}
-				}
-
-			});
-
-			if (success.data[0].attributes.created_at) {
-				createdAtRange = [success.data[0].attributes.created_at, success.data[0].attributes.created_at];
-			}
-			if (success.data[0].attributes.limit_date) {
-				limitDateRange = [success.data[0].attributes.limit_date, success.data[0].attributes.limit_date];
-			}
-			if (success.data[0].attributes.finished_at) {
-				finishedAtRange = [success.data[0].attributes.finished_at, success.data[0].attributes.finished_at];
-			}
-
-			angular.forEach(success.data, function(value, key) {
-				if (value.attributes.created_at) {
-					if ($moment(value.attributes.created_at).diff($moment(createdAtRange[0])) < 0) {
-						createdAtRange[0] = value.attributes.created_at;
-					}
-					if ($moment(value.attributes.created_at).diff($moment(createdAtRange[1])) > 0) {
-						createdAtRange[1] = value.attributes.created_at;
-					}
-				}
-				if (value.attributes.limit_date) {
-					if ($moment(value.attributes.limit_date).diff($moment(limitDateRange[0])) < 0) {
-						limitDateRange[0] = value.attributes.limit_date;
-					}
-					if ($moment(value.attributes.limit_date).diff($moment(limitDateRange[1])) > 0) {
-						limitDateRange[1] = value.attributes.limit_date;
-					}
-				}
-				if (value.attributes.finished_at) {
-					if ($moment(value.attributes.finished_at).diff($moment(finishedAtRange[0])) < 0) {
-						finishedAtRange[0] = value.attributes.finished_at;
-					}
-					if ($moment(value.attributes.finished_at).diff($moment(finishedAtRange[1])) > 0) {
-						finishedAtRange[1] = value.attributes.finished_at;
-					}
-				}
-			});
-
-			$scope.modal.dateRange.date.startDate = createdAtRange[0];
-			$scope.modal.dateRange.date.endDate = new Date();
-
-			$scope.modal.executers.list = _.uniq(creatorsDuplicates, function(item, key, id) {
-				return item.id;
-			});
-
-			$scope.activityTypesUnique = _.uniq(activityTypesDuplicates, function(item, key, id) {
-				return item.id;
-			});
-			$scope.activityTypeSelected = $scope.activityTypesUnique[0];
-
-			$scope.serialNumbersUnique = _.uniq(serialNumbersDuplicates);
-			$scope.configurationElementsUnique = _.uniq(configurationElementsDuplicates);
-			$scope.alternativeIdsUnique = _.uniq(alternativeIdsDuplicates);
-			$scope.modelsUnique = _.uniq(modelsDuplicates);
-			$scope.territoriesUnique = _.uniq(territoriesDuplicates);
-			$scope.classesUnique = _.uniq(classesDuplicates);
-			$scope.clientsUnique = _.uniq(clientsDuplicates);
-
-			$scope.modal.equipments.selected = $scope.modal.equipments.list[0];
-
-			for (var i = 0; i < $scope.clientsUnique.length; i++) {
-				$scope.modal.clients.list.push({
-					id: i,
-					name: $scope.clientsUnique[i]
-				});
-			}
-			$scope.modal.clients.selected = $scope.modal.clients.list[0];
-
-			for (i = 0; i < $scope.classesUnique.length; i++) {
-				$scope.modal.classes.list.push({
-					id: i,
-					name: $scope.classesUnique[i]
-				});
-			}
-			$scope.modal.classes.selected = $scope.modal.classes.list[0];
-
-
-			for (i = 0; i < $scope.territoriesUnique.length; i++) {
-				$scope.modal.territories.list.push({
-					id: i,
-					name: $scope.territoriesUnique[i]
-				});
-
-			}
-			for (i = 0; i < $scope.modal.territories.list.length; i++) {
-				$scope.modal.territories.selected.push($scope.modal.territories.list[i]);
-			}
-		}, function(error) {
-			$log.log(error);
-			if (error.status === 401) {
-				Utils.refreshToken(getInspections);
-			}
-		});
-	};
-
-	$scope.downloadZip = function() {
-
-		var equipmentsSelected = [];
-		$log.log($scope.modal.clients.selected.name);
-		$log.log($scope.modal.classes.selected.name);
-
-		for (i = 0; i < reportsIncluded.length; i++) {
-			for (j = 0; j < $scope.modal.territories.selected.length; j++) {
-
-				if (reportsIncluded[i].type === 'equipments' &&
-					reportsIncluded[i].attributes.client === $scope.modal.clients.selected.name &&
-					reportsIncluded[i].attributes.equipment_class === $scope.modal.classes.selected.name &&
-					reportsIncluded[i].attributes.territory === $scope.modal.territories.selected[j].name
-				) {
-
-					equipmentsSelected.push(parseInt(reportsIncluded[i].id));
-
-				}
-
-			}
-		}
-
-		var reportsIds = [];
-
-		for (i = 0; i < reports.length; i++) {
-
-			for (j = 0; j < equipmentsSelected.length; j++) {
-				for (k = 0; k < $scope.modal.executers.selected.length; k++) {
-
-					if (reports[i].attributes.state_name === 'Ejecutado' &&
-						$moment(Date.parse(reports[i].attributes.created_at)).isAfter(Date.parse($scope.modal.dateRange.date.startDate)) &&
-						$moment(Date.parse(reports[i].attributes.created_at)).isBefore(Date.parse($scope.modal.dateRange.date.endDate)) &&
-						parseInt(reports[i].attributes.equipment_id) === parseInt(equipmentsSelected[j]) &&
-						parseInt(reports[i].attributes.creator_id) === parseInt($scope.modal.executers.selected[k].id) &&
-						parseInt(reports[i].attributes.activity_type_id) === parseInt($scope.activityTypeSelected.id)
-
-					) {
-
-						reportsIds.push(reports[i].id);
-					}
-				}
-			}
-		}
-		$log.info('reportsIds');
-		$log.info(reportsIds);
-
-		if (reportsIds.length > 0) {
-			$scope.zipBtnDisabled = true;
-			GetPdfsZip.getFile('#zipBtn', reportsIds);
-			$timeout(function() {
-				$scope.zipBtnDisabled = false;
-			}, 2000);
-		} else {
-			$scope.modal.alert.color = 'warning';
-			$scope.modal.alert.title = 'No se encontraron inspecciones que cumplan con los filtros';
-			$scope.modal.alert.text = '';
-			$scope.modal.alert.show = true;
-		}
-
-
-	};
-
-	$scope.cancel = function() {
-		$uibModalInstance.dismiss('cancel');
-	};
-
-	$scope.removeMessage = function() {
-		$scope.modal.alert.show = false;
-	};
-
-	getInspections({
-		success: true,
-		detail: 'OK'
-	});
 
 });

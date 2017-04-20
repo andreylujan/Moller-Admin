@@ -64,6 +64,16 @@ angular.module('efindingAdminApp')
 
 })
 
+.factory('InspectionsByMonth', function($auth) {
+	return {
+		getFile: function(elem, fileName, month, year) {
+			var downloadLink = angular.element(elem);
+			downloadLink.attr('href', API_URL + '/inspections.xlsx?access_token=' + $auth.getToken() + '&month=' + month + '&year=' + year);
+			downloadLink.attr('download', fileName + '.xlsx');
+		}
+	};
+})
+
 // INSPECCIONES
 .factory('Inspections', function($resource) {
 
@@ -96,6 +106,23 @@ angular.module('efindingAdminApp')
 			},
 			params: {
 				include: 'construction.company,creator',
+			}
+		}
+	});
+
+})
+
+// INSPECCIONES REMOVE
+.factory('InspectionsRemove', function($resource) {
+
+	return $resource(API_URL + '/inspections/:idInspection', {
+		idInspection: '@idInspection'
+	}, {
+		delete: {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
 			}
 		}
 	});

@@ -43,7 +43,7 @@ angular.module('efindingAdminApp')
 					page: 1, // show first page
 					count: 50, // count per page
 					sorting: {
-						name: 'desc' // initial sorting
+						name: 'asc' // initial sorting
 					}
 				}, {
 					total: data.length, // length of data
