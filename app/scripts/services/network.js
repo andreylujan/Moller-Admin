@@ -62,6 +62,16 @@ angular.module('efindingAdminApp')
 
 })
 
+.factory('InspectionsByMonth', function($auth) {
+	return {
+		getFile: function(elem, fileName, month, year) {
+			var downloadLink = angular.element(elem);
+			downloadLink.attr('href', API_URL + '/inspections.xlsx?access_token=' + $auth.getToken() + '&month=' + month + '&year=' + year);
+			downloadLink.attr('download', fileName + '.xlsx');
+		}
+	};
+})
+
 // INSPECCIONES
 .factory('Inspections', function($resource) {
 
