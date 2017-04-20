@@ -40,9 +40,9 @@
 					<div class="tile-body">
 
 						<div class="row">
-							<!--div class="col-md-2">
-								<button class="bg-cyan-1-generic pt-7 pb-7 pr-12 pl-12 br-15 b-0 text-white ml-20 mb-10" ng-click="openModalDownloadPdfsByMonth()" uib-tooltip="Descargar Excel"><i class="fa fa-cloud-download"></i></button>
-							</div-->
+							<div class="col-md-2">
+								<input type="image" src="https://s3-sa-east-1.amazonaws.com/efinding/icons/abajo.png" ng-click="openModalDownloadPdfsByMonth()" uib-tooltip="Descargar Excel"></input>
+							</div>
 						</div>
 						<table ng-table="tableParams" show-filter="true" class="table table-custom">
 							<thead>
@@ -50,11 +50,13 @@
 									<th ng-repeat="column in columns2" class="text-center sortable" ng-click="sortBy(column.field_a)"> {{column.title}} </th>
 									<th class="text-center"> PDF </th>
 									<th class="text-center"> Firma </th>
+									<th class="text-center"> Eliminar </th>
 								</tr>
 								<tr>
 									<th ng-repeat="column in columns2" class="text-center sortable" >
 										<input type="text" class="form-control" ng-model="filter[column.filter].filter"/>
 									</th>
+									<th class="text-center" ></th>
 									<th class="text-center" ></th>
 									<th class="text-center" ></th>
 								</tr>
@@ -75,6 +77,9 @@
 										<label ng-if="inspection.state == 'first_signature_done'">Firmado</label>
 										<a ng-click="FirmaInspeccionInstance(inspection.id)" ng-if="inspection.state == 'final_signature_pending'">Pendiente de firma final</a>
 										<label ng-if="inspection.state == 'finished'">Teminado</label>
+									</td>
+									<td>
+										<img ng-click="openModalRemoveInspection(inspection.id)" ng-src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/delete.png" style="width:18px;" tooltip="Borrar inspección">
 									</td>
 								</tr>
 							</tbody>
@@ -240,6 +245,59 @@
 			<button class="btn btn-cancelRecit btn-rounded-10 mb-10" type="button" ng-click="cancel()">Cerrar</button>
 		</div>
 
-	</script>
+</script>
+
+<script type="text/ng-template" id="modalDownloadPdfsByMonth.html">
+	<div class="modal-header text-center">
+		<h3>Descargar Excel de reportes</h3>
+	</div>
+
+	<div class="modal-body">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="alert alert-{{modal.alert.color}}" ng-show="modal.alert.show"> <h4 class="text-md"><strong>{{modal.alert.title}}</strong></h4> {{modal.alert.text}} </div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<form class="form-horizontal" role="form">
+					<div class="form-group">
+						<label class="col-sm-5 control-label">Descargar reportes del mes</label>
+						<div class="col-sm-6">
+							<p class="input-group">
+								<input type="text" class="form-control" uib-datepicker-popup="MM/yyyy" ng-model="modal.month.date" is-open="modal.datepicker.opened" datepicker-options="{minMode: 'month', showButtonBar: false}" />
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-default" ng-click="openDatePicker($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+								</span>
+							</p>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+	</div>
+
+	<div class="modal-footer">
+		<a class="btn mb-10" id="downloadReportsByMonth" ng-href="" ng-click="downloadReports()" ng-disabled="modal.buttons.download.disabled"><img src="https://s3-sa-east-1.amazonaws.com/efinding/icons/abajo.png"></a>
+		<button class="btn btn-cancelRecit btn-rounded-10 mb-10" type="button" ng-click="cancel()">Cerrar</button>
+	</div>
+
+</script>
+
+<script type="text/ng-template" id="removeModal.html" class="">
+  <div class="modal-body text-gray">
+    <div class="row">
+      <div class="col-md-12">
+        <h4 class="text-center">¿Seguro desea eliminar la inspección <strong>{{modal.inspection.title}}</strong>? </h4>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+  	<button class="btn btn-danger" ng-click="removeInspection({success: true,detail: 'OK'})">Si, eliminar</button>
+  	<button class="btn btn-default" ng-click="cancel()">Cancelar</button>
+  </div>
+</script>
 
 </div>

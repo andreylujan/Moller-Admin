@@ -38,7 +38,7 @@ angular.module('efindingAdminApp')
 				page: 1, // show first page
 				count: 25, // count per page
 				sorting: {
-					name: 'desc' // initial sorting
+					name: 'asc' // initial sorting
 				}
 			}, {
 				total: checklists.length, // length of checklists

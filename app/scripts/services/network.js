@@ -100,6 +100,23 @@ angular.module('efindingAdminApp')
 
 })
 
+// INSPECCIONES REMOVE
+.factory('InspectionsRemove', function($resource) {
+
+	return $resource(API_URL + '/inspections/:idInspection', {
+		idInspection: '@idInspection'
+	}, {
+		delete: {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		}
+	});
+
+})
+
 // ROLES
 .factory('Roles', function($resource) {
 

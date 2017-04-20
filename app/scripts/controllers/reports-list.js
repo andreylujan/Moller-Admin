@@ -9,7 +9,7 @@
  */
 angular.module('efindingAdminApp')
 
-.controller('ReportsListCtrl', function($scope, $log, $filter, $window, $timeout, $uibModal, NgTableParams, Inspections, Utils) {
+.controller('ReportsListCtrl', function($scope, $log, $state, $filter, $window, $timeout, $uibModal, NgTableParams, Inspections, Utils) {
 
 	$scope.page = {
 		title: 'Lista de inspecciones',
@@ -402,6 +402,160 @@ angular.module('efindingAdminApp')
 		}, function() {});
 	};
 
+	$scope.openModalDownloadPdfsByMonth = function() {
+		var modalInstance = $uibModal.open({
+			animation: true,
+			backdrop: false,
+			templateUrl: 'modalDownloadPdfsByMonth.html',
+			controller: 'DownloadPdfsByMonthModalInstance',
+			resolve: {}
+		});
+
+		modalInstance.result.then(function() {}, function() {});
+	};
+
+	$scope.openModalRemoveInspection = function(idInspection) {
+		var modalInstance = $uibModal.open({
+			animation: true,
+			templateUrl: 'removeModal.html',
+			controller: 'RemoveModalInstance',
+			resolve: {
+				idInspection: function() {
+					return idInspection;
+				}
+			}
+		});
+
+		modalInstance.result.then(function() {
+			/*$scope.getInspections({
+				success: true,
+				detail: 'OK'
+			});*/
+			$state.reload();
+		}, function() {
+			// getPromotions();
+		});
+	};
+
+})
+
+.controller('RemoveModalInstance', function($scope, $filter, $log, $uibModalInstance, idInspection, Utils, Inspections, InspectionsRemove) {
+
+	$scope.modal = {
+		inspection: {
+			title: ''
+		}
+	};
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');
+	};
+
+	var getInfoInspection = function(e) {
+		if (!e.success) {
+			$log.error(e.detail);
+			return;
+		}
+
+		Inspections.query({
+			idInspection: idInspection
+		}, function(success) {
+			$log.error(success);
+			if (success.data) {
+				//$scope.modal.inspection.title = success.data.attributes.title;
+			} else {
+				$log.error('no se pudo obtener el titulo');
+				$log.error(success);
+			}
+		}, function(error) {
+			$log.log(error);
+			if (error.status === 401) {
+				Utils.refreshToken(getInfoInspection);
+			}
+		});
+	};
+
+	$scope.removeInspection = function(e) {
+		if (!e.success) {
+			$log.error(e.detail);
+			return;
+		}
+
+		InspectionsRemove.delete({
+			idInspection: idInspection
+		}, function(success) {
+			if (!success.errors) {
+				$uibModalInstance.close();
+			} else {
+				$log.log('no se puso borrar');
+				$log.log(success);
+			}
+		}, function(error) {
+			$log.log(error);
+			if (error.status === 401) {
+				Utils.refreshToken($scope.InspectionsRemove);
+			}
+		});
+	};
+
+	getInfoInspection({
+		success: true,
+		detail: 'OK'
+	});
+
+})
+
+.controller('DownloadPdfsByMonthModalInstance', function($scope, $log, $timeout, $moment, $uibModalInstance, Utils) {
+	$scope.modal = {
+		alert: {
+			color: null,
+			show: null,
+			title: null,
+			text: null
+		},
+		month: {
+			date: new Date()
+		},
+		datepicker: {
+			opened: false
+		},
+		buttons: {
+			download: {
+				disabled: false,
+				text: ''
+			}
+		}
+	};
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');
+	};
+
+	$scope.removeMessage = function() {
+		$scope.modal.alert.show = false;
+	};
+
+	$scope.openDatePicker = function($event) {
+		$event.preventDefault();
+		$event.stopPropagation();
+		$scope.modal.datepicker.opened = !$scope.modal.datepicker.opened;
+	};
+
+	$scope.downloadReports = function() {
+		var month = $scope.modal.month.date.getMonth() + 1;
+		var year = $scope.modal.month.date.getFullYear();
+
+		$scope.modal.buttons.download.disabled = true;
+		$scope.modal.buttons.download.text = 'Descargando...';
+
+		ReportsByMonth.getFile('#downloadReportsByMonth', 'reportes_' + month + '_' + year, month, year);
+
+		$timeout(function() {
+			$scope.modal.buttons.download.disabled = false;
+			$scope.modal.buttons.download.text = '';
+		}, 3500);
+	};
+
 })
 
 .controller('FirmaInspeccionInstance', function($scope, $log, $uibModalInstance, Firmar, idInspection, Inspections, Validators, Utils) {
@@ -537,59 +691,6 @@ angular.module('efindingAdminApp')
 
 })
 
-.controller('DownloadPdfsByMonthModalInstance', function($scope, $log, $timeout, $moment, $uibModalInstance, Utils, ReportsByMonth) {
-
-	$scope.modal = {
-		alert: {
-			color: null,
-			show: null,
-			title: null,
-			text: null
-		},
-		month: {
-			date: new Date()
-		},
-		datepicker: {
-			opened: false
-		},
-		buttons: {
-			download: {
-				disabled: false,
-				text: ''
-			}
-		}
-	};
-
-	$scope.cancel = function() {
-		$uibModalInstance.dismiss('cancel');
-	};
-
-	$scope.removeMessage = function() {
-		$scope.modal.alert.show = false;
-	};
-
-	$scope.openDatePicker = function($event) {
-		$event.preventDefault();
-		$event.stopPropagation();
-		$scope.modal.datepicker.opened = !$scope.modal.datepicker.opened;
-	};
-
-	$scope.downloadReports = function() {
-		var month = $scope.modal.month.date.getMonth() + 1;
-		var year = $scope.modal.month.date.getFullYear();
-
-		$scope.modal.buttons.download.disabled = true;
-		$scope.modal.buttons.download.text = 'Descargando...';
-
-		ReportsByMonth.getFile('#downloadReportsByMonth', 'reportes_' + month + '_' + year, month, year);
-
-		$timeout(function() {
-			$scope.modal.buttons.download.disabled = false;
-			$scope.modal.buttons.download.text = '';
-		}, 3500);
-	};
-
-})
 
 .controller('DownloadPdfsModalInstance', function($scope, $log, $timeout, $moment, $uibModalInstance, Equipments, Reports, Utils, GetPdfsZip) {
 

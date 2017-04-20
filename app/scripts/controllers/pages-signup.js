@@ -123,14 +123,14 @@ angular.module('efindingAdminApp')
 
 	$scope.saveAccount = function() {
 
-		// var rutUnformatted = Utils.replaceAll($scope.page.elements.newUser.rut.text, '.', '');
+		var rutUnformatted = Utils.replaceAll($scope.page.elements.newUser.rut.text, '.', '');
 
-		// if (!Validators.validateRutCheckDigit(rutUnformatted)) {
-		// 	$scope.page.elements.message.color = 'danger';
-		// 	$scope.page.elements.message.text = 'Rut no válido';
-		// 	$scope.page.elements.message.show = true;
-		// 	return;
-		// }
+		 if (!Validators.validateRutCheckDigit(rutUnformatted)) {
+		 	$scope.page.elements.message.color = 'danger';
+		 	$scope.page.elements.message.text = 'Rut no válido';
+		 	$scope.page.elements.message.show = true;
+		 	return;
+		 }
 
 		if (!Validators.validateRequiredField($scope.page.elements.newUser.email.text) || !Validators.validateRequiredField($scope.page.elements.newUser.firstName.text) || !Validators.validateRequiredField($scope.page.elements.newUser.lastName.text) || !Validators.validateRequiredField($scope.page.elements.newUser.password.text) || !Validators.validateRequiredField($scope.page.elements.newUser.passwordConfirmation.text)) {
 			$scope.page.elements.message.color = 'danger';
@@ -242,11 +242,20 @@ angular.module('efindingAdminApp')
 
 		if (Validators.validateRutCheckDigit(rut)) {
 			$scope.page.elements.newUser.rut.text = Utils.formatRut(rut);
-			// $scope.page.elements.saveBtn.disabled = false;
-			// $log.log('dv valido');
+			$scope.page.elements.saveBtn.disabled = false;
+			$scope.page.elements.newUser.firstName.disabled = false;
+			$scope.page.elements.newUser.lastName.disabled = false;
+			$scope.page.elements.newUser.password.disabled = false;
+			$scope.page.elements.newUser.passwordConfirmation.disabled = false;
 		} else {
-			// $scope.page.elements.saveBtn.disabled = true;
-			// $log.log('dv NO valido');
+			$scope.page.elements.message.color = 'danger';
+		 	$scope.page.elements.message.text = 'Rut no válido';
+		 	$scope.page.elements.message.show = true;
+		 	$scope.page.elements.saveBtn.disabled = true;
+		 	$scope.page.elements.newUser.firstName.disabled = true;
+			$scope.page.elements.newUser.lastName.disabled = true;
+			$scope.page.elements.newUser.password.disabled = true;
+			$scope.page.elements.newUser.passwordConfirmation.disabled = true;
 		}
 
 	};
