@@ -172,17 +172,6 @@ angular
 				controller: 'ReportsListCtrl'
 			})
 
-		//Checklist
-		.state('efinding.checklist', {
-				url: '/checklist',
-				template: '<div ui-view></div>'
-			})
-			.state('efinding.checklist.list', {
-				url: '/lista',
-				templateUrl: 'views/tmpl/masters/checklist.html',
-				controller: 'ChecklistCtrl'
-			})
-
 		//Masters
 		.state('efinding.maestros', {
 				url: '/maestros',
@@ -212,7 +201,7 @@ angular
 			.state('efinding.obras.checklist', {
 				url: '/checklist',
 				templateUrl: 'views/tmpl/masters/master-checklist.html',
-				controller: 'MasterChecklistCtrl'
+				controller: 'ChecklistCtrl'
 			})
 			.state('efinding.obras.new-checklist', {
 				url: '/new-checklist?idChecklist',
