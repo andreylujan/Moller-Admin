@@ -44,7 +44,7 @@ angular.module('efindingAdminApp')
 					page: 1, // show first page
 					count: 50, // count per page
 					sorting: {
-						active: 'asc' // initial sorting
+						firstName: 'asc' // initial sorting
 					}
 				}, {
 					total: data.length, // length of data
@@ -141,6 +141,7 @@ angular.module('efindingAdminApp')
 		});
 	};
 
+
 })
 
 .controller('UserDetailsInstance', function($scope, $log, $uibModalInstance, idUser, Users, Roles, Validators, Utils) {
@@ -179,7 +180,8 @@ angular.module('efindingAdminApp')
 		buttons: {
 			editUser: {
 				text: 'Editar',
-				border: 'btn-border'
+				border: 'btn-border',
+				disabled: false
 			},
 			removeUser: {
 				text: 'Eliminar',
@@ -372,9 +374,23 @@ angular.module('efindingAdminApp')
 	};
 
 	$scope.formatRut = function(rut) {
-
-		if (Validators.validateRutCheckDigit(rut)) {
-			$scope.user.rut.text = Utils.formatRut(rut);
+		if ($scope.user.rut.text != undefined) 
+		{
+			if (Validators.validateRutCheckDigit(rut)) {
+				$scope.user.rut.text = Utils.formatRut(rut);
+				$scope.elements.alert.show = false;
+				$scope.elements.buttons.editUser.disabled = false;
+			} else {
+				$scope.elements.alert.color = 'danger';
+			 	$scope.elements.alert.text = 'Rut no válido';
+			 	$scope.elements.alert.show = true;
+			 	$scope.elements.buttons.editUser.disabled = true;
+			}
+		}
+		else
+		{
+		 	$scope.elements.alert.show = false;
+		 	$scope.elements.buttons.editUser.disabled = false;
 		}
 
 	};

@@ -21,6 +21,8 @@ angular.module('efindingAdminApp')
 		}
 	};
 
+	$scope.role_id = Utils.getInStorage('role_id');
+
 	$scope.pagination = {
 		pages: {
 			current: 1,

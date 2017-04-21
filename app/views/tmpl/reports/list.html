@@ -50,7 +50,7 @@
 									<th ng-repeat="column in columns2" class="text-center sortable" ng-click="sortBy(column.field_a)"> {{column.title}} </th>
 									<th class="text-center"> PDF </th>
 									<th class="text-center"> Firma </th>
-									<th class="text-center"> Eliminar </th>
+									<th class="text-center" ng-show="role_id==1"> Eliminar </th>
 								</tr>
 								<tr>
 									<th ng-repeat="column in columns2" class="text-center sortable" >
@@ -58,7 +58,7 @@
 									</th>
 									<th class="text-center" ></th>
 									<th class="text-center" ></th>
-									<th class="text-center" ></th>
+									<th class="text-center" ng-show="role_id==1"></th>
 								</tr>
 							</thead>
 
@@ -78,7 +78,7 @@
 										<a ng-click="FirmaInspeccionInstance(inspection.id)" ng-if="inspection.state == 'final_signature_pending'">Pendiente de firma final</a>
 										<label ng-if="inspection.state == 'finished'">Teminado</label>
 									</td>
-									<td>
+									<td ng-show="role_id==1">
 										<img ng-click="openModalRemoveInspection(inspection.id)" ng-src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/delete.png" style="width:18px;" tooltip="Borrar inspección">
 									</td>
 								</tr>
