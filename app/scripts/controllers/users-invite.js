@@ -130,7 +130,7 @@ angular.module('efindingAdminApp')
 				"data": {
 					"type": "invitations",
 					"attributes": {
-						"role_id": Utils.getInStorage('role_id'),
+						"role_id": $scope.page.formGroups.invite[i].roleId,
 						"email": $scope.page.formGroups.invite[i].email
 					}
 				}
