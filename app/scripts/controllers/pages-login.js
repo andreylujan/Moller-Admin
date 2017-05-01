@@ -111,7 +111,13 @@ angular.module('efindingAdminApp')
 			user.fullName = success.data.attributes.full_name;
 			user.image = success.data.attributes.image;
 			user.type = success.data.type;
-			$log.log(Utils.getInStorage('organization'));
+
+			for (var i = 0; i < success.included.length; i++) {
+				if (success.included[i].type === 'organizations') 
+				{
+					Utils.setInStorage('organization', success.included[i].id);
+				}
+			}
 
 			defered.resolve({
 				success: true,
