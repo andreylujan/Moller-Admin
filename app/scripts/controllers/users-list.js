@@ -253,7 +253,7 @@ angular.module('efindingAdminApp')
 		$scope.roles = [];
 
 		Roles.query({
-			idOrganization: 1
+			idOrganization: Utils.getInStorage('organization')
 		}, function(success) {
 			if (success.data) {
 				for (var i = 0; i < success.data.length; i++) {
