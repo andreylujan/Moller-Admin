@@ -111,7 +111,15 @@ angular.module('efindingAdminApp')
 			user.fullName = success.data.attributes.full_name;
 			user.image = success.data.attributes.image;
 			user.type = success.data.type;
-			$log.log(Utils.getInStorage('organization'));
+
+			for (var i = 0; i < success.included.length; i++) 
+			{
+				if (success.included[i].type == 'organizations') 
+				{
+					Utils.setInStorage('organization', success.included[i].id);
+				}
+			}
+			//$log.log(Utils.getInStorage('organization'));
 
 			defered.resolve({
 				success: true,
@@ -211,7 +219,15 @@ angular.module('efindingAdminApp')
 			}
 
 			Utils.setInStorage('report_columns', columns.reportColumns);
-			gotoReportList();
+			if (Utils.getInStorage('organization') == 3) 
+			{
+				gotoManflas();
+			}
+			else
+			{
+				gotoReportList();
+			}
+			
 
 		}, function(error) {
 			defered.reject({
@@ -226,6 +242,10 @@ angular.module('efindingAdminApp')
 
 	var gotoReportList = function() {
 		$state.go('efinding.dashboard.generic');
+	};
+	//Dashboard para Manflas
+	var gotoManflas = function() {
+		$state.go('efinding.dashboard.manflas');
 	};
 
 });

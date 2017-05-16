@@ -44,12 +44,35 @@ angular.module('efindingAdminApp')
 				Accept: 'application/vnd.api+json'
 			},
 			params: {
-				include: 'creator,report_type,assigned_user',
+				include: '@include',
 				fieldsUsers: '@fieldsUsers',
 				fieldsReports: '@fieldsReports',
 				fieldsEquipments: '@fieldsEquipments',
 				all: 'true'
 			}
+		},
+		save: {
+			method: 'POST',
+			headers: {
+				Accept: 'application/vnd.api+json',
+				'Content-Type': 'application/vnd.api+json'
+			}
+		}
+	});
+
+})
+
+// REPORTES
+.factory('ReportsManflas', function($resource) {
+
+	return $resource(API_URL + '/reports?:filtro', {
+		filtro: '@filtro'
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			},
 		},
 		save: {
 			method: 'POST',
@@ -202,6 +225,21 @@ angular.module('efindingAdminApp')
 
 	return $resource(API_URL + '/table_columns?filter[collection_name]=:type', {
 		type: '@type'
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			}
+		}
+	});
+
+})
+
+// Cuarteles
+.factory('Cuarteles', function($resource) {
+
+	return $resource(API_URL + '/manflas/stations', {
 	}, {
 		query: {
 			method: 'GET',
@@ -441,12 +479,7 @@ angular.module('efindingAdminApp')
 			},
 			params: {
 				include: '@include',
-				'filter[construction][name]': '@constructionName',
-				'filter[construction][company][name]': '@companyName',
-				'filter[state_name]': '@statusName',
-				'filter[creator][name]': '@supervisorName',
-				'filter[start_date]': '@startDate',
-				'filter[end_date]': '@endDate'
+				fieldsReports: '@fieldsReports',
 			}
 		}
 	});
@@ -497,7 +530,7 @@ angular.module('efindingAdminApp')
 				Accept: 'application/vnd.api+json'
 			},
 			params: {
-				include: 'parent_item'
+				include: 'parent_item,resource_owner'
 			}
 		},
 		update: {
