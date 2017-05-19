@@ -101,7 +101,7 @@
 		  				<div class="col-sm-8">
 		  					<ui-select class="bg-white b-solid br-15" ng-model="collection.selectedParent" close-on-select="true">
 		  						<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.name}}</ui-select-match>
-		  						<ui-select-choices repeat="parent in collection.data track by parent.name | propsFilter: {name: $select.search}" refresh-delay="200">
+		  						<ui-select-choices repeat="parent in collection.data" refresh-delay="200">
 		  							<div ng-bind-html="parent.name"></div>
 		  						</ui-select-choices>
 		  					</ui-select>
@@ -138,7 +138,7 @@
   				<div class="col-sm-8">
   					<ui-select class="bg-white b-solid br-15" ng-model="collection.selectedParent" close-on-select="true">
   						<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.name}}</ui-select-match>
-  						<ui-select-choices repeat="parent in parentCollection.data track by parent.name | propsFilter: {name: $select.search}" refresh-delay="200">
+  						<ui-select-choices repeat="parent in parentCollection.data" refresh-delay="200">
   							<div ng-bind-html="parent.name"></div>
   						</ui-select-choices>
   					</ui-select>

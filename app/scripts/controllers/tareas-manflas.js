@@ -9,7 +9,7 @@
  */
 angular.module('efindingAdminApp')
 
-.controller('TareasManflas', function($scope, $log, $state, $filter, $window, $timeout, $uibModal, NgTableParams, Reports, Utils) {
+.controller('TareasManflas', function($scope, $log, $state, $filter, $window, $timeout, $uibModal, NgTableParams, ReportsTask, Utils) {
 
 	$scope.page = {
 		title: 'Lista de Tareas',
@@ -150,7 +150,7 @@ angular.module('efindingAdminApp')
 				filtersToSearch[attr] = filters[attr];
 			}
 		}
-		Reports.query(filtersToSearch, function(success) {
+		ReportsTask.query(filtersToSearch, function(success) {
 			reportsIncluded = success.included;
 			$scope.pagination.pages.total = success.meta.page_count;
 

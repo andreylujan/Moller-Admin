@@ -63,6 +63,65 @@ angular.module('efindingAdminApp')
 })
 
 // REPORTES
+.factory('ReportsMine', function($resource) {
+
+	return $resource(API_URL + '/reports/mine', {
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: '@include',
+				fieldsUsers: '@fieldsUsers',
+				fieldsReports: '@fieldsReports',
+				fieldsEquipments: '@fieldsEquipments',
+				all: 'true'
+			}
+		},
+		save: {
+			method: 'POST',
+			headers: {
+				Accept: 'application/vnd.api+json',
+				'Content-Type': 'application/vnd.api+json'
+			}
+		}
+	});
+
+})
+
+// REPORTES
+.factory('ReportsTask', function($resource) {
+
+	return $resource(API_URL + '/reports/tasks', {
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: '@include',
+				fieldsUsers: '@fieldsUsers',
+				fieldsReports: '@fieldsReports',
+				fieldsEquipments: '@fieldsEquipments',
+				all: 'true'
+			}
+		},
+		save: {
+			method: 'POST',
+			headers: {
+				Accept: 'application/vnd.api+json',
+				'Content-Type': 'application/vnd.api+json'
+			}
+		}
+	});
+
+})
+
+
+// REPORTES
 .factory('ReportsManflas', function($resource) {
 
 	return $resource(API_URL + '/reports?:filtro', {
@@ -239,7 +298,7 @@ angular.module('efindingAdminApp')
 // Cuarteles
 .factory('Cuarteles', function($resource) {
 
-	return $resource(API_URL + '/manflas/stations', {
+	return $resource(API_URL + '/manflas/stations?fields[stations]=id,name,variety,num_reports,coordinates', {
 	}, {
 		query: {
 			method: 'GET',

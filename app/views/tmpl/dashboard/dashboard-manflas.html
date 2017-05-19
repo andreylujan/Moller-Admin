@@ -121,7 +121,7 @@
 					    </kml-layer>
 					    <custom-marker ng-repeat="cuartel in page.filters.cuarteles.list" position="{{cuartel.coordenadas[1]}},{{cuartel.coordenadas[0]}}"
 				          on-click="click(cuartel)">
-				          <div class="my1"><div>1</div> </div>
+				          <div class="my1"><div>{{cuartel.num_reports}}</div> </div>
 				        </custom-marker>
 					</ng-map>
 

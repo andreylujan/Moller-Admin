@@ -198,8 +198,9 @@
  				angular.forEach(success.data, function(value, key) {
  					$scope.page.filters.cuarteles.list.push({
  						id: value.id,
- 						name: value.attributes.name + value.attributes.variety,
- 						coordenadas: value.attributes.coordinates
+ 						name: value.attributes.name + ' ' + value.attributes.variety,
+ 						coordenadas: value.attributes.coordinates,
+ 						num_reports: value.attributes.num_reports
  					});
  				});
  				$scope.page.filters.cuarteles.selected = $scope.page.filters.cuarteles.list[0];
@@ -460,7 +461,6 @@
  	//TERMINA TABLA CON REPORTES
 
  	$scope.$watch('page.filters.areas.loaded', function() {
- 		$log.error("entre aqui");
 		if ($scope.page.filters.areas.loaded) {
 			$scope.$watch('page.filters.dateRange.date', function(newValue, oldValue) {
 				var startDate = new Date($scope.page.filters.dateRange.date.startDate);

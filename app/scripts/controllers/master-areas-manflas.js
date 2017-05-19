@@ -331,11 +331,18 @@ angular.module('efindingAdminApp')
 			idCollection: idObject,
 		}, function(success) {
 			if (success.data) {
-				$log.error(success.data);
 				$scope.collection.id 		= success.data.id;
 				$scope.collection.name 		= success.data.attributes.name;
 				$scope.collection.parent_item_id = success.data.attributes.parent_item_id;
-				//$scope.getUsers();
+				var resource_owner = success.data.relationships.resource_owner.data;
+				if (resource_owner != null) 
+				{
+					$scope.getUsers(resource_owner.id);
+				}
+				else
+				{
+					$scope.getUsers('');
+				}
 
 
 			} else {
@@ -351,18 +358,24 @@ angular.module('efindingAdminApp')
 	};
 
 
-	$scope.getUsers = function() {
+	$scope.getUsers = function(id_user) {
 		Users.query({
 			idUser: ''
 		}, function(success) {
 			if (success.data) {
 				$scope.parentCollection.visible = true;
 				for (var i = 0; i < success.data.length; i++) {
-
-					$scope.parentCollection.data.push({
-						name: success.data[i].attributes.full_name,
-						id: success.data[i].id,
-					});
+					if (success.data[i].attributes.active) 
+					{
+						$scope.parentCollection.data.push({
+							name: success.data[i].attributes.first_name + ' ' + success.data[i].attributes.last_name,
+							id: success.data[i].id,
+						});
+						if ($scope.parentCollection.data[i].id == id_user) 
+						{
+							$scope.collection.selectedParent = {name: success.data[i].attributes.first_name + ' ' + success.data[i].attributes.last_name, id: success.data[i].id};
+						}
+					}
 				}
 			} else {
 				$log.error(success);
@@ -392,26 +405,44 @@ angular.module('efindingAdminApp')
 				return;
 			}
 
+			if ($scope.collection.selectedParent == null) {
+				$scope.elements.alert.title = 'Faltan datos por rellenar';
+				$scope.elements.alert.text = '';
+				$scope.elements.alert.color = 'danger';
+				$scope.elements.alert.show = true;
+				return;
+			}
+
 			$scope.elements.buttons.editUser.text = 'Editar';
 			$scope.elements.buttons.editUser.border = 'btn-border';
 			var aux = {};
-			if ($scope.collection.selectedParent === undefined) 
-			{
-				aux = { data: { type: 'collection_items', id: idObject, 
-								attributes: { name: $scope.collection.name } }, idCollection: idObject };
-			}
-			else
-			{
-				aux = { data: { type: 'collection_items', id: idObject, 
-								attributes: { name: $scope.collection.name }, 
-								relationships: { parent_item: { data: { type: "collection_items", 
-										id: $scope.collection.selectedParent.id } } } } , idCollection: idObject };
-			}
+			aux = { 
+				data: 
+					{ 
+						type: 'collection_items', 
+						id: idObject, 
+						attributes: 
+						{ 
+							name: $scope.collection.name 
+						}, 
+						relationships: 
+						{ 
+							resource_owner: 
+							{ 
+								data: 
+								{ 
+									type: "users", 
+									id: $scope.collection.selectedParent.id 
+								} 
+							} 
+						} 
+					}, 
+				idCollection: idObject };
 
 			Collection_Item.update(aux, 
 				function(success) {
 					if (success.data) {
-						$scope.elements.alert.title = 'Se han actualizado los datos de la actividad';
+						$scope.elements.alert.title = 'Se han actualizado los datos.';
 						$scope.elements.alert.text = '';
 						$scope.elements.alert.color = 'success';
 						$scope.elements.alert.show = true;
