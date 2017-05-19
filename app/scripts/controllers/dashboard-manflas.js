@@ -159,24 +159,16 @@
 		});
 
 		$scope.page.filters.status.list.push({
-			name: 'reports_pending',
-			nameB: 'Pendiente de envío'
+			name: 'unchecked',
+			nameB: 'Pendiente'
 		});
 		$scope.page.filters.status.list.push({
-			name: 'first_signature_pending',
-			nameB: 'Pendiente de firma'
+			name: 'pending',
+			nameB: 'En Proceso'
 		});
 		$scope.page.filters.status.list.push({
-			name: 'first_signature_done',
-			nameB: 'Firmado'
-		});
-		$scope.page.filters.status.list.push({
-			name: 'final_signature_pending',
-			nameB: 'Pendiente de firma final'
-		});
-		$scope.page.filters.status.list.push({
-			name: 'finished',
-			nameB: 'Teminado'
+			name: 'resolved',
+			nameB: 'Cerrado'
 		});
 
 		$scope.page.filters.status.selected = $scope.page.filters.status.list[0];
@@ -218,13 +210,8 @@
  	//EMPIEZA TABLA CON REPORTES
  	$scope.click = function(e, cuartel)
  	{
- 		$scope.role_id = Utils.getInStorage('role_id');
-
-		$scope.sort_direction = 'asc';
-
-		$scope.columns = _.where(Utils.getInStorage('report_columns'), {visible: true});
+ 		$scope.columns = _.where(Utils.getInStorage('report_columns'), {visible: true});
 		$scope.filter = {};
-		var included = Utils.getInStorage('menu');
 
 		for (i = 0; i < $scope.columns.length; i++) {
 
@@ -270,8 +257,8 @@
 				$scope.filter[auxiliar].columnName = $scope.columns[i].title;
 				$scope.filter[auxiliar].relationshipName = $scope.columns[i].relationshipName;
 			}
-			//$scope.filter.include = _.findWhere(_.findWhere(included, { name: 'Hallazgos'}).items, { path: 'efinding.hallazgos.lista'}).included;
 		}
+		//$scope.filter.include = _.findWhere(_.findWhere(included, { name: 'Hallazgos'}).items, { path: 'efinding.hallazgos.lista'}).included;
 
 		$scope.columns2 = [];
 		for (var attr in $scope.filter) {
@@ -300,11 +287,12 @@
 			$log.error(e.detail);
 			return;
 		}
+		var included = Utils.getInStorage('menu');
 		data = [];
 		var test = [];
-
 		ReportsManflas.query({
 			filtro: 'filter[station_id]='+cuartel,
+			include: _.findWhere(_.findWhere(included, { name: 'Hallazgos'}).items, { path: 'efinding.hallazgos.lista'}).included
 		}, function(success) {
 			reportsIncluded = success.included;
 
@@ -316,122 +304,160 @@
 					test[test.length - 1]['pdfUploaded'] 	= success.data[i].attributes.pdf_uploaded;
 					test[test.length - 1]['state'] = success.data[i].attributes.state;
 					test[test.length - 1]['id'] = success.data[i].id;
-					//no tiene relacion
-					if ($scope.columns2[j].relationshipName === null) 
-					{
-						if (success.data[i].attributes[$scope.columns2[j].field] != null) 
-						{
-							test[test.length - 1][$scope.columns2[j].field_a] =	success.data[i].attributes[$scope.columns2[j].field]
-						}
-						else
-						{
-							test[test.length - 1][$scope.columns2[j].field_a] =	'-';
-						}
-					}
+					//no tiene relacion o es un objeto de consulta directa al dato
+					if (success.data[i].attributes[$scope.columns2[j].field]) {
+						test[test.length - 1][$scope.columns2[j].field_a] = success.data[i].attributes[$scope.columns2[j].field];
+						test[test.length - 1][$scope.columns2[j].name] = success.data[i].attributes[$scope.columns2[j].field];
+					} 
 					else
 					{
-						var relationships = $scope.columns2[j].relationshipName.split('.');
-						//tiene relacion a solo un objeto
-						if (relationships.length == 1) 
+						var res = $scope.columns2[j].field.split(".");
+
+						if (res.length === 1)
 						{
-							for (k = 0; k < success.included.length; k++) {
-								if (success.data[i].relationships[$scope.columns2[j].relationshipName].data != null) 
+							if ($scope.columns2[j].relationshipName !== null) 
+							{
+								var relationships = $scope.columns2[j].relationshipName.split('.');
+								//tiene relacion a solo un objeto
+								if (relationships.length == 1) 
 								{
-									if (success.data[i].relationships[$scope.columns2[j].relationshipName].data.id === success.included[k].id &&
-									success.data[i].relationships[$scope.columns2[j].relationshipName].data.type === success.included[k].type) 
-									{
-		
-										if (success.included[k].attributes[$scope.columns2[j].field] != null) 
+									for (k = 0; k < success.included.length; k++) {
+										if (success.data[i].relationships[$scope.columns2[j].relationshipName].data != null) 
 										{
-											test[test.length - 1][$scope.columns2[j].field_a] = success.included[k].attributes[$scope.columns2[j].field];
+											if (success.data[i].relationships[$scope.columns2[j].relationshipName].data.id === success.included[k].id &&
+											success.data[i].relationships[$scope.columns2[j].relationshipName].data.type === success.included[k].type) 
+											{
+				
+												if (success.included[k].attributes[$scope.columns2[j].field] != null) 
+												{
+													test[test.length - 1][$scope.columns2[j].field_a] = success.included[k].attributes[$scope.columns2[j].field];
+												}
+												else
+												{
+													test[test.length - 1][$scope.columns2[j].field_a] = '-';
+												}
+												break;
+											}
 										}
 										else
 										{
 											test[test.length - 1][$scope.columns2[j].field_a] = '-';
+											break;
 										}
-										break;
 									}
 								}
 								else
 								{
-									test[test.length - 1][$scope.columns2[j].field_a] = '-';
-									break;
-								}
-							}
-						}
-						else
-						{
-							//Es una relacion dentro de otra.
-							//se debe encontrar el relationship y buscar dentro de el todos los relationships, 
-							//despues de eso se debe volver a buscar en includes para encontrar a los que estan asociados.
-							var relacion = success.data[i].relationships[relationships[0]].data;
-							var relaciones = {};
+									//Es una relacion dentro de otra.
+									//se debe encontrar el relationship y buscar dentro de el todos los relationships, 
+									//despues de eso se debe volver a buscar en includes para encontrar a los que estan asociados.
+									var relacion = success.data[i].relationships[relationships[0]].data;
+									var relaciones = {};
 
-							for (k = 0; k < success.included.length; k++) {
-								if (relacion.id === success.included[k].id &&
-									relacion.type === success.included[k].type) {
-									
-									relaciones = success.included[k].relationships;
-									break;
-								}
-							}
-							if (relationships.length === 2) 
-							{
-								//Al ser solo una relacion doble, se busca el padre y luego al hijo
-								for (k = 0; k < success.included.length; k++) {
-									if (relaciones[relationships[1]].data != null) 
+									for (k = 0; k < success.included.length; k++) {
+										if (relacion.id === success.included[k].id &&
+											relacion.type === success.included[k].type) {
+											
+											relaciones = success.included[k].relationships;
+											break;
+										}
+									}
+									if (relationships.length === 2) 
 									{
-										if ( relaciones[relationships[1]].data.id === success.included[k].id &&
-										 relaciones[relationships[1]].data.type === success.included[k].type) 
-										{
-											if (success.included[k].attributes[$scope.columns2[j].field] != null) 
+										//Al ser solo una relacion doble, se busca el padre y luego al hijo
+										for (k = 0; k < success.included.length; k++) {
+											if (relaciones[relationships[1]].data != null) 
 											{
-												test[test.length - 1][$scope.columns2[j].field_a] = success.included[k].attributes[$scope.columns2[j].field];
+												if ( relaciones[relationships[1]].data.id === success.included[k].id &&
+												 relaciones[relationships[1]].data.type === success.included[k].type) 
+												{
+													if (success.included[k].attributes[$scope.columns2[j].field] != null) 
+													{
+														test[test.length - 1][$scope.columns2[j].field_a] = success.included[k].attributes[$scope.columns2[j].field];
+													}
+													else
+													{
+														test[test.length - 1][$scope.columns2[j].field_a] = '-';
+													}
+													break;
+												}
 											}
 											else
 											{
 												test[test.length - 1][$scope.columns2[j].field_a] = '-';
 											}
-											break;
 										}
 									}
 									else
 									{
-										test[test.length - 1][$scope.columns2[j].field_a] = '-';
+										//Al ser una relacion multiple, se busca el padre y todas sus relaciones, luego al hijo y sus relaciones
+										//y asi segun el numero de relaciones, luego de encontrar la ultima relacion, 
+										//se busca en el include a quien corresponde como el ultimo hijo
+										for (k = 1; k < relationships.length-1; k++) {
+											for (var l = 0; l < success.included.length; l++) {
+												if ( relaciones[relationships[k]].data.id === success.included[l].id &&
+												 relaciones[relationships[k]].data.type === success.included[l].type) 
+												{
+													relaciones = success.included[l].relationships;
+													break;
+												}
+											}
+										}
+										for (k = 0; k < success.included.length; k++) {
+											if ( relaciones[relationships[relationships.length-1]].data.id === success.included[k].id &&
+											 relaciones[relationships[relationships.length-1]].data.type === success.included[k].type) 
+											{
+												if (success.included[k].attributes[$scope.columns2[j].field] != null) 
+												{
+													test[test.length - 1][$scope.columns2[j].field_a] = success.included[k].attributes[$scope.columns2[j].field];
+												}
+												else
+												{
+													test[test.length - 1][$scope.columns2[j].field_a] = '-';
+												}
+												break;
+											}
+										}
 									}
 								}
 							}
 							else
 							{
-								//Al ser una relacion multiple, se busca el padre y todas sus relaciones, luego al hijo y sus relaciones
-								//y asi segun el numero de relaciones, luego de encontrar la ultima relacion, 
-								//se busca en el include a quien corresponde como el ultimo hijo
-								for (k = 1; k < relationships.length-1; k++) {
-									for (var l = 0; l < success.included.length; l++) {
-										if ( relaciones[relationships[k]].data.id === success.included[l].id &&
-										 relaciones[relationships[k]].data.type === success.included[l].type) 
-										{
-											relaciones = success.included[l].relationships;
-											break;
-										}
-									}
+								test[test.length - 1][$scope.columns2[j].name] = '-';
+							}
+
+						}
+						else if (res.length > 2) 
+						{
+							//apunta a un dynamic attribute
+							var aux = res;
+							var flag = success.data[i].attributes.dynamic_attributes;
+
+							//valida que existe el objeto dentro de los dynamic_attributes
+							if (flag.hasOwnProperty(aux[1])) 
+							{
+								//Valida que exista el objeto text
+								if (flag[aux[1]].hasOwnProperty('text')) 
+								{
+									test[test.length - 1][$scope.columns2[j].field_a] = flag[aux[1]].text;
+									test[test.length - 1][$scope.columns2[j].name] = flag[aux[1]].text;
 								}
-								for (k = 0; k < success.included.length; k++) {
-									if ( relaciones[relationships[relationships.length-1]].data.id === success.included[k].id &&
-									 relaciones[relationships[relationships.length-1]].data.type === success.included[k].type) 
-									{
-										if (success.included[k].attributes[$scope.columns2[j].field] != null) 
-										{
-											test[test.length - 1][$scope.columns2[j].field_a] = success.included[k].attributes[$scope.columns2[j].field];
-										}
-										else
-										{
-											test[test.length - 1][$scope.columns2[j].field_a] = '-';
-										}
-										break;
-									}
+								else
+								{
+									test[test.length - 1][$scope.columns2[j].field_a] = '-';
+									test[test.length - 1][$scope.columns2[j].name] = '-';
 								}
 							}
+							else
+							{
+								test[test.length - 1][$scope.columns2[j].field_a] = '-';
+								test[test.length - 1][$scope.columns2[j].name] = '-';
+							}
+						}
+						else
+						{
+							test[test.length - 1][$scope.columns2[j].field_a] = '';
+							test[test.length - 1][$scope.columns2[j].name] = '';
 						}
 					}
 				}
@@ -439,7 +465,6 @@
 			inspecciones = test;
 
 			$scope.mostrarTabla = test;
-			$log.error(test);
 
 			$scope.tableParams = new NgTableParams({
 				page: 1, // show first page
@@ -486,12 +511,18 @@
  		var startDate = new Date($scope.page.filters.dateRange.date.startDate);
  		var endDate = new Date($scope.page.filters.dateRange.date.endDate);
 
+ 		$log.error(areaIdSelected);
+ 		$log.error(statusIdSelected);
+ 		$log.error(startDate);
+ 		$log.error(endDate);
+
  		Dashboard.query({
- 			//'filter[area][id]': areaIdSelected,
- 			//'filter[state_name]': statusIdSelected,
- 			//'filter[start_date]': startDate,
- 			//'filter[end_date]': endDate
+ 			'filter[area_id]': areaIdSelected,
+ 			'filter[state_name]': statusIdSelected,
+ 			'filter[start_date]': startDate,
+ 			'filter[end_date]': endDate
  		}, function(success) {
+ 			$log.error(success.data);
 		    if (success.data) {
 		    	var actividadVsRiesgo = {
 					categories: [],
@@ -502,43 +533,14 @@
 					datos: []
 				};
 
-				// INI grado de riesgo
-				angular.forEach(success.data.attributes.grupos_actividad, function(value, key) {
-					actividadVsRiesgo.categories.push($filter('capitalize')(value, true));
-				});
-				angular.forEach(success.data.attributes.grados_riesgo, function(value, key) {
-					var aux = {name: 'Grado ' + value, data: []};
-					actividadVsRiesgo.riesgo.push(aux);
-				});
-				for (var i = 0; i < actividadVsRiesgo.riesgo.length; i++) {
-					for (var j = 0; j < success.data.attributes.grupos_actividad_vs_riesgo.length; j++) {
-						actividadVsRiesgo.riesgo[i].data.push(success.data.attributes.grupos_actividad_vs_riesgo[j][i]);
-					}
-				}
-				$scope.page.charts.actividadVsRiesgo.data = actividadVsRiesgo;
-
-				$scope.page.charts.actividadVsRiesgo.chartConfig = Utils.setChartConfig('column', 400, {}, {
-					min: 0,
-					title: {
-						text: null
-					}
-				}, {
-					categories: actividadVsRiesgo.categories,
-					title: {
-						text: 'Grupos de actividad'
-					}
-				}, actividadVsRiesgo.riesgo);
-
-				// FIN grado de riesgo
-
 				//INI cumplimiento de hallazgos
 
 		        angular.forEach(success.data.attributes.report_fulfillment, function(value, key) {
 		        	cumplimientoHallazgos.inspeccion.push(value.inspection_id);
 		        });
 		        cumplimientoHallazgos.datos.push({name: "Pendientes", data:[]})
-		        cumplimientoHallazgos.datos.push({name: "Resueltos", data:[]})
-		        cumplimientoHallazgos.datos.push({name: "No revisados", data:[]})
+		        cumplimientoHallazgos.datos.push({name: "Cerrado", data:[]})
+		        cumplimientoHallazgos.datos.push({name: "En Proceso", data:[]})
 
 		        for (var i = 0; i < success.data.attributes.report_fulfillment.length; i++) {
 		        	cumplimientoHallazgos.datos[2].data.push(success.data.attributes.report_fulfillment[i].num_pending);
@@ -635,8 +637,8 @@
 			    );
 
 			    //INI MAPA
-			    $scope.page.markers.unchecked = success.data.attributes.report_locations[0].coordinates;
-				$scope.page.markers.resolved = success.data.attributes.report_locations[1].coordinates;
+			    //$scope.page.markers.unchecked = success.data.attributes.report_locations[0].coordinates;
+				//$scope.page.markers.resolved = success.data.attributes.report_locations[1].coordinates;
 			    //FIN MAPA
     		}
 		}, function(error) {
