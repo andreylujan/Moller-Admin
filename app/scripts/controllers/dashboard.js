@@ -312,6 +312,8 @@
 						actividadVsRiesgo.riesgo[i].data.push(success.data.attributes.grupos_actividad_vs_riesgo[j][i]);
 					}
 				}
+				console.log(actividadVsRiesgo.riesgo);
+				
 				$scope.page.charts.actividadVsRiesgo.data = actividadVsRiesgo;
 
 				$scope.page.charts.actividadVsRiesgo.chartConfig = Utils.setChartConfig('column', 400, {}, {

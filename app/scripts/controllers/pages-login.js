@@ -43,6 +43,7 @@ angular.module('efindingAdminApp')
 				Utils.setInStorage('logged', true);
 				Utils.setInStorage('refresh_t', success.data.data.attributes.refresh_token);
 				Utils.setInStorage('role_id', success.data.data.relationships.role.data.id);
+				Utils.setInStorage('idUser', success.data.data.relationships.user.data.id);
 
 				$auth.setToken(success.data.data.attributes.access_token);
 
@@ -50,7 +51,6 @@ angular.module('efindingAdminApp')
 				{
 					getUserData(success.data.data.relationships.user.data.id)
 						.then(function(data) {
-							$log.log(data);
 							Utils.setInStorage('fullName', data.data.fullName);
 							Utils.setInStorage('image', data.data.image);
 
@@ -112,14 +112,12 @@ angular.module('efindingAdminApp')
 			user.image = success.data.attributes.image;
 			user.type = success.data.type;
 
-			for (var i = 0; i < success.included.length; i++) 
-			{
-				if (success.included[i].type == 'organizations') 
+			for (var i = 0; i < success.included.length; i++) {
+				if (success.included[i].type === 'organizations') 
 				{
 					Utils.setInStorage('organization', success.included[i].id);
 				}
 			}
-			//$log.log(Utils.getInStorage('organization'));
 
 			defered.resolve({
 				success: true,
