@@ -509,7 +509,7 @@ angular.module('efindingAdminApp')
 
 })
 
-.controller('NewCollectionItemModalInstance', function($scope, $log, $state, $uibModalInstance, Csv, Utils, Collection_Item, CollectionObject, Collection, idCollection) {
+.controller('NewCollectionItemModalInstance', function($scope, $log, $state, $uibModalInstance, Csv, Utils, Collection_Item, CollectionObject, Collection, idCollection, Users) {
 
 	$scope.modal = {
 		csvFile: null
@@ -526,7 +526,7 @@ angular.module('efindingAdminApp')
 		code: ''
 	};
 
-	if (CollectionObject.padre != null) 
+	/*if (CollectionObject.padre != null) 
 	{
 		Collection_Item.query({
 			idCollection: CollectionObject.padre
@@ -566,7 +566,37 @@ angular.module('efindingAdminApp')
 
 			});
 		};
-	}
+	}*/
+
+	$scope.getUsers = function() {
+		Users.query({
+			idUser: ''
+		}, function(success) {
+			if (success.data) {
+				$scope.collection.visible = true;
+				for (var i = 0; i < success.data.length; i++) {
+					if (success.data[i].attributes.active) 
+					{
+						$scope.collection.data.push({
+							name: success.data[i].attributes.first_name + ' ' + success.data[i].attributes.last_name,
+							id: success.data[i].id,
+						});
+					}
+				}
+				$scope.collection.selectedParent = $scope.collection.data[0];
+			} else {
+				$log.error(success);
+			}
+		}, function(error) {
+			$log.error(error);
+			if (error.status === 401) {
+				Utils.refreshToken($scope.getUsers);
+			}
+		});
+
+	};
+
+	$scope.getUsers();
 
 	$scope.saveCollectionItem = function() {
 
@@ -575,21 +605,29 @@ angular.module('efindingAdminApp')
 		} else 
 		{
 			var aux = {};
-			if ($scope.collection.selectedParent === undefined) 
-			{
-				aux = { 
-					data: { type: 'collection_items', attributes: { name: $scope.collection_item.name, 
-																	code: $scope.collection_item.code },
-							relationships: { collection: {data: {type: 'collections', id: idCollection}}}}};
-			}
-			else
-			{
-				aux = { data: { type: 'collection_items', attributes: { name: $scope.collection_item.name,
-																		code: $scope.collection_item.code }, 
-								relationships: { collection: {data: {type: 'collections', id: idCollection}},
-										parent_item: { data: { type: "collection_items", 
-										id: $scope.collection.selectedParent.id }}}}};
-			}
+			aux = { 
+				data: 
+				{ 
+					type: 'collection_items', 
+					attributes: 
+					{ 
+						name: $scope.collection_item.name, 											
+						code: $scope.collection_item.code  
+					}, 
+					relationships: 
+					{ 
+						resource_owner: 
+						{ 
+							data: 
+							{ 
+								type: "users", 
+								id: $scope.collection.selectedParent.id 
+							} 
+						} 
+					} 
+				}
+			};
+		
 			Collection_Item.save(aux, 
 				function(success) {
 					if (success.data) {
