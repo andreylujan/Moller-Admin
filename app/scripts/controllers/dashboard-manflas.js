@@ -511,11 +511,6 @@
  		var startDate = new Date($scope.page.filters.dateRange.date.startDate);
  		var endDate = new Date($scope.page.filters.dateRange.date.endDate);
 
- 		$log.error(areaIdSelected);
- 		$log.error(statusIdSelected);
- 		$log.error(startDate);
- 		$log.error(endDate);
-
  		Dashboard.query({
  			'filter[area_id]': areaIdSelected,
  			'filter[state_name]': statusIdSelected,
