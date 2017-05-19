@@ -16,7 +16,7 @@ angular.module('efindingAdminApp')
 	};
 	var data = [];
 
-	var id_collection = $state.params.type;
+	var id_collection = 23;
 	var auxiliar = {};
 
 
@@ -606,16 +606,19 @@ angular.module('efindingAdminApp')
 		{
 			var aux = {};
 			aux = { 
-				data: 
-				{ 
+				data: { 
 					type: 'collection_items', 
-					attributes: 
-					{ 
-						name: $scope.collection_item.name, 											
-						code: $scope.collection_item.code  
-					}, 
-					relationships: 
-					{ 
+					attributes: { 
+						name: $scope.collection_item.name, 
+						code: $scope.collection_item.code 
+					},
+					relationships: { 
+						collection: {
+							data: {
+								type: 'collections', 
+								id: idCollection
+							}
+						},
 						resource_owner: 
 						{ 
 							data: 
@@ -624,10 +627,19 @@ angular.module('efindingAdminApp')
 								id: $scope.collection.selectedParent.id 
 							} 
 						} 
-					} 
+					}
 				}
 			};
-		
+
+			/*
+			resource_owner: 
+							{ 
+								data: 
+								{ 
+									type: "users", 
+									id: $scope.collection.selectedParent.id 
+								} 
+							} */
 			Collection_Item.save(aux, 
 				function(success) {
 					if (success.data) {
