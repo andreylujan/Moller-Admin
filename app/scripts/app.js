@@ -1,4 +1,4 @@
-'use strict';
+ 'use strict';
 
 /**
  * @ngdoc overview
@@ -145,6 +145,11 @@ angular
 				templateUrl: 'views/tmpl/dashboard/generic.html',
 				controller: 'GenericDashboardCtrl'
 			})
+			.state('efinding.dashboard.manflas', {
+				url: '/manflas',
+				templateUrl: 'views/tmpl/dashboard/dashboard-manflas.html',
+				controller: 'ManflasDashboardCtrl'
+			})
 
 		//Users
 		.state('efinding.users', {
@@ -170,6 +175,27 @@ angular
 				url: '/lista',
 				templateUrl: 'views/tmpl/reports/list.html',
 				controller: 'ReportsListCtrl'
+			})
+
+		//Hallazgos MANFLAS
+		.state('efinding.hallazgos', {
+				url: '/hallazgos',
+				template: '<div ui-view></div>'
+			})
+			.state('efinding.hallazgos.lista', {
+				url: '/lista',
+				templateUrl: 'views/tmpl/reports/manflas.html',
+				controller: 'HallazgosManflas'
+			})
+			.state('efinding.hallazgos.tareas', {
+				url: '/listaTareas',
+				templateUrl: 'views/tmpl/reports/manflas.html',
+				controller: 'TareasManflas'
+			})
+			.state('efinding.hallazgos.propios', {
+				url: '/propios',
+				templateUrl: 'views/tmpl/reports/manflas.html',
+				controller: 'MisHallazgosManflas'
 			})
 
 		//Checklist
@@ -224,12 +250,38 @@ angular
 				templateUrl: 'views/tmpl/masters/history-massive-loads.html',
 				controller: 'HistoryMassiveLoadsCtrl'
 			})
+    
+		//Areas
+		.state('efinding.areas', {
+				url: '/areas',
+				template: '<div ui-view></div>'
+			})
+			.state('efinding.areas.lista', {
+				url: '/lista?type=23',
+				templateUrl: 'views/tmpl/masters/areas-manflas.html',
+				controller: 'MasterAreasManflasCtrl'
+			})
 
+		//Roles
+		.state('efinding.roles', {
+				url: '/roles',
+				template: '<div ui-view></div>'
+			})
+			.state('efinding.roles.lista', {
+				url: '/lista',
+				templateUrl: 'views/tmpl/masters/roles-list.html',
+				controller: 'MasterRolesList'
+			})
+			.state('efinding.roles.editar-rol', {
+				url: '/editar?idRol',
+				templateUrl: 'views/tmpl/masters/roles-edit.html',
+				controller: 'MasterRolesEdit'
+			});
+    
 		.state('efinding.change-password', {
 			url: '/change-password',
 			templateUrl: 'views/tmpl/pages/change-password.html',
 			controller: 'ChangePasswordCtrl'
 		});
-
 	}
 ]);

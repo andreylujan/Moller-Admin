@@ -217,7 +217,15 @@ angular.module('efindingAdminApp')
 			}
 
 			Utils.setInStorage('report_columns', columns.reportColumns);
-			gotoReportList();
+			if (Utils.getInStorage('organization') == 3) 
+			{
+				gotoManflas();
+			}
+			else
+			{
+				gotoReportList();
+			}
+			
 
 		}, function(error) {
 			defered.reject({
@@ -232,6 +240,10 @@ angular.module('efindingAdminApp')
 
 	var gotoReportList = function() {
 		$state.go('efinding.dashboard.generic');
+	};
+	//Dashboard para Manflas
+	var gotoManflas = function() {
+		$state.go('efinding.dashboard.manflas');
 	};
 
 });

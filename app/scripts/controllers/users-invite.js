@@ -125,7 +125,7 @@ angular.module('efindingAdminApp')
 		$scope.page.msg.text = 'Se han enviado las invitaciones a:';
 		/* jshint ignore:start */
 		for (var i = 0; i < $scope.page.formGroups.invite.length; i++) {
-
+			//$log.error($scope.page.formGroups.invite[i].roleId);
 			Invitations.save({
 				"data": {
 					"type": "invitations",

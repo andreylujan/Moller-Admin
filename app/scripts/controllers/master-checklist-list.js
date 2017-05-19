@@ -144,7 +144,6 @@ angular.module('efindingAdminApp')
 		});
 
 	};
-
 	$scope.downloadPdf = function(event) {
 		var pdf = angular.element(event.target).data('pdf');
 		if (pdf) {
