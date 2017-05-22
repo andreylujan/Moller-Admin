@@ -276,7 +276,7 @@ angular
 				url: '/editar?idRol',
 				templateUrl: 'views/tmpl/masters/roles-edit.html',
 				controller: 'MasterRolesEdit'
-			});
+			})
     
 		.state('efinding.change-password', {
 			url: '/change-password',
