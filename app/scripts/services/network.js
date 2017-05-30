@@ -126,7 +126,8 @@ angular.module('efindingAdminApp')
 .factory('ReportsManflas', function($resource) {
 
 	return $resource(API_URL + '/reports?:filtro', {
-		filtro: '@filtro'
+		filtro: '@filtro',
+		include: '@include',
 	}, {
 		query: {
 			method: 'GET',
