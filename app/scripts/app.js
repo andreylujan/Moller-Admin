@@ -60,7 +60,7 @@ angular
 
 		$rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
 
-			var isLogin = toState.name === 'login' || toState.name === 'signup' || toState.name === 'forgotpass';
+			var isLogin = toState.name === 'login' || toState.name === 'signup' || toState.name === 'forgotpass' || toState.name === 'publicDashboard';
 
 			if (isLogin) {
 				return;
@@ -92,7 +92,7 @@ angular
 .config(['$authProvider',
 	function($authProvider) {
 		// Parametros de configuración
-		$authProvider.loginUrl = 'http://50.16.161.152/efinding/oauth/token'; 	//Produccion
+		$authProvider.loginUrl = 'http://50.16.161.152/efinding-staging/oauth/token'; 	//Produccion
 		//$authProvider.loginUrl = 'http://localhost:3000/oauth/token'; 					//Local
 		$authProvider.tokenName = 'access_token';
 	}
@@ -126,6 +126,12 @@ angular
 		.state('page404', {
 			url: '/page404',
 			templateUrl: 'views/tmpl/pages/page404.html'
+		})
+
+		.state('publicDashboard', {
+			url: '/public?token',
+			templateUrl: 'views/tmpl/pages/dashboard-manflas-public.html',
+			controller: 'ManflasPublicDashboardCtrl',
 		})
 		
 

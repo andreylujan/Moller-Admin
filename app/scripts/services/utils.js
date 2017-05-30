@@ -160,4 +160,47 @@ angular.module('efindingAdminApp')
 			series: series
 		};
 	};
+
+	this.setChartConfigPublicDashboard = function(type, height, width, plotOptions, yAxisData, xAxisData, series) {
+		// if (!type) {
+		// 	type = 'column';
+		// }
+		if (!height) {
+			height = 250;
+		}
+		if (!width) {
+			width = 250;
+		}
+		return {
+			options: {
+				title: {
+					text: null
+				},
+				navigation: {
+					buttonOptions: {
+						enabled: false
+					}
+				},
+				colors: ['#F69022', '#119848', '#EF3200'],
+				tooltip: {
+					style: {
+						padding: 10,
+						fontWeight: 'bold'
+					}
+				},
+				chart: {
+					type: type,
+					height: height,
+					width: width
+				},
+				plotOptions: plotOptions,
+				credits: {
+					enabled: false
+				}
+			},
+			yAxis: yAxisData,
+			xAxis: xAxisData,
+			series: series
+		};
+	};
 });
