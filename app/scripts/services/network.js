@@ -134,6 +134,9 @@ angular.module('efindingAdminApp')
 			headers: {
 				Accept: 'application/vnd.api+json'
 			},
+			params: {
+				include: '@include',
+			}
 		},
 		save: {
 			method: 'POST',

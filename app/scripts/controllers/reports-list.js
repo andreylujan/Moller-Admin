@@ -150,7 +150,7 @@ angular.module('efindingAdminApp')
 				filtersToSearch[attr] = filters[attr];
 			}
 		}
-		Reports.query(filtersToSearch, function(success) {
+		Inspections.query(filtersToSearch, function(success) {
 			reportsIncluded = success.included;
 			$scope.pagination.pages.total = success.meta.page_count;
 
