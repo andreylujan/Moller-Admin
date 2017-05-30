@@ -2,13 +2,20 @@
 
 /**
  * @ngdoc function
- * @name efindingAdminApp.controller:ManflasDashboardCtrl
+ * @name efindingAdminApp.controller:ManflasPublicDashboardCtrl
  * @description
- * # ManflasDashboardCtrl
+ * # ManflasPublicDashboardCtrl
  * Controller of the efindingAdminApp
  */
  angular.module('efindingAdminApp')
- .controller('ManflasDashboardCtrl', function($scope, $filter, $log, $timeout, $moment, Utils, NgTableParams, ReportsManflas, Dashboard, Collection, Cuarteles, NgMap) {
+ .controller('ManflasPublicDashboardCtrl', function($scope, $auth, $filter, $state, $log, 
+ 	$timeout, $moment, Utils, NgTableParams, ReportsManflas, Dashboard, Collection, Cuarteles, NgMap,
+ 	MenuSections, TableColumns, $q) {
+ 	
+ 	//traer el token
+ 	var token = $state.params.token;
+ 	$auth.setToken(token);
+
  	var currentDate = new Date();
  	var firstMonthDay = new Date();
  	firstMonthDay.setDate(1);
@@ -17,7 +24,8 @@
 		activityTypes = [],
 		users = [],
 		reportsIncluded = [],
-		inspecciones = [];
+		inspecciones = [],
+		menu = [];
 
 	var receiverName = null,
 		equipmentId = null,
@@ -89,7 +97,7 @@
 					row2: [],
 					row3: []
 				},
-				chartConfig: Utils.setChartConfig('column', 400, {}, {}, {}, [])
+				chartConfig: Utils.setChartConfigPublicDashboard('column', 300, 300, {}, {}, {}, [])
 			}
 		},
 		markers: {
@@ -132,6 +140,8 @@
 
 				$scope.page.filters.areas.selected = $scope.page.filters.areas.list[0];
 				$scope.page.filters.areas.loaded = true;
+				getMenu();
+				getColumns();
  				$scope.getStatus({
  					success: true,
  					detail: 'OK'
@@ -159,16 +169,24 @@
 		});
 
 		$scope.page.filters.status.list.push({
-			name: 'unchecked',
-			nameB: 'Pendiente'
+			name: 'reports_pending',
+			nameB: 'Pendiente de envío'
 		});
 		$scope.page.filters.status.list.push({
-			name: 'pending',
-			nameB: 'En Proceso'
+			name: 'first_signature_pending',
+			nameB: 'Pendiente de firma'
 		});
 		$scope.page.filters.status.list.push({
-			name: 'resolved',
-			nameB: 'Cerrado'
+			name: 'first_signature_done',
+			nameB: 'Firmado'
+		});
+		$scope.page.filters.status.list.push({
+			name: 'final_signature_pending',
+			nameB: 'Pendiente de firma final'
+		});
+		$scope.page.filters.status.list.push({
+			name: 'finished',
+			nameB: 'Teminado'
 		});
 
 		$scope.page.filters.status.selected = $scope.page.filters.status.list[0];
@@ -207,10 +225,106 @@
  		});
  	};
 
+
+ 	var getMenu = function() {
+		menu = [];
+
+		MenuSections.query({
+			include: 'menu_items'
+		}, function(success) {
+			if (success.data) {
+				for (i = 0; i < success.data.length; i++) {
+					menu.push({
+						name: success.data[i].attributes.name,
+						path: success.data[i].attributes.admin_path,
+						items: success.data[i].relationships.menu_items.data,
+						icon: success.data[i].attributes.icon
+					});
+				}
+
+				for (i = 0; i < menu.length; i++) {
+					for (j = 0; j < menu[i].items.length; j++) {
+						for (k = 0; k < success.included.length; k++) {
+							if (success.included[k].type === 'menu_items') {
+								if (menu[i].items[j].id === success.included[k].id) {
+									menu[i].items[j].name = success.included[k].attributes.name;
+									menu[i].items[j].path = success.included[k].attributes.admin_path;
+								}
+							}
+							if (success.included[k].id === menu[i].items[j].id) 
+							{
+								menu[i].items[j].included= success.included[k].attributes.url_include;
+							}
+						}
+					}
+				}
+				Utils.setInStorage('menu', menu);
+				$scope.page.menu = menu;
+				$scope.page.menuLoaded = true;
+			} else {
+				$log.error(success);
+			}
+		}, function(error) {
+			$log.error();
+			if (error.status === 401) {
+        		Utils.refreshToken(getMenu);
+      		}
+		});
+
+	};
+
+ 	var getColumns = function() {
+
+		var defered = $q.defer();
+		var promise = defered.promise;
+		var columns = {};
+
+		TableColumns.query({
+			type: Utils.getInStorage('collection_name')
+		}, function(success) {
+
+			$log.log(success);
+
+			columns.reportColumns = [];
+
+			for (i = 0; i < success.data.length; i++) {
+				/*
+					title: Titulo de la columna
+					field: Se utiliza para ir a ese dato en especifico
+					field: para filtrar en servicio
+				*/
+				columns.reportColumns.push({
+					title: success.data[i].attributes.column_name,
+					field: success.data[i].attributes.field_name,
+					field_a: success.data[i].attributes.column_name + '+' + success.data[i].attributes.field_name,
+					name: i,
+					visible: true,
+					relationshipName: success.data[i].attributes.relationship_name,
+					dataType: success.data[i].attributes.data_type,
+					filter: {}
+				});
+				columns.reportColumns[columns.reportColumns.length - 1].filter[success.data[i].attributes.field_name] = success.data[i].attributes.field_name;
+			}
+
+			Utils.setInStorage('report_columns', columns.reportColumns);
+
+		}, function(error) {
+			defered.reject({
+				success: false,
+				detail: error,
+				data: ''
+			});
+		});
+
+		return promise;
+	};
+
  	//EMPIEZA TABLA CON REPORTES
  	$scope.click = function(e, cuartel)
  	{
- 		$scope.columns = _.where(Utils.getInStorage('report_columns'), {visible: true});
+		$scope.columns = _.where(Utils.getInStorage('report_columns'), {visible: true});
+
+
 		$scope.filter = {};
 
 		for (i = 0; i < $scope.columns.length; i++) {
@@ -258,9 +372,8 @@
 				$scope.filter[auxiliar].relationshipName = $scope.columns[i].relationshipName;
 			}
 		}
-		//$scope.filter.include = _.findWhere(_.findWhere(included, { name: 'Hallazgos'}).items, { path: 'efinding.hallazgos.lista'}).included;
 
-		$scope.columns2 = [];
+	$scope.columns2 = [];
 		for (var attr in $scope.filter) {
 			if (attr.indexOf('filter') !== -1) {
 
@@ -287,17 +400,15 @@
 			$log.error(e.detail);
 			return;
 		}
-		var included = Utils.getInStorage('menu');
 		data = [];
 		var test = [];
 		var included = Utils.getInStorage('menu');
-    
+
 		ReportsManflas.query({
 			filtro: 'filter[station_id]='+cuartel,
 			include: _.findWhere(_.findWhere(included, { name: 'Hallazgos'}).items, { path: 'efinding.hallazgos.lista'}).included
 		}, function(success) {
 			reportsIncluded = success.included;
-			
 
 			for (i = 0; i < success.data.length; i++) {
 				test.push({});
@@ -515,12 +626,11 @@
  		var endDate = new Date($scope.page.filters.dateRange.date.endDate);
 
  		Dashboard.query({
- 			'filter[area_id]': areaIdSelected,
- 			'filter[state_name]': statusIdSelected,
- 			'filter[start_date]': startDate,
- 			'filter[end_date]': endDate
+ 			//'filter[area][id]': areaIdSelected,
+ 			//'filter[state_name]': statusIdSelected,
+ 			//'filter[start_date]': startDate,
+ 			//'filter[end_date]': endDate
  		}, function(success) {
- 			$log.error(success.data);
 		    if (success.data) {
 		    	var actividadVsRiesgo = {
 					categories: [],
@@ -531,14 +641,43 @@
 					datos: []
 				};
 
+				// INI grado de riesgo
+				angular.forEach(success.data.attributes.grupos_actividad, function(value, key) {
+					actividadVsRiesgo.categories.push($filter('capitalize')(value, true));
+				});
+				angular.forEach(success.data.attributes.grados_riesgo, function(value, key) {
+					var aux = {name: 'Grado ' + value, data: []};
+					actividadVsRiesgo.riesgo.push(aux);
+				});
+				for (var i = 0; i < actividadVsRiesgo.riesgo.length; i++) {
+					for (var j = 0; j < success.data.attributes.grupos_actividad_vs_riesgo.length; j++) {
+						actividadVsRiesgo.riesgo[i].data.push(success.data.attributes.grupos_actividad_vs_riesgo[j][i]);
+					}
+				}
+				$scope.page.charts.actividadVsRiesgo.data = actividadVsRiesgo;
+
+				$scope.page.charts.actividadVsRiesgo.chartConfig = Utils.setChartConfigPublicDashboard('column', 300, 300, {}, {
+					min: 0,
+					title: {
+						text: null
+					}
+				}, {
+					categories: actividadVsRiesgo.categories,
+					title: {
+						text: 'Grupos de actividad'
+					}
+				}, actividadVsRiesgo.riesgo);
+
+				// FIN grado de riesgo
+
 				//INI cumplimiento de hallazgos
 
 		        angular.forEach(success.data.attributes.report_fulfillment, function(value, key) {
 		        	cumplimientoHallazgos.inspeccion.push(value.inspection_id);
 		        });
 		        cumplimientoHallazgos.datos.push({name: "Pendientes", data:[]})
-		        cumplimientoHallazgos.datos.push({name: "Cerrado", data:[]})
-		        cumplimientoHallazgos.datos.push({name: "En Proceso", data:[]})
+		        cumplimientoHallazgos.datos.push({name: "Resueltos", data:[]})
+		        cumplimientoHallazgos.datos.push({name: "No revisados", data:[]})
 
 		        for (var i = 0; i < success.data.attributes.report_fulfillment.length; i++) {
 		        	cumplimientoHallazgos.datos[2].data.push(success.data.attributes.report_fulfillment[i].num_pending);
@@ -546,7 +685,7 @@
 		        	cumplimientoHallazgos.datos[0].data.push(success.data.attributes.report_fulfillment[i].num_unchecked);
 				}
 
-				$scope.charCumplimientoHallazgos = Utils.setChartConfig('column', 513, {
+				$scope.charCumplimientoHallazgos = Utils.setChartConfigPublicDashboard('column', 300, 300, {
 			    	column: {
 			    		stacking: 'normal',
 			    		dataLabels: {
@@ -590,7 +729,7 @@
 
 			    unchecked>0? $scope.ratioHallazgosShow=true:$scope.ratioHallazgosShow=false;
 
-			    $scope.ratioHallazgos = Utils.setChartConfig('pie', 500, {
+			    $scope.ratioHallazgos = Utils.setChartConfigPublicDashboard('pie', 300, 300, {
 			    	pie: {
 		                allowPointSelect: true,
 		                cursor: 'pointer',
