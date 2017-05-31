@@ -14,7 +14,9 @@
  	
  	//traer el token
  	var token = $state.params.token;
+ 	var refresh_token = $state.params.refresh;
  	$auth.setToken(token);
+	Utils.setInStorage('refresh_t', refresh_token);
 
  	var currentDate = new Date();
  	var firstMonthDay = new Date();
@@ -152,8 +154,8 @@
 			}
 		}, function(error) {
 			$log.error(error);
-			if (error.status) {
-				Utils.refreshToken($scope.getCollection);
+			if (error.status == 401) {
+				Utils.refreshToken($scope.getAreas);
 			}
 		});
  	};
@@ -220,7 +222,7 @@
  		}, function(error) {
  			$log.error(error);
  			if (error.status === 401) {
- 				Utils.refreshToken(getAreas);
+ 				Utils.refreshToken(getCuarteles);
  			}
  		});
  	};
@@ -275,8 +277,6 @@
 
  	var getColumns = function() {
 
-		var defered = $q.defer();
-		var promise = defered.promise;
 		var columns = {};
 
 		TableColumns.query({
@@ -309,14 +309,11 @@
 			Utils.setInStorage('report_columns', columns.reportColumns);
 
 		}, function(error) {
-			defered.reject({
-				success: false,
-				detail: error,
-				data: ''
-			});
+			$log.error();
+			if (error.status === 401) {
+        		Utils.refreshToken(getColumns);
+      		}
 		});
-
-		return promise;
 	};
 
  	//EMPIEZA TABLA CON REPORTES

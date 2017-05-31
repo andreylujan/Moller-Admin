@@ -129,7 +129,7 @@ angular
 		})
 
 		.state('publicDashboard', {
-			url: '/public?token',
+			url: '/public?token&refresh',
 			templateUrl: 'views/tmpl/pages/dashboard-manflas-public.html',
 			controller: 'ManflasPublicDashboardCtrl',
 		})
