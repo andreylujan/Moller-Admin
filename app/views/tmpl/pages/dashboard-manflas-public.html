@@ -39,7 +39,7 @@
     left: 50%;
   }
 </style>
-<div class="page page-dashboard" ng-controller="ManflasPublicDashboardCtrl" data-ng-init="getDashboardInfo({success:true,detail:'OK'})">
+<div class="page page-dashboard">
   <div class="overlay" ng-show="page.loader.show">
     <div style="position:absolute;top: 50%;left:50%;transform: translate(-50%, -50%);">
       <div>
@@ -58,7 +58,7 @@
 
     <div class="row">
       <div class="col-md-4 mt-5">
-        <ui-select class="gray-ps-3 br-15 b-0" ng-model="page.filters.areas.selected" close-on-select="true" ng-change="getConstructions({success:true,detail:'OK'},page.filters.areas.selected);getDashboardInfo({success:true,detail:'OK'})" title="Áreas">
+        <ui-select class="gray-ps-3 br-15 b-0" ng-model="page.filters.areas.selected" close-on-select="true" ng-change="getDashboardInfo({success:true,detail:'OK'})" title="Áreas">
           <ui-select-match placeholder="Área"><span ng-bind="$select.selected.name"></span></ui-select-match>
           <ui-select-choices repeat="area in page.filters.areas.list | propsFilter: {name: $select.search}">
             <div ng-bind-html="area.name | highlight: $select.search"></div>

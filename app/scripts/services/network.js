@@ -26,7 +26,7 @@ angular.module('efindingAdminApp')
 // REFRESH
 .factory('RefreshToken', function($resource) {
 
-	return $resource(URL_SERVER + '/oauth/token', {}, {
+	return $resource(URL_SERVER + 'oauth/token', {}, {
 		save: {
 			method: 'POST',
 			'Content-Type': 'application/json'
