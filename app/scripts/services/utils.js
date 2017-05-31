@@ -67,7 +67,6 @@ angular.module('efindingAdminApp')
 
 			$auth.setToken(success.data.attributes.access_token);
 			that('refresh_t', success.data.attributes.refresh_token);
-			$log.error('bien');
 
 			functionToCall({
 				success: true,
@@ -80,7 +79,6 @@ angular.module('efindingAdminApp')
 				success: false,
 				detail: error
 			});
-			$log.error('mal');
 			$log.error(error);
 			// $state.go('core.login');
 		});
