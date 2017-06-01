@@ -14,7 +14,12 @@
  	
  	//traer el token
  	var token = $state.params.token;
+ 	var refresh_token = $state.params.refresh;
+ 	
+ 	Utils.setInStorage('refresh_t', refresh_token);
  	$auth.setToken(token);
+
+	//$log.error(Utils.getInStorage('refresh_t'));
 
  	var currentDate = new Date();
  	var firstMonthDay = new Date();
@@ -52,7 +57,8 @@
  			},
  			cuarteles: {
  				list: [],
- 				selected: null
+ 				selected: null,
+ 				loaded: false
  			},
  			month: {
  				value: new Date(),
@@ -118,7 +124,11 @@
  	j = 0,
  	k = 0;
 
- 	var getAreas = function() {
+ 	$scope.getAreas = function(e) {
+ 		if (!e.success) {
+			return;
+		}
+
  		$scope.page.filters.areas.list = [];
 
 		Collection.query({
@@ -140,26 +150,36 @@
 
 				$scope.page.filters.areas.selected = $scope.page.filters.areas.list[0];
 				$scope.page.filters.areas.loaded = true;
-				getMenu();
-				getColumns();
+				getMenu({
+					success: true,
+					detail: 'OK'
+				});
+				getColumns({
+					success: true,
+					detail: 'OK'
+				});
  				$scope.getStatus({
  					success: true,
  					detail: 'OK'
- 				}, $scope.page.filters.areas.selected);
+ 				});
 
 			} else {
 				$log.error(success);
 			}
 		}, function(error) {
-			$log.error(error);
-			if (error.status) {
-				Utils.refreshToken($scope.getCollection);
+			if (error.status === 401) 
+			{
+				$log.error('error aqui');
+				Utils.refreshToken($scope.getAreas);
 			}
 		});
  	};
 
  	$scope.getStatus = function(e) {
-
+ 		if (!e.success) {
+			$log.error(e.detail);
+			return;
+		}
  		$scope.page.filters.status.selected = [];
  		$scope.page.filters.status.list = [];
 
@@ -200,6 +220,10 @@
  	};
 
  	$scope.getCuarteles = function(e) {
+ 		if (!e.success) {
+			$log.error(e.detail);
+			return;
+		}
 
  		$scope.page.filters.cuarteles.list = [];
 
@@ -214,19 +238,24 @@
  					});
  				});
  				$scope.page.filters.cuarteles.selected = $scope.page.filters.cuarteles.list[0];
- 			} else {
+ 				$scope.page.filters.cuarteles.loaded = true;
+
  				$log.error(success);
  			}
  		}, function(error) {
  			$log.error(error);
  			if (error.status === 401) {
- 				Utils.refreshToken(getAreas);
+ 				Utils.refreshToken($scope.getCuarteles);
  			}
  		});
  	};
 
 
- 	var getMenu = function() {
+ 	var getMenu = function(e) {
+ 		if (!e.success) {
+			$log.error(e.detail);
+			return;
+		}
 		menu = [];
 
 		MenuSections.query({
@@ -273,10 +302,12 @@
 
 	};
 
- 	var getColumns = function() {
+ 	var getColumns = function(e) {
+ 		if (!e.success) {
+			$log.error(e.detail);
+			return;
+		}
 
-		var defered = $q.defer();
-		var promise = defered.promise;
 		var columns = {};
 
 		TableColumns.query({
@@ -288,11 +319,11 @@
 			columns.reportColumns = [];
 
 			for (i = 0; i < success.data.length; i++) {
-				/*
-					title: Titulo de la columna
-					field: Se utiliza para ir a ese dato en especifico
-					field: para filtrar en servicio
-				*/
+				
+				//	title: Titulo de la columna
+				//	field: Se utiliza para ir a ese dato en especifico
+				//	field: para filtrar en servicio
+				
 				columns.reportColumns.push({
 					title: success.data[i].attributes.column_name,
 					field: success.data[i].attributes.field_name,
@@ -309,14 +340,11 @@
 			Utils.setInStorage('report_columns', columns.reportColumns);
 
 		}, function(error) {
-			defered.reject({
-				success: false,
-				detail: error,
-				data: ''
-			});
+			$log.error();
+			if (error.status === 401) {
+        		Utils.refreshToken(getColumns);
+      		}
 		});
-
-		return promise;
 	};
 
  	//EMPIEZA TABLA CON REPORTES
@@ -599,8 +627,8 @@
 
  	//TERMINA TABLA CON REPORTES
 
- 	$scope.$watch('page.filters.areas.loaded', function() {
-		if ($scope.page.filters.areas.loaded) {
+ 	$scope.$watch('page.filters.cuarteles.loaded', function() {
+		if ($scope.page.filters.cuarteles.loaded) {
 			$scope.$watch('page.filters.dateRange.date', function(newValue, oldValue) {
 				var startDate = new Date($scope.page.filters.dateRange.date.startDate);
 				var endDate = new Date($scope.page.filters.dateRange.date.endDate);
@@ -618,7 +646,6 @@
  			$log.error(e.detail);
  			return;
  		}
-
 
  		var areaIdSelected = $scope.page.filters.areas.selected ? $scope.page.filters.areas.selected.id : '';
  		var statusIdSelected = $scope.page.filters.status.selected ? $scope.page.filters.status.selected.name : '';
@@ -785,5 +812,8 @@
 			}
 		});
 	};
-	getAreas();
+	$scope.getAreas({
+		success: true,
+		detail: 'OK'
+	});
 });

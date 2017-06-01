@@ -79,7 +79,6 @@ angular.module('efindingAdminApp')
 				success: false,
 				detail: error
 			});
-
 			$log.error(error);
 			// $state.go('core.login');
 		});
