@@ -2,21 +2,21 @@
 
 /**
  * @ngdoc function
- * @name efindingAdminApp.controller:MastersGenericCtrl
+ * @name efindingAdminApp.controller:MasterAreasManflasCtrl
  * @description
- * # MastersGenericCtrl
+ * # MasterAreasManflasCtrl
  * Controller of the efindingAdminApp
  */
 angular.module('efindingAdminApp')
 
-.controller('MastersGenericCtrl', function($scope, $log, $timeout, $state, $uibModal, NgTableParams, $filter, Utils, Collection, ExcelCollection) {
+.controller('MasterAreasManflasCtrl', function($scope, $log, $timeout, $state, $uibModal, NgTableParams, $filter, Utils, Collection, ExcelCollection) {
 
 	$scope.page = {
 		title: ''
 	};
 	var data = [];
 
-	var id_collection = $state.params.type;
+	var id_collection = 23;
 	var auxiliar = {};
 
 
@@ -285,7 +285,7 @@ angular.module('efindingAdminApp')
 
 })
 
-.controller('genericDetailsInstance', function($scope, $log, $uibModalInstance, idObject, idParent, Validators, Utils, Collection, Collection_Item) {
+.controller('genericDetailsInstance', function($scope, $log, $uibModalInstance, idObject, idParent, Validators, Utils, Users, Collection_Item) {
 	$scope.collection = {
 		id: null,
 		name: {
@@ -328,15 +328,20 @@ angular.module('efindingAdminApp')
 
 	$scope.getCollectionItem = function(idObject) {
 		Collection_Item.query({
-			idCollection: idObject
+			idCollection: idObject,
 		}, function(success) {
 			if (success.data) {
 				$scope.collection.id 		= success.data.id;
 				$scope.collection.name 		= success.data.attributes.name;
 				$scope.collection.parent_item_id = success.data.attributes.parent_item_id;
-				if ($scope.collection.parent_item_id != null) 
+				var resource_owner = success.data.relationships.resource_owner.data;
+				if (resource_owner != null) 
 				{
-					$scope.getCollection(success.included[0].attributes.collection_id);
+					$scope.getUsers(resource_owner.id);
+				}
+				else
+				{
+					$scope.getUsers('');
 				}
 
 
@@ -352,35 +357,36 @@ angular.module('efindingAdminApp')
 		});
 	};
 
-	$scope.getCollection = function(idParent) {
-		Collection.query({
-			idCollection: idParent
+
+	$scope.getUsers = function(id_user) {
+		Users.query({
+			idUser: ''
 		}, function(success) {
 			if (success.data) {
 				$scope.parentCollection.visible = true;
-
-				for (var i = 0; i < success.included.length; i++) {
-					$scope.parentCollection.data.push({
-						name: success.included[i].attributes.name,
-						id: success.included[i].id
-					});
-					if ($scope.collection.parent_item_id === success.included[i].id) 
+				for (var i = 0; i < success.data.length; i++) {
+					if (success.data[i].attributes.active) 
 					{
-						$scope.collection.selectedParent = {name: success.included[i].attributes.name, id: success.included[i].id};
+						$scope.parentCollection.data.push({
+							name: success.data[i].attributes.first_name + ' ' + success.data[i].attributes.last_name,
+							id: success.data[i].id,
+						});
+						if ($scope.parentCollection.data[i].id == id_user) 
+						{
+							$scope.collection.selectedParent = {name: success.data[i].attributes.first_name + ' ' + success.data[i].attributes.last_name, id: success.data[i].id};
+						}
 					}
 				}
-
 			} else {
-				$log.log(success);
+				$log.error(success);
 			}
-
 		}, function(error) {
 			$log.error(error);
-			if (error.status) {
-				Utils.refreshToken($scope.getCollection);
+			if (error.status === 401) {
+				Utils.refreshToken($scope.getUsers);
 			}
-
 		});
+
 	};
 
 	$scope.getCollectionItem(idObject);
@@ -399,26 +405,44 @@ angular.module('efindingAdminApp')
 				return;
 			}
 
+			if ($scope.collection.selectedParent == null) {
+				$scope.elements.alert.title = 'Faltan datos por rellenar';
+				$scope.elements.alert.text = '';
+				$scope.elements.alert.color = 'danger';
+				$scope.elements.alert.show = true;
+				return;
+			}
+
 			$scope.elements.buttons.editUser.text = 'Editar';
 			$scope.elements.buttons.editUser.border = 'btn-border';
 			var aux = {};
-			if ($scope.collection.selectedParent === undefined) 
-			{
-				aux = { data: { type: 'collection_items', id: idObject, 
-								attributes: { name: $scope.collection.name } }, idCollection: idObject };
-			}
-			else
-			{
-				aux = { data: { type: 'collection_items', id: idObject, 
-								attributes: { name: $scope.collection.name }, 
-								relationships: { parent_item: { data: { type: "collection_items", 
-										id: $scope.collection.selectedParent.id } } } } , idCollection: idObject };
-			}
+			aux = { 
+				data: 
+					{ 
+						type: 'collection_items', 
+						id: idObject, 
+						attributes: 
+						{ 
+							name: $scope.collection.name 
+						}, 
+						relationships: 
+						{ 
+							resource_owner: 
+							{ 
+								data: 
+								{ 
+									type: "users", 
+									id: $scope.collection.selectedParent.id 
+								} 
+							} 
+						} 
+					}, 
+				idCollection: idObject };
 
 			Collection_Item.update(aux, 
 				function(success) {
 					if (success.data) {
-						$scope.elements.alert.title = 'Se han actualizado los datos de la actividad';
+						$scope.elements.alert.title = 'Se han actualizado los datos.';
 						$scope.elements.alert.text = '';
 						$scope.elements.alert.color = 'success';
 						$scope.elements.alert.show = true;
@@ -485,7 +509,7 @@ angular.module('efindingAdminApp')
 
 })
 
-.controller('NewCollectionItemModalInstance', function($scope, $log, $state, $uibModalInstance, Csv, Utils, Collection_Item, CollectionObject, Collection, idCollection) {
+.controller('NewCollectionItemModalInstance', function($scope, $log, $state, $uibModalInstance, Csv, Utils, Collection_Item, CollectionObject, Collection, idCollection, Users) {
 
 	$scope.modal = {
 		csvFile: null
@@ -502,7 +526,7 @@ angular.module('efindingAdminApp')
 		code: ''
 	};
 
-	if (CollectionObject.padre != null) 
+	/*if (CollectionObject.padre != null) 
 	{
 		Collection_Item.query({
 			idCollection: CollectionObject.padre
@@ -542,7 +566,37 @@ angular.module('efindingAdminApp')
 
 			});
 		};
-	}
+	}*/
+
+	$scope.getUsers = function() {
+		Users.query({
+			idUser: ''
+		}, function(success) {
+			if (success.data) {
+				$scope.collection.visible = true;
+				for (var i = 0; i < success.data.length; i++) {
+					if (success.data[i].attributes.active) 
+					{
+						$scope.collection.data.push({
+							name: success.data[i].attributes.first_name + ' ' + success.data[i].attributes.last_name,
+							id: success.data[i].id,
+						});
+					}
+				}
+				$scope.collection.selectedParent = $scope.collection.data[0];
+			} else {
+				$log.error(success);
+			}
+		}, function(error) {
+			$log.error(error);
+			if (error.status === 401) {
+				Utils.refreshToken($scope.getUsers);
+			}
+		});
+
+	};
+
+	$scope.getUsers();
 
 	$scope.saveCollectionItem = function() {
 
@@ -551,21 +605,41 @@ angular.module('efindingAdminApp')
 		} else 
 		{
 			var aux = {};
-			if ($scope.collection.selectedParent === undefined) 
-			{
-				aux = { 
-					data: { type: 'collection_items', attributes: { name: $scope.collection_item.name, 
-																	code: $scope.collection_item.code },
-							relationships: { collection: {data: {type: 'collections', id: idCollection}}}}};
-			}
-			else
-			{
-				aux = { data: { type: 'collection_items', attributes: { name: $scope.collection_item.name,
-																		code: $scope.collection_item.code }, 
-								relationships: { collection: {data: {type: 'collections', id: idCollection}},
-										parent_item: { data: { type: "collection_items", 
-										id: $scope.collection.selectedParent.id }}}}};
-			}
+			aux = { 
+				data: { 
+					type: 'collection_items', 
+					attributes: { 
+						name: $scope.collection_item.name, 
+						code: $scope.collection_item.code 
+					},
+					relationships: { 
+						collection: {
+							data: {
+								type: 'collections', 
+								id: idCollection
+							}
+						},
+						resource_owner: 
+						{ 
+							data: 
+							{ 
+								type: "users", 
+								id: $scope.collection.selectedParent.id 
+							} 
+						} 
+					}
+				}
+			};
+
+			/*
+			resource_owner: 
+							{ 
+								data: 
+								{ 
+									type: "users", 
+									id: $scope.collection.selectedParent.id 
+								} 
+							} */
 			Collection_Item.save(aux, 
 				function(success) {
 					if (success.data) {

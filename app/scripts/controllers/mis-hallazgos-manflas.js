@@ -2,17 +2,17 @@
 
 /**
  * @ngdoc function
- * @name efindingAdminApp.controller:ReportsListCtrl
+ * @name efindingAdminApp.controller:MisHallazgosManflas
  * @description
- * # ReportsListCtrl
+ * # MisHallazgosManflas
  * Controller of the efindingAdminApp
  */
 angular.module('efindingAdminApp')
 
-.controller('ReportsListCtrl', function($scope, $log, $state, $filter, $window, $timeout, $uibModal, NgTableParams, Inspections, Utils) {
+.controller('MisHallazgosManflas', function($scope, $log, $state, $filter, $window, $timeout, $uibModal, NgTableParams, ReportsMine, Utils) {
 
 	$scope.page = {
-		title: 'Lista de inspecciones',
+		title: 'Mis Hallazgos',
 		prevBtn: {
 			disabled: true
 		},
@@ -98,7 +98,7 @@ angular.module('efindingAdminApp')
 			$scope.filter[auxiliar].columnName = $scope.columns[i].title;
 			$scope.filter[auxiliar].relationshipName = $scope.columns[i].relationshipName;
 		}
-		$scope.filter.include = _.findWhere(_.findWhere(included, { name: 'Inspecciones'}).items, { path: 'efinding.inspecciones.list'}).included;
+		$scope.filter.include = _.findWhere(_.findWhere(included, { name: 'Hallazgos'}).items, { path: 'efinding.hallazgos.propios'}).included;
 		$scope.filter['page[number]'] = $scope.pagination.pages.current;
 		$scope.filter['page[size]'] = $scope.pagination.pages.size;
 	}
@@ -127,7 +127,7 @@ angular.module('efindingAdminApp')
 		filterTimeout = $timeout(function() {
 			$log.log(newFilters);
 
-			$scope.getInspections({
+			$scope.getReports({
 				success: true,
 				detail: 'OK'
 			}, $scope.pagination.pages.current, $scope.filter);
@@ -135,7 +135,7 @@ angular.module('efindingAdminApp')
 		}, filterTimeoutDuration);
 	}, true);
 
-	$scope.getInspections = function(e, page, filters) {
+	$scope.getReports = function(e, page, filters) {
 		if (!e.success) {
 			$log.error(e.detail);
 			return;
@@ -150,11 +150,9 @@ angular.module('efindingAdminApp')
 				filtersToSearch[attr] = filters[attr];
 			}
 		}
-		Inspections.query(filtersToSearch, function(success) {
+		ReportsMine.query(filtersToSearch, function(success) {
 			reportsIncluded = success.included;
 			$scope.pagination.pages.total = success.meta.page_count;
-
-			//$log.error(success.data);
 
 			for (i = 0; i < success.data.length; i++) {
 				test.push({});
@@ -399,7 +397,7 @@ angular.module('efindingAdminApp')
 		if ($scope.pagination.pages.current <= $scope.pagination.pages.total - 1) {
 			$scope.pagination.pages.current++;
 			$scope.filter['page[number]'] = $scope.pagination.pages.current;
-			$scope.getInspections({
+			$scope.getReports({
 				success: true
 			}, $scope.pagination.pages.current, $scope.filter);
 		}
@@ -409,7 +407,7 @@ angular.module('efindingAdminApp')
 		if ($scope.pagination.pages.current > 1) {
 			$scope.pagination.pages.current--;
 			$scope.filter['page[number]'] = $scope.pagination.pages.current;
-			$scope.getInspections({
+			$scope.getReports({
 				success: true
 			}, $scope.pagination.pages.current, $scope.filter);
 		}
@@ -437,7 +435,7 @@ angular.module('efindingAdminApp')
 				}
 			}
 			if (datos.action === 'firma') {
-				$scope.getInspections({
+				$scope.getReports({
 					success: true,
 					detail: 'OK'
 				}, $scope.pagination.pages.current, $scope.filter);

@@ -49,17 +49,13 @@
 								<tr>
 									<th ng-repeat="column in columns2" class="text-center sortable" ng-click="sortBy(column.field_a)"> {{column.title}} </th>
 									<th class="text-center"> PDF </th>
-									<th class="text-center"> Firma </th>
-									<th class="text-center" ng-show="role_id==1"> Eliminar </th>
 								</tr>
-								<tr>
+								<!--tr>
 									<th ng-repeat="column in columns2" class="text-center sortable" >
 										<input type="text" class="form-control" ng-model="filter[column.filter].filter"/>
 									</th>
 									<th class="text-center" ></th>
-									<th class="text-center" ></th>
-									<th class="text-center" ng-show="role_id==1"></th>
-								</tr>
+								</tr-->
 							</thead>
 
 							<tbody>
@@ -70,16 +66,6 @@
 									<td>
 										<input ng-if="inspection['pdfUploaded']" class="text-center" type="image" src="https://s3-sa-east-1.amazonaws.com/efinding/icons/PDF.png" uib-tooltip="Descargar PDF" tooltip-placement="bottom" style="width: 15px" data-pdf="{{inspection.pdf}}" ng-click="downloadPdf($event)"/>
 										<input ng-if="!inspection['pdfUploaded']" class="text-center" type="image" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/denied2.png" uib-tooltip="PDF no disponible" tooltip-placement="bottom" style="width: 20px;" data-pdf="{{inspection.pdf}}" />
-									</td>
-									<td>
-										<label ng-if="inspection.state == 'reports_pending'">Pendiente de envío</label>
-										<a ng-click="FirmaInspeccionInstance(inspection.id)" ng-if="inspection.state == 'first_signature_pending'">Pendiente de firma</a>
-										<label ng-if="inspection.state == 'first_signature_done'">Firmado</label>
-										<a ng-click="FirmaInspeccionInstance(inspection.id)" ng-if="inspection.state == 'final_signature_pending'">Pendiente de firma final</a>
-										<label ng-if="inspection.state == 'finished'">Teminado</label>
-									</td>
-									<td ng-show="role_id==1">
-										<img ng-click="openModalRemoveInspection(inspection.id)" ng-src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/delete.png" style="width:18px;" tooltip="Borrar inspección">
 									</td>
 								</tr>
 							</tbody>

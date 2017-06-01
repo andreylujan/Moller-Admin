@@ -43,6 +43,7 @@ angular.module('efindingAdminApp')
 				Utils.setInStorage('logged', true);
 				Utils.setInStorage('refresh_t', success.data.data.attributes.refresh_token);
 				Utils.setInStorage('role_id', success.data.data.relationships.role.data.id);
+				Utils.setInStorage('idUser', success.data.data.relationships.user.data.id);
 
 				$auth.setToken(success.data.data.attributes.access_token);
 
@@ -50,7 +51,6 @@ angular.module('efindingAdminApp')
 				{
 					getUserData(success.data.data.relationships.user.data.id)
 						.then(function(data) {
-							$log.log(data);
 							Utils.setInStorage('fullName', data.data.fullName);
 							Utils.setInStorage('image', data.data.image);
 
@@ -111,7 +111,13 @@ angular.module('efindingAdminApp')
 			user.fullName = success.data.attributes.full_name;
 			user.image = success.data.attributes.image;
 			user.type = success.data.type;
-			$log.log(Utils.getInStorage('organization'));
+
+			for (var i = 0; i < success.included.length; i++) {
+				if (success.included[i].type === 'organizations') 
+				{
+					Utils.setInStorage('organization', success.included[i].id);
+				}
+			}
 
 			defered.resolve({
 				success: true,
@@ -211,7 +217,15 @@ angular.module('efindingAdminApp')
 			}
 
 			Utils.setInStorage('report_columns', columns.reportColumns);
-			gotoReportList();
+			if (Utils.getInStorage('organization') == 3) 
+			{
+				gotoManflas();
+			}
+			else
+			{
+				gotoReportList();
+			}
+			
 
 		}, function(error) {
 			defered.reject({
@@ -226,6 +240,10 @@ angular.module('efindingAdminApp')
 
 	var gotoReportList = function() {
 		$state.go('efinding.dashboard.generic');
+	};
+	//Dashboard para Manflas
+	var gotoManflas = function() {
+		$state.go('efinding.dashboard.manflas');
 	};
 
 });

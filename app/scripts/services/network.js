@@ -2,10 +2,10 @@
 
 var API_URL = 'http://50.16.161.152/efinding/api/v1';		//Producción
 var URL_SERVER = 'http://50.16.161.152/efinding/';		//Producción
-// var API_URL = 'http://50.16.161.152/efinding-staging/api/v1';		//Desarrollo
-// var URL_SERVER = 'http://50.16.161.152/efinding-staging/';		//Desarrollo
-//var API_URL = 'http://localhost:3000/api/v1';						//Local
-//var URL_SERVER = 'http://localhost:3000/';							//Local
+//var API_URL = 'http://50.16.161.152/efinding-staging/api/v1';		//Desarrollo
+//var URL_SERVER = 'http://50.16.161.152/efinding-staging/';		//Desarrollo
+//var API_URL = 'http://192.168.0.2:3000/api/v1';						//Local
+//var URL_SERVER = 'http://192.168.0.2:3000/';							//Local
 
 angular.module('efindingAdminApp')
 
@@ -26,7 +26,7 @@ angular.module('efindingAdminApp')
 // REFRESH
 .factory('RefreshToken', function($resource) {
 
-	return $resource(URL_SERVER + '/oauth/token', {}, {
+	return $resource(URL_SERVER + 'oauth/token', {}, {
 		save: {
 			method: 'POST',
 			'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ angular.module('efindingAdminApp')
 				Accept: 'application/vnd.api+json'
 			},
 			params: {
-				include: 'creator,report_type,assigned_user',
+				include: '@include',
 				fieldsUsers: '@fieldsUsers',
 				fieldsReports: '@fieldsReports',
 				fieldsEquipments: '@fieldsEquipments',
@@ -62,6 +62,101 @@ angular.module('efindingAdminApp')
 		}
 	});
 
+})
+
+// REPORTES
+.factory('ReportsMine', function($resource) {
+
+	return $resource(API_URL + '/reports/mine', {
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: '@include',
+				fieldsUsers: '@fieldsUsers',
+				fieldsReports: '@fieldsReports',
+				fieldsEquipments: '@fieldsEquipments',
+				all: 'true'
+			}
+		},
+		save: {
+			method: 'POST',
+			headers: {
+				Accept: 'application/vnd.api+json',
+				'Content-Type': 'application/vnd.api+json'
+			}
+		}
+	});
+
+})
+
+// REPORTES
+.factory('ReportsTask', function($resource) {
+
+	return $resource(API_URL + '/reports/tasks', {
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: '@include',
+				fieldsUsers: '@fieldsUsers',
+				fieldsReports: '@fieldsReports',
+				fieldsEquipments: '@fieldsEquipments',
+				all: 'true'
+			}
+		},
+		save: {
+			method: 'POST',
+			headers: {
+				Accept: 'application/vnd.api+json',
+				'Content-Type': 'application/vnd.api+json'
+			}
+		}
+	});
+
+})
+
+// REPORTES
+.factory('ReportsManflas', function($resource) {
+
+	return $resource(API_URL + '/reports?:filtro', {
+		filtro: '@filtro',
+		include: '@include',
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: '@include',
+			}
+		},
+		save: {
+			method: 'POST',
+			headers: {
+				Accept: 'application/vnd.api+json',
+				'Content-Type': 'application/vnd.api+json'
+			}
+		}
+	});
+
+})
+
+.factory('InspectionsByMonth', function($auth) {
+	return {
+		getFile: function(elem, fileName, month, year) {
+			var downloadLink = angular.element(elem);
+			downloadLink.attr('href', API_URL + '/inspections.xlsx?access_token=' + $auth.getToken() + '&month=' + month + '&year=' + year);
+			downloadLink.attr('download', fileName + '.xlsx');
+		}
+	};
 })
 
 // INSPECCIONES
@@ -96,6 +191,23 @@ angular.module('efindingAdminApp')
 			},
 			params: {
 				include: 'construction.company,creator',
+			}
+		}
+	});
+
+})
+
+// INSPECCIONES REMOVE
+.factory('InspectionsRemove', function($resource) {
+
+	return $resource(API_URL + '/inspections/:idInspection', {
+		idInspection: '@idInspection'
+	}, {
+		delete: {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
 			}
 		}
 	});
@@ -177,6 +289,21 @@ angular.module('efindingAdminApp')
 
 	return $resource(API_URL + '/table_columns?filter[collection_name]=:type', {
 		type: '@type'
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			}
+		}
+	});
+
+})
+
+// Cuarteles
+.factory('Cuarteles', function($resource) {
+
+	return $resource(API_URL + '/manflas/stations?fields[stations]=id,name,variety,num_reports,coordinates', {
 	}, {
 		query: {
 			method: 'GET',
@@ -416,12 +543,7 @@ angular.module('efindingAdminApp')
 			},
 			params: {
 				include: '@include',
-				'filter[construction][name]': '@constructionName',
-				'filter[construction][company][name]': '@companyName',
-				'filter[state_name]': '@statusName',
-				'filter[creator][name]': '@supervisorName',
-				'filter[start_date]': '@startDate',
-				'filter[end_date]': '@endDate'
+				fieldsReports: '@fieldsReports',
 			}
 		}
 	});
@@ -472,7 +594,7 @@ angular.module('efindingAdminApp')
 				Accept: 'application/vnd.api+json'
 			},
 			params: {
-				include: 'parent_item'
+				include: 'parent_item,resource_owner'
 			}
 		},
 		update: {
