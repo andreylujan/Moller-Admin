@@ -61,11 +61,11 @@ angular.module('efindingAdminApp')
 		});
 	};
 
-	$scope.openModalObjectDetails = function(idObject, idParent) {
+	$scope.openModalAreasObjectDetails = function(idObject, idParent) {
 		var modalInstance = $uibModal.open({
 			animation: true,
-			templateUrl: 'genericDetails.html',
-			controller: 'genericDetailsInstance',
+			templateUrl: 'genericAreasDetails.html',
+			controller: 'genericDetailsAreasInstance',
 			resolve: {
 				idObject: function() {
 					return idObject;
@@ -96,12 +96,12 @@ angular.module('efindingAdminApp')
 		}, function() {});
 	};
 
-	$scope.openModalNewCollectionItem = function() {
+	$scope.openModalAreasNewCollectionItem = function() {
 
 		var modalInstance = $uibModal.open({
 			animation: true,
-			templateUrl: 'newCollectionItem.html',
-			controller: 'NewCollectionItemModalInstance',
+			templateUrl: 'newCollectionItemAreas.html',
+			controller: 'NewCollectionItemAreasModalInstance',
 			resolve: {
 				CollectionObject: function() {
 					return auxiliar;
@@ -123,13 +123,13 @@ angular.module('efindingAdminApp')
 		}, function() {});
 	};
 
-	$scope.openModalNewGeneric = function() {
+	$scope.openModalAreasNewGeneric = function() {
 
 		var modalInstance = $uibModal.open({
 			animation: true,
 			backdrop: false,
-			templateUrl: 'newGenericMasive.html',
-			controller: 'newGenericMasive',
+			templateUrl: 'newGenericMasiveAreas.html',
+			controller: 'newGenericAreasMasive',
 			resolve: {
 				idCollection: function() {
 					return id_collection;
@@ -159,7 +159,7 @@ angular.module('efindingAdminApp')
 
 })
 
-.controller('newGenericMasive', function($scope, $log, $uibModalInstance, $uibModal, Csv, idCollection) {
+.controller('newGenericAreasMasive', function($scope, $log, $uibModalInstance, $uibModal, Csv, idCollection) {
 	$scope.modal = {
 		csvFile: null,
 		btns: {
@@ -220,11 +220,11 @@ angular.module('efindingAdminApp')
 
 	};
 
-	var openModalSummary = function(data) {
+	var openModalSummaryAreas = function(data) {
 		var modalInstance = $uibModal.open({
 			animation: true,
-			templateUrl: 'summary.html',
-			controller: 'SummaryLoadModalInstance',
+			templateUrl: 'summaryAreas.html',
+			controller: 'SummaryLoadModalAreasInstance',
 			resolve: {
 				data: function() {
 					return data;
@@ -248,7 +248,7 @@ angular.module('efindingAdminApp')
 
 })
 
-.controller('SummaryLoadModalInstance', function($scope, $log, $uibModalInstance, data) {
+.controller('SummaryLoadModalAreasInstance', function($scope, $log, $uibModalInstance, data) {
 
 	$scope.modal = {
 		countErrors: 0,
@@ -285,7 +285,7 @@ angular.module('efindingAdminApp')
 
 })
 
-.controller('genericDetailsInstance', function($scope, $log, $uibModalInstance, idObject, idParent, Validators, Utils, Users, Collection_Item) {
+.controller('genericDetailsAreasInstance', function($scope, $log, $uibModalInstance, idObject, idParent, Validators, Utils, Users, Collection_Item) {
 	$scope.collection = {
 		id: null,
 		name: {
@@ -509,8 +509,9 @@ angular.module('efindingAdminApp')
 
 })
 
-.controller('NewCollectionItemModalInstance', function($scope, $log, $state, $uibModalInstance, Csv, Utils, Collection_Item, CollectionObject, Collection, idCollection, Users) {
+.controller('NewCollectionItemAreasModalInstance', function($scope, $log, $state, $uibModalInstance, Csv, Utils, Collection_Item, CollectionObject, Collection, idCollection, Users) {
 
+	$log.error('holas');
 	$scope.modal = {
 		csvFile: null
 	};

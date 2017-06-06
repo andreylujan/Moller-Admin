@@ -239,8 +239,6 @@
  				});
  				$scope.page.filters.cuarteles.selected = $scope.page.filters.cuarteles.list[0];
  				$scope.page.filters.cuarteles.loaded = true;
-
- 				$log.error(success);
  			}
  		}, function(error) {
  			$log.error(error);

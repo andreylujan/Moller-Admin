@@ -520,7 +520,6 @@
  			'filter[start_date]': startDate,
  			'filter[end_date]': endDate
  		}, function(success) {
- 			$log.error(success.data);
 		    if (success.data) {
 		    	var actividadVsRiesgo = {
 					categories: [],
