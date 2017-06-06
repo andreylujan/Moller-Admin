@@ -504,6 +504,7 @@ angular.module('efindingAdminApp')
 
 	if (CollectionObject.padre != null) 
 	{
+		$log.error(CollectionObject.padre);
 		Collection_Item.query({
 			idCollection: CollectionObject.padre
 			}, function(success) {
