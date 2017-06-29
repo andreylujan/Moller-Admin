@@ -170,6 +170,11 @@ angular.module('efindingAdminApp')
 
 				if (_.has(success, "included")) 
 				{
+					if (experto == null) 
+					{
+						experto = {id: null, type:null};
+					}
+					
 					for (var i = 0; i < success.included.length; i++) {
 						if (success.included[i].id === administrador.id && success.included[i].type === administrador.type) 
 						{
