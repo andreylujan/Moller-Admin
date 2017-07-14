@@ -9,7 +9,7 @@
  */
 angular.module('efindingAdminApp')
 
-.controller('ReportsListCtrl', function($scope, $log, $state, $filter, $window, $timeout, $uibModal, NgTableParams, Inspections, Utils, Collection) {
+.controller('ReportsListCtrl', function($scope, $log, $state, $sce, $filter, $window, $timeout, $uibModal, NgTableParams, Inspections, Utils, Collection) {
 
 	$scope.page = {
 		title: 'Lista de inspecciones',
@@ -30,17 +30,6 @@ angular.module('efindingAdminApp')
 			size: 25
 		}
 	};
-
-	/*
-	var activityTypes = [],
-		users = [],
-	var receiverName = null,
-		equipmentId = null,
-		activityTypeId = null,
-		assignedUserId = null,
-		state = '',
-	*/
-
 
 	var idCollection = null,
 		filterTimeout = null,
@@ -366,6 +355,10 @@ angular.module('efindingAdminApp')
 				Utils.refreshToken($scope.getReports);
 			}
 		});
+	};
+
+	$scope.trustAsHtml = function(string) {
+	    return $sce.trustAsHtml(string);
 	};
 
 

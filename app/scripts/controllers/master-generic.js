@@ -178,6 +178,7 @@ angular.module('efindingAdminApp')
 			text: ''
 		}
 	};
+	$log.error('masive');
 
 	$scope.save = function() {
 

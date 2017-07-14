@@ -257,6 +257,22 @@ angular
 				templateUrl: 'views/tmpl/masters/history-massive-loads.html',
 				controller: 'HistoryMassiveLoadsCtrl'
 			})
+			.state('efinding.obras.companies', {
+				url: '/empresas',
+				templateUrl: 'views/tmpl/masters/companies.html',
+				controller: 'MastersCompaniesCtrl'
+			})
+			.state('efinding.obras.pitagora', {
+				url: '/pitagora',
+				templateUrl: 'views/tmpl/masters/construction.html',
+				controller: 'MastersConstructionCtrl'
+			})
+			.state('efinding.obras.contractor', {
+				url: '/contratistas',
+				templateUrl: 'views/tmpl/masters/contractors.html',
+				controller: 'MastersContractorsCtrl'
+			})
+
     
 		//Areas
 		.state('efinding.areas', {

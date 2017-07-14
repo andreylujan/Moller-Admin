@@ -105,7 +105,8 @@
 							<tbody>
 								<tr ng-repeat="inspection in $data | filter: filtro">
 									<td ng-repeat="column in columns">
-										<p ng-bind-html="inspection[column.field_a]"></p>
+										<!--p ng-bind-html="inspection[column.field_a]"></p-->
+										<p data-ng-bind-html="trustAsHtml(inspection[column.field_a])"></p>
 									</td>
 									<td>
 										<input ng-if="inspection['pdfUploaded']" class="text-center" type="image" src="https://s3-sa-east-1.amazonaws.com/efinding/icons/PDF.png" uib-tooltip="Descargar PDF" tooltip-placement="bottom" style="width: 15px" data-pdf="{{inspection.pdf}}" ng-click="downloadPdf($event)"/>

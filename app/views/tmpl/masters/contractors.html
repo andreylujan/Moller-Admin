@@ -32,9 +32,9 @@
 					<!-- tile body -->
 					<div class="tile-body">
 						<div class="row">
-							<!--div class="col-md-1">
-								<button class="btn btn-default" ng-click="openModalNewCollectionItem()">Nuevo</button>
-							</div-->
+							<div class="col-md-1">
+								<button class="btn btn-default" ng-click="openModalNewCompany()">Nueva</button>
+							</div>
 							<div class="col-md-1">
 								<a id="downloadExcel" ng-click="getExcel({success:true,detail:'OK'})" uib-tooltip="Descargar Excel">
 									<img src="https://s3-sa-east-1.amazonaws.com/efinding/icons/abajo.png">
@@ -48,11 +48,11 @@
 						</div>
 						<table ng-table="tableParams" show-filter="true" class="table table-custom">
 							<tr ng-repeat="object in $data">
-								<td data-title="'Obra'" sortable="'fullname'" filter="{ 'fullname': 'text' }">
-									{{object.fullname}}
+								<td data-title="'Empresa'" sortable="'name'" filter="{ 'name': 'text' }">
+									{{object.name}}
 								</td>
 								<td data-title="'Info'">
-                  					<img ng-click="openModalObjectDetails(object.id, object.company)" src="https://s3-sa-east-1.amazonaws.com/efinding/icons/USUARIOS_INFO.png" style="width:24px; cursor:pointer" tooltip="Más info">
+                  					<img ng-click="openModalObjectDetails(object.id)" src="https://s3-sa-east-1.amazonaws.com/efinding/icons/USUARIOS_INFO.png" style="width:24px; cursor:pointer" tooltip="Más info">
                 				</td>
 							</tr>
 						</table>
@@ -67,7 +67,7 @@
 	</div>
 	<!-- /page content -->
 
-  <script type="text/ng-template" id="constructionDetails.html">
+  <script type="text/ng-template" id="contractorDetails.html">
     <div class="modal-header text-gray">
       <h3 class="text-center">{{elements.title}}</h3>
     </div>
@@ -79,72 +79,55 @@
             <div class="form-group">
               <label class="col-sm-3 control-label">Nombre</label>
               <div class="col-md-8">
-                <input type="text" id="name" class="form-control underline-input" placeholder="Nombre" ng-model="construction.name.text" ng-change="hideAlert()" required>
+                <input type="text" id="name" class="form-control underline-input" placeholder="Nombre" ng-model="contractor.name.text" ng-change="hideAlert()" required>
               </div>
             </div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label">Código</label>
-              <div class="col-md-8">
-                <input type="text" id="name" class="form-control underline-input" placeholder="Código" ng-model="construction.code" ng-change="hideAlert()" readonly>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label">Administrador de obra</label>
-              <div class="col-md-8">
-                <input type="text" id="name" class="form-control underline-input" placeholder="Nombre" value="{{construction.administrator.attributes.full_name}} - {{construction.administrator.attributes.rut}}" readonly>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-3 control-label">Visitador</label>
-              <div class="col-md-8">
-                <input type="text" id="name" class="form-control underline-input" placeholder="Nombre" value="{{construction.visitador.attributes.name}} - {{construction.visitador.attributes.rut}}" readonly>
-              </div>
-            </div>
-            <div class="form-group">
-		  		<label for="inputPassword3" class="col-sm-3 control-label">Jefe de terreno</label>
-		  		<div class="col-sm-8">
-		  			<ui-select class="bg-white b-solid br-15" ng-model="construction.selectedJefeTerreno" close-on-select="true">
-		  				<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.name}}</ui-select-match>
-		  				<ui-select-choices repeat="jefe in jefesTerreno track by jefe.name | propsFilter: {name: $select.search}" refresh-delay="200">
-		  					<div ng-bind-html="jefe.name"></div>
-		  				</ui-select-choices>
-		  			</ui-select>
-		  		</div>
-		  	</div>
-            <div class="form-group">
-		  		<label for="inputPassword3" class="col-sm-3 control-label">Experto SSOMA</label>
-		  		<div class="col-sm-8">
-		  			<ui-select class="bg-white b-solid br-15" ng-model="construction.selectedExpert" close-on-select="true">
-		  				<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.fullName}}</ui-select-match>
-		  				<ui-select-choices repeat="expert in experts track by expert.id | propsFilter: {fullName: $select.search}" refresh-delay="200">
-		  					<div ng-bind-html="expert.fullName"></div>
-		  				</ui-select-choices>
-		  			</ui-select>
-		  		</div>
-		  	</div>
-            <div class="form-group">
-              <label for="userRole" class="col-sm-3 control-label">Contratistas</label>
-              <div class="col-md-8" ng-show="construction.contractors">
-                <ul class="list-group"> 
-                  <li class="list-group-item" ng-repeat="contratistas in construction.contractors" >{{contratistas.name}}</li> 
-                </ul>
-              </div>
-              <div class="col-md-8" ng-show="!construction.contractors">
-                <input type="text" id="name" class="form-control underline-input" value="No existen datos" readonly>
-              </div>
-            </div>
+            
           </form>
         </div>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-warning btn-rounded-10 {{elements.buttons.editUser.border}} mb-10" type="button" ng-click="editGeneric(construction.id)" >{{elements.buttons.editUser.text}}</button>
+    	<button class="btn btn-danger btn-rounded-10 {{elements.buttons.removeUser.border}} mb-10" type="button" ng-click="removeGeneric(contractor.id)" >{{elements.buttons.removeUser.text}}</button>
+      	<button class="btn btn-warning btn-rounded-10 {{elements.buttons.editUser.border}} mb-10" type="button" ng-click="editGeneric(contractor.id)" >{{elements.buttons.editUser.text}}</button>
       <button class="btn btn-cancelRecit btn-rounded-10 mb-10" type="button" ng-click="cancel()">Cerrar</button>
     </div>
   </script>
 
+  <script type="text/ng-template" id="newContractor.html">
+    <div class="modal-header text-gray">
+      <h3 class="text-center">Nuevo contratista</h3>
+    </div>
+    <div class="modal-body text-gray">
+      <div class="alert alert-{{elements.alert.color}}" ng-show="elements.alert.show"> <h4 class="text-md"><strong>{{elements.alert.title}}</strong></h4> {{elements.alert.text}} </div>
+      <div class="row">
+        <div class="col-md-11">
+          <form name="form" class="form-validation form-horizontal" role="form" novalidate>
+            <div class="form-group">
+              <label class="col-sm-3 control-label">Nombre</label>
+              <div class="col-md-8">
+                <input type="text" id="name" class="form-control underline-input" placeholder="Nombre" ng-model="contractor.name" ng-change="hideAlert()" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label">Rut</label>
+              <div class="col-md-8">
+                <input type="text" id="name" class="form-control underline-input" placeholder="Rut" ng-model="contractor.rut" ng-change="hideAlert()" ng-blur="formatRut(contractor.rut)" required>
+              </div>
+            </div>
+            
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      	<button class="btn btn-success br-20 pl-20 pr-20" type="submit" ng-click="saveContractor()" ng-disabled='elements.button || form.$invalid'>Guardar</button>
+	    <button class="btn btn-default br-20 pl-20 pr-20" type="button" ng-click="cancel()" >Cerrar</button>
+    </div>
+  </script>
 
-  	<script type="text/ng-template" id="newGenericConstructionMasive.html">
+
+  	<script type="text/ng-template" id="newContractorsMasive.html">
 
 		<div class="overlay br-30" ng-show="modal.overlay.show">
 			<div style="position:absolute;top: 50%;left:50%;transform: translate(-50%, -50%);">
@@ -177,7 +160,7 @@
 		</div>
 	</script>
 
-	<script type="text/ng-template" id="summary.html">
+	<script type="text/ng-template" id="summaryContractors.html">
 
 		<div class="modal-header text-gray">
 			<h3 class="text-center">Resumen</h3>
@@ -188,13 +171,13 @@
 			<ul>
 
 				<li>
-					<ng-pluralize count="modal.countCreated" when="{'0': 'No se ingresaron equipos nuevos','one': '{} equipo se ingresó','other': '{} se ingresaron'}"></ng-pluralize>
+					<ng-pluralize count="modal.countCreated" when="{'0': 'No se ingresaron contratistas nuevos','one': '{} contratista se ingresó','other': '{} se ingresaron'}"></ng-pluralize>
 				</li>
 				<li>
-					<ng-pluralize count="modal.countChanged" when="{'0': 'No se actualizó ningún equipo','one': '{} equipo se actualizó','other': '{} se actualizaron'}"></ng-pluralize>
+					<ng-pluralize count="modal.countChanged" when="{'0': 'No se actualizó ningún contratista','one': '{} contratista se actualizó','other': '{} se actualizaron'}"></ng-pluralize>
 				</li>
 				<li>
-					<ng-pluralize count="modal.countErrors" when="{'0': 'Ningún equipo produjo error','one': '{} equipo NO se ingresó','other': '{} NO se ingresaron'}"></ng-pluralize>
+					<ng-pluralize count="modal.countErrors" when="{'0': 'Ningún contratista produjo error','one': '{} contratista NO se ingresó','other': '{} NO se ingresaron'}"></ng-pluralize>
 				</li>
 			</ul>
 
@@ -216,5 +199,7 @@
 		</div>
 
 	</script>
+
+
 
 </div>

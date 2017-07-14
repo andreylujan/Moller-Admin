@@ -211,9 +211,10 @@ angular.module('efindingAdminApp')
 					visible: true,
 					relationshipName: success.data[i].attributes.relationship_name,
 					dataType: success.data[i].attributes.data_type,
-					filter: {}
+					filters: success.data[i].attributes.headers,
+					columnFilters: []
 				});
-				columns.reportColumns[columns.reportColumns.length - 1].filter[success.data[i].attributes.field_name] = success.data[i].attributes.field_name;
+				//columns.reportColumns[columns.reportColumns.length - 1].filter[success.data[i].attributes.field_name] = success.data[i].attributes.field_name;
 			}
 
 			Utils.setInStorage('report_columns', columns.reportColumns);
