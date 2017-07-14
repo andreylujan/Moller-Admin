@@ -47,14 +47,54 @@
 						<table ng-table="tableParams" show-filter="true" class="table table-custom">
 							<thead>
 								<tr>
-									<th ng-repeat="column in columns2" class="text-center sortable" ng-click="sortBy(column.field_a)"> {{column.title}} </th>
+									<th ng-repeat="column in columns" class="text-center sortable">{{column.title}}</th>
 									<th class="text-center"> PDF </th>
 									<th class="text-center"> Firma </th>
 									<th class="text-center" ng-show="role_id==1"> Eliminar </th>
 								</tr>
 								<tr>
-									<th ng-repeat="column in columns2" class="text-center sortable" >
-										<input type="text" class="form-control" ng-model="filter[column.filter].filter"/>
+									<th ng-repeat="column in columns" class="text-center sortable" >
+										<div ng-repeat="filtro in column.columnFilters">
+											<div ng-if="filter[filtro.name].type  == 'text'" style="margin-bottom: 5px">
+												<table cellpadding="100">
+													<tr>
+														<th style="padding: 1px !important;">
+															<span ng-click="sortBy(filter[filtro.name].name)">
+														    	<input value="up" type="button" ng-if="filter[filtro.name].sort_direction == 'asc'" />
+
+														    	<input value="do" type="button" ng-if="filter[filtro.name].sort_direction == 'desc'"/>
+														    </span>
+														</th>
+														<th style="padding: 1px !important;">
+															<input type="text" class="form-control" ng-model="filter[filtro.name].filter" placeholder="{{ filter[filtro.name].placeholder }}"/>
+														</th>
+													</tr>
+												</table>
+											</div>
+
+											<div ng-if="filter[filtro.name].type  == 'list'">
+
+												<table>
+													<tr>
+														<th style="padding: 1px !important;">
+														<span ng-click="sortBy(filter[filtro.name].name)">
+													    	<input value="up" type="button" ng-if="filter[filtro.name].sort_direction == 'asc'" />
+
+													    	<input value="do" type="button" ng-if="filter[filtro.name].sort_direction == 'desc'"/>
+													    </span>
+												    	</th>
+														<th style="padding: 1px !important;">
+															<ui-select ng-model="filter[filtro.name].selected">
+													          <ui-select-match placeholder="Buscar...">{{$select.selected.name}}</ui-select-match>
+													          <ui-select-choices repeat="collection in filter[filtro.name].data | filter: $select.search">
+													            <div ng-bind-html="collection.name | highlight: $select.search"></div>
+													          </ui-select-choices>
+													        </ui-select>
+														</th>
+													</tr>
+												</table>
+											</div>
+										</div>
 									</th>
 									<th class="text-center" ></th>
 									<th class="text-center" ></th>
@@ -64,8 +104,8 @@
 
 							<tbody>
 								<tr ng-repeat="inspection in $data | filter: filtro">
-									<td ng-repeat="column in columns2">
-										{{inspection[column.field_a]}}
+									<td ng-repeat="column in columns">
+										<p ng-bind-html="inspection[column.field_a]"></p>
 									</td>
 									<td>
 										<input ng-if="inspection['pdfUploaded']" class="text-center" type="image" src="https://s3-sa-east-1.amazonaws.com/efinding/icons/PDF.png" uib-tooltip="Descargar PDF" tooltip-placement="bottom" style="width: 15px" data-pdf="{{inspection.pdf}}" ng-click="downloadPdf($event)"/>
@@ -84,11 +124,11 @@
 								</tr>
 							</tbody>
 						</table>
-						<div class="row">
+						<!--div class="row">
 							<div class="col-md-6" style="margin: 0 auto;float: none;">
 								<pager prev="decrementPage()" next="incrementPage()" change-page="getReports({success:true,detail:'OK'},pagination.pages.current)" current="pagination.pages.current" total="pagination.pages.total"></pager>
 							</div>
-						</div>
+						</div-->
 					</div>
 					<!-- /tile body -->
 				</section>

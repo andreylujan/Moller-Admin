@@ -55,7 +55,7 @@ angular.module('efindingAdminApp')
 			}
 		}, function(error) {
 			$log.error(error);
-			if (error.status) {
+			if (error.status == 401) {
 				Utils.refreshToken($scope.getCollection);
 			}
 		});
@@ -346,7 +346,7 @@ angular.module('efindingAdminApp')
 
 		}, function(error) {
 			$log.error(error);
-			if (error.status) {
+			if (error.status == 401) {
 				Utils.refreshToken($scope.getCollectionItem);
 			}
 		});
@@ -376,7 +376,7 @@ angular.module('efindingAdminApp')
 
 		}, function(error) {
 			$log.error(error);
-			if (error.status) {
+			if (error.status == 401) {
 				Utils.refreshToken($scope.getCollection);
 			}
 
@@ -434,7 +434,7 @@ angular.module('efindingAdminApp')
 					}
 				}, function(error) {
 					$log.log(error);
-					if (error.status) {
+					if (error.status == 401) {
 						Utils.refreshToken($scope.editGeneric);
 					}
 				}
@@ -467,7 +467,7 @@ angular.module('efindingAdminApp')
 
 			}, function(error) {
 				$log.log(error);
-				if (error.status === 401) {
+				if (error.status == 401) {
 					Utils.refreshToken($scope.removeGeneric);
 				}
 			});

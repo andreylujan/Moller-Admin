@@ -9,7 +9,7 @@
  */
 angular.module('efindingAdminApp')
 
-.controller('ReportsListCtrl', function($scope, $log, $state, $filter, $window, $timeout, $uibModal, NgTableParams, Inspections, Utils) {
+.controller('ReportsListCtrl', function($scope, $log, $state, $filter, $window, $timeout, $uibModal, NgTableParams, Inspections, Utils, Collection) {
 
 	$scope.page = {
 		title: 'Lista de inspecciones',
@@ -31,92 +31,94 @@ angular.module('efindingAdminApp')
 		}
 	};
 
-	var data = [],
-		activityTypes = [],
+	/*
+	var activityTypes = [],
 		users = [],
-		reportsIncluded = [],
-		inspecciones = []
-
-	$scope.sort_direction = 'asc';
-
 	var receiverName = null,
 		equipmentId = null,
 		activityTypeId = null,
 		assignedUserId = null,
 		state = '',
-		i = 0,
-		j = 0,
-		k = 0,
+	*/
+
+
+	var idCollection = null,
 		filterTimeout = null,
-		filterTimeoutDuration = 1000;
+		filterTimeoutDuration = 1000,
+		data = [],
+		reportsIncluded = [],
+		inspecciones = [];
 
 	$scope.columns = _.where(Utils.getInStorage('report_columns'), {visible: true});
 	$scope.filter = {};
 	var included = Utils.getInStorage('menu');
 
-	for (i = 0; i < $scope.columns.length; i++) {
+	$scope.getCollectionItem = function (callback) {		
+		var data = [];
 
-		if ($scope.columns[i].relationshipName) {
-			if (!_.contains($scope.columns[i].relationshipName, '.')) {
-				$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'] = {};
-				$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].filter = '';
-				$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].field = $scope.columns[i].field;
-				$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].field_a = $scope.columns[i].field_a;
-				$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].name = $scope.columns[i].field;
-				$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].columnName = $scope.columns[i].title;
-				$scope.filter['filter[' + $scope.columns[i].relationshipName + ']' + '[' + $scope.columns[i].field + ']'].relationshipName = $scope.columns[i].relationshipName;
+		Collection.query({
+			idCollection: idCollection
+		}, function(success) {
+			if (success.data) {
+				for (var k = 0; k < success.included.length; k++) {
+					data.push({
+						name: success.included[k].attributes.name,
+						id: success.included[k].id
+					});
+				}
+				callback({success: true, list: data});
+			}
+
+		}, function(error) {
+			if (error.status == 401) {
+				Utils.refreshToken($scope.getCollectionItem);
 			}
 			else
 			{
-				var aux = $scope.columns[i].relationshipName.split('.');
-				var texto = 'filter';
-				for (var j = 0; j <= aux.length -1; j++) {
-					texto = texto + '[' + aux[j] + ']';
-				}
-				texto = texto + '[' + $scope.columns[i].field + ']';
-				$scope.filter[texto] = {};
-				$scope.filter[texto].filter = '';
-				$scope.filter[texto].field = $scope.columns[i].field;
-				$scope.filter[texto].field_a = $scope.columns[i].field_a;
-				$scope.filter[texto].name = $scope.columns[i].field;
-				$scope.filter[texto].columnName = $scope.columns[i].title;
-				$scope.filter[texto].relationshipName = $scope.columns[i].relationshipName;
+				callback({success: true, list: null});
 			}
 
-		} else {
-			var res = $scope.columns[i].field.split(".");
-			var auxiliar = 'filter';
-
-			for (j = 0; j < res.length; j++) {
-				auxiliar = auxiliar+'['+ res[j]+']';
-			}
-			$scope.filter[auxiliar] = {};
-			$scope.filter[auxiliar].filter = '';
-			$scope.filter[auxiliar].field = $scope.columns[i].field;
-			$scope.filter[auxiliar].field_a = $scope.columns[i].field_a;
-			$scope.filter[auxiliar].name = $scope.columns[i].name;
-			$scope.filter[auxiliar].columnName = $scope.columns[i].title;
-			$scope.filter[auxiliar].relationshipName = $scope.columns[i].relationshipName;
-		}
-		$scope.filter.include = _.findWhere(_.findWhere(included, { name: 'Inspecciones'}).items, { path: 'efinding.inspecciones.list'}).included;
-		$scope.filter['page[number]'] = $scope.pagination.pages.current;
-		$scope.filter['page[size]'] = $scope.pagination.pages.size;
+		});
 	}
 
-	$scope.columns2 = [];
-	for (var attr in $scope.filter) {
-		if (attr.indexOf('filter') !== -1) {
+	for (var i = 0; i < $scope.columns.length; i++) {
+		angular.forEach($scope.columns[i].filters, function(value){
 
-			$scope.columns2.push({
-				visible: true,
-				filter: attr,
-				field: $scope.filter[attr].field,
-				field_a: $scope.filter[attr].field_a,
-				name: $scope.filter[attr].name,
-				title: $scope.filter[attr].columnName,
-				relationshipName: $scope.filter[attr].relationshipName
-			});
-		}
+			var aux = value.sort_name.split('.');
+			var texto = 'filter';
+			for (var j = 0; j <= aux.length -1; j++) {
+				texto = texto + '[' + aux[j] + ']';
+			}
+
+			$scope.filter['filter[' + value.sort_name + ']'] = {};
+			$scope.filter['filter[' + value.sort_name + ']'].filter 		= '';
+			$scope.filter['filter[' + value.sort_name + ']'].filterName 	= texto;
+			$scope.filter['filter[' + value.sort_name + ']'].type 			= value.filter_type;
+			$scope.filter['filter[' + value.sort_name + ']'].placeholder 	= value.header_name;
+			$scope.filter['filter[' + value.sort_name + ']'].sort_name 		= value.sort_name;
+			$scope.filter['filter[' + value.sort_name + ']'].sort_direction = 'asc';
+			$scope.filter['filter[' + value.sort_name + ']'].collection_id 	= value.collection_id;
+			$scope.filter['filter[' + value.sort_name + ']'].name 			= 'filter[' + value.sort_name + ']';
+			$scope.filter['filter[' + value.sort_name + ']'].data 			= [];
+
+			idCollection = value.collection_id;
+
+			if (value.filter_type == 'list') 
+			{
+				$scope.getCollectionItem(function (data) {
+				    if (data.success) 
+				    {
+				    	$scope.filter['filter[' + value.sort_name + ']'].data = data.list;
+				    }
+				});
+			}
+
+			$scope.columns[i].columnFilters.push($scope.filter['filter[' + value.sort_name + ']']);
+		});
+		$scope.filter.include = _.findWhere(_.findWhere(included, { name: 'Inspecciones'}).items, { path: 'efinding.inspecciones.list'}).included;
+		$scope.filter['sort'] = '';
+		$scope.filter['page[number]'] = $scope.pagination.pages.current;
+		$scope.filter['page[size]'] = $scope.pagination.pages.size;
 	}
 
 	$scope.$watch('filter', function(newFilters) {
@@ -125,8 +127,6 @@ angular.module('efindingAdminApp')
 		}
 
 		filterTimeout = $timeout(function() {
-			$log.log(newFilters);
-
 			$scope.getInspections({
 				success: true,
 				detail: 'OK'
@@ -140,17 +140,42 @@ angular.module('efindingAdminApp')
 			$log.error(e.detail);
 			return;
 		}
+
 		data = [];
 		var test = [];
 		var filtersToSearch = {};
 		for (var attr in filters) {
 			if (attr.indexOf('filter') !== -1) {
-				filtersToSearch[attr] = filters[attr].filter;
+				/*var aux = filters[attr].filterName;
+				if (filters[attr].type == 'text') 
+				{
+					filtersToSearch[aux] = filters[attr].filter;
+				}
+				else if (filters[attr].type == 'list') 
+				{
+					if (filters[attr].selected != undefined) 
+					{
+						filtersToSearch[aux] = filters[attr].selected.name!=undefined? filters[attr].selected.name : '';
+					}
+					else
+					{
+						filtersToSearch[aux] = '';
+					}
+				}
+				else
+				{
+					filtersToSearch[aux] = filters[attr];
+				}*/
+
 			} else {
 				filtersToSearch[attr] = filters[attr];
 			}
 		}
-		Inspections.query(filtersToSearch, function(success) {
+
+		//$log.error($scope.columns);
+
+		Inspections.query(filtersToSearch, function(success) 
+		{
 			reportsIncluded = success.included;
 			$scope.pagination.pages.total = success.meta.page_count;
 
@@ -159,49 +184,49 @@ angular.module('efindingAdminApp')
 			for (i = 0; i < success.data.length; i++) {
 				test.push({});
 
-				for (var j = 0; j < $scope.columns2.length; j++) {
+				for (var j = 0; j < $scope.columns.length; j++) {
 					test[test.length - 1]['pdf'] 			= success.data[i].attributes.pdf;
 					test[test.length - 1]['pdfUploaded'] 	= success.data[i].attributes.pdf_uploaded;
-					test[test.length - 1]['state'] = success.data[i].attributes.state;
-					test[test.length - 1]['id'] = success.data[i].id;
+					test[test.length - 1]['state'] 			= success.data[i].attributes.state;
+					test[test.length - 1]['id'] 			= success.data[i].id;
 					//no tiene relacion o es un objeto de consulta directa al dato
-					if (success.data[i].attributes[$scope.columns2[j].field]) {
-						test[test.length - 1][$scope.columns2[j].field_a] = success.data[i].attributes[$scope.columns2[j].field];
-						test[test.length - 1][$scope.columns2[j].name] = success.data[i].attributes[$scope.columns2[j].field];
+					if (success.data[i].attributes[$scope.columns[j].field]) {
+						test[test.length - 1][$scope.columns[j].field_a] 	= success.data[i].attributes[$scope.columns[j].field];
+						test[test.length - 1][$scope.columns[j].name] 		= success.data[i].attributes[$scope.columns[j].field];
 					} 
 					else
 					{
-						var res = $scope.columns2[j].field.split(".");
+						var res = $scope.columns[j].field.split(".");
 
 						if (res.length === 1)
 						{
-							if ($scope.columns2[j].relationshipName !== null) 
+							if ($scope.columns[j].relationshipName !== null) 
 							{
-								var relationships = $scope.columns2[j].relationshipName.split('.');
+								var relationships = $scope.columns[j].relationshipName.split('.');
 								//tiene relacion a solo un objeto
 								if (relationships.length == 1) 
 								{
-									for (k = 0; k < success.included.length; k++) {
-										if (success.data[i].relationships[$scope.columns2[j].relationshipName].data != null) 
+									for (var k = 0; k < success.included.length; k++) {
+										if (success.data[i].relationships[$scope.columns[j].relationshipName].data != null) 
 										{
-											if (success.data[i].relationships[$scope.columns2[j].relationshipName].data.id === success.included[k].id &&
-											success.data[i].relationships[$scope.columns2[j].relationshipName].data.type === success.included[k].type) 
+											if (success.data[i].relationships[$scope.columns[j].relationshipName].data.id === success.included[k].id &&
+											success.data[i].relationships[$scope.columns[j].relationshipName].data.type === success.included[k].type) 
 											{
 				
-												if (success.included[k].attributes[$scope.columns2[j].field] != null) 
+												if (success.included[k].attributes[$scope.columns[j].field] != null) 
 												{
-													test[test.length - 1][$scope.columns2[j].field_a] = success.included[k].attributes[$scope.columns2[j].field];
+													test[test.length - 1][$scope.columns[j].field_a] = success.included[k].attributes[$scope.columns[j].field];
 												}
 												else
 												{
-													test[test.length - 1][$scope.columns2[j].field_a] = '-';
+													test[test.length - 1][$scope.columns[j].field_a] = '-';
 												}
 												break;
 											}
 										}
 										else
 										{
-											test[test.length - 1][$scope.columns2[j].field_a] = '-';
+											test[test.length - 1][$scope.columns[j].field_a] = '-';
 											break;
 										}
 									}
@@ -231,20 +256,20 @@ angular.module('efindingAdminApp')
 												if ( relaciones[relationships[1]].data.id === success.included[k].id &&
 												 relaciones[relationships[1]].data.type === success.included[k].type) 
 												{
-													if (success.included[k].attributes[$scope.columns2[j].field] != null) 
+													if (success.included[k].attributes[$scope.columns[j].field] != null) 
 													{
-														test[test.length - 1][$scope.columns2[j].field_a] = success.included[k].attributes[$scope.columns2[j].field];
+														test[test.length - 1][$scope.columns[j].field_a] = success.included[k].attributes[$scope.columns[j].field];
 													}
 													else
 													{
-														test[test.length - 1][$scope.columns2[j].field_a] = '-';
+														test[test.length - 1][$scope.columns[j].field_a] = '-';
 													}
 													break;
 												}
 											}
 											else
 											{
-												test[test.length - 1][$scope.columns2[j].field_a] = '-';
+												test[test.length - 1][$scope.columns[j].field_a] = '-';
 											}
 										}
 									}
@@ -267,13 +292,13 @@ angular.module('efindingAdminApp')
 											if ( relaciones[relationships[relationships.length-1]].data.id === success.included[k].id &&
 											 relaciones[relationships[relationships.length-1]].data.type === success.included[k].type) 
 											{
-												if (success.included[k].attributes[$scope.columns2[j].field] != null) 
+												if (success.included[k].attributes[$scope.columns[j].field] != null) 
 												{
-													test[test.length - 1][$scope.columns2[j].field_a] = success.included[k].attributes[$scope.columns2[j].field];
+													test[test.length - 1][$scope.columns[j].field_a] = success.included[k].attributes[$scope.columns[j].field];
 												}
 												else
 												{
-													test[test.length - 1][$scope.columns2[j].field_a] = '-';
+													test[test.length - 1][$scope.columns[j].field_a] = '-';
 												}
 												break;
 											}
@@ -283,7 +308,7 @@ angular.module('efindingAdminApp')
 							}
 							else
 							{
-								test[test.length - 1][$scope.columns2[j].name] = '-';
+								test[test.length - 1][$scope.columns[j].name] = '-';
 							}
 
 						}
@@ -301,25 +326,25 @@ angular.module('efindingAdminApp')
 								{
 									//$log.error('2')
 									//$log.error(flag[aux[1]]);
-									test[test.length - 1][$scope.columns2[j].field_a] = flag[aux[1]].text;
-									test[test.length - 1][$scope.columns2[j].name] = flag[aux[1]].text;
+									test[test.length - 1][$scope.columns[j].field_a] = flag[aux[1]].text;
+									test[test.length - 1][$scope.columns[j].name] = flag[aux[1]].text;
 								}
 								else
 								{
-									test[test.length - 1][$scope.columns2[j].field_a] = '-';
-									test[test.length - 1][$scope.columns2[j].name] = '-';
+									test[test.length - 1][$scope.columns[j].field_a] = '-';
+									test[test.length - 1][$scope.columns[j].name] = '-';
 								}
 							}
 							else
 							{
-								test[test.length - 1][$scope.columns2[j].field_a] = '-';
-								test[test.length - 1][$scope.columns2[j].name] = '-';
+								test[test.length - 1][$scope.columns[j].field_a] = '-';
+								test[test.length - 1][$scope.columns[j].name] = '-';
 							}
 						}
 						else
 						{
-							test[test.length - 1][$scope.columns2[j].field_a] = '';
-							test[test.length - 1][$scope.columns2[j].name] = '';
+							test[test.length - 1][$scope.columns[j].field_a] = '';
+							test[test.length - 1][$scope.columns[j].name] = '';
 						}
 					}
 				}
@@ -328,7 +353,7 @@ angular.module('efindingAdminApp')
 
 			$scope.tableParams = new NgTableParams({
 				page: 1, // show first page
-				count: inspecciones.length // count per page
+				count: inspecciones.length
 			}, {
 				counts: [],
 				total: inspecciones.length, // length of test
@@ -336,7 +361,7 @@ angular.module('efindingAdminApp')
 			});
 
 		}, function(error) {
-			$log.error(error);
+			//$log.error(error);
 			if (error.status === 401) {
 				Utils.refreshToken($scope.getReports);
 			}
@@ -344,14 +369,34 @@ angular.module('efindingAdminApp')
 	};
 
 
-	$scope.downloadPdf = function(event) {
+	/*$scope.sortBy = function(name) {
+		for (var column in $scope.filter) 
+		{
+			if (column == name) 
+			{
+				if ($scope.filter[column].sort_direction === 'asc') 
+				{
+					$scope.filter['sort'] = $scope.filter[column].sort_name;
+					$scope.filter[column].sort_direction = 'desc';
+				}
+				else
+				{
+					$scope.filter['sort'] = '-' + $scope.filter[column].sort_name;
+					$scope.filter[column].sort_direction = 'asc';
+				}
+			}
+		}
+	};*/
+
+
+	/*$scope.downloadPdf = function(event) {
 		var pdf = angular.element(event.target).data('pdf');
 		if (pdf) {
 			$window.open(pdf, '_blank');
 		}
-	};
+	};*/
 
-	$scope.openModalDownloadPdfs = function() {
+	/*$scope.openModalDownloadPdfs = function() {
 		var modalInstance = $uibModal.open({
 			animation: true,
 			templateUrl: 'modalDownloadPdfs.html',
@@ -360,9 +405,9 @@ angular.module('efindingAdminApp')
 		});
 
 		modalInstance.result.then(function() {}, function() {});
-	};
+	};*/
 
-	$scope.openModalDownloadPdfsByMonth = function() {
+	/*$scope.openModalDownloadPdfsByMonth = function() {
 		var modalInstance = $uibModal.open({
 			animation: true,
 			backdrop: false,
@@ -372,30 +417,9 @@ angular.module('efindingAdminApp')
 		});
 
 		modalInstance.result.then(function() {}, function() {});
-	};
+	};*/
 
-	$scope.sortBy = function(field_a) {
-		if ($scope.sort_direction === 'asc') 
-		{
-			var aux = _.sortBy(inspecciones, function(insp){ return insp[field_a].toLowerCase();});
-			$scope.sort_direction = 'desc';
-		}
-		else
-		{
-			var aux = _.sortBy(inspecciones, function(insp){ return insp[field_a].toLowerCase();}).reverse();
-			$scope.sort_direction = 'asc';
-		}
-		$scope.tableParams = new NgTableParams({
-				page: 1, // show first page
-				count: 25 // count per page
-			}, {
-				counts: [],
-				total: aux.length, // length of test
-				dataset: aux
-			});
-	};
-
-	$scope.incrementPage = function() {
+	/*$scope.incrementPage = function() {
 		if ($scope.pagination.pages.current <= $scope.pagination.pages.total - 1) {
 			$scope.pagination.pages.current++;
 			$scope.filter['page[number]'] = $scope.pagination.pages.current;
@@ -403,9 +427,9 @@ angular.module('efindingAdminApp')
 				success: true
 			}, $scope.pagination.pages.current, $scope.filter);
 		}
-	};
+	};*/
 
-	$scope.decrementPage = function() {
+	/*$scope.decrementPage = function() {
 		if ($scope.pagination.pages.current > 1) {
 			$scope.pagination.pages.current--;
 			$scope.filter['page[number]'] = $scope.pagination.pages.current;
@@ -413,9 +437,9 @@ angular.module('efindingAdminApp')
 				success: true
 			}, $scope.pagination.pages.current, $scope.filter);
 		}
-	};
+	};*/
 
-	$scope.FirmaInspeccionInstance = function(idInspection) {
+	/*$scope.FirmaInspeccionInstance = function(idInspection) {
 
 		var modalInstance = $uibModal.open({
 			animation: true,
@@ -444,9 +468,9 @@ angular.module('efindingAdminApp')
 			}
 			$scope.tableParams.reload();
 		}, function() {});
-	};
+	};*/
 
-	$scope.openModalDownloadPdfsByMonth = function() {
+	/*$scope.openModalDownloadPdfsByMonth = function() {
 		var modalInstance = $uibModal.open({
 			animation: true,
 			backdrop: false,
@@ -471,15 +495,11 @@ angular.module('efindingAdminApp')
 		});
 
 		modalInstance.result.then(function() {
-			/*$scope.getInspections({
-				success: true,
-				detail: 'OK'
-			});*/
 			$state.reload();
 		}, function() {
 			// getPromotions();
 		});
-	};
+	};*/
 
 })
 

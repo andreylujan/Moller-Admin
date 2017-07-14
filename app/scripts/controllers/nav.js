@@ -94,7 +94,7 @@ angular.module('efindingAdminApp')
 			type: Utils.getInStorage('collection_name')
 		}, function(success) {
 
-			$log.log(success);
+			//$log.error(success.data);
 
 			columns.reportColumns = [];
 
@@ -112,11 +112,12 @@ angular.module('efindingAdminApp')
 					visible: true,
 					relationshipName: success.data[i].attributes.relationship_name,
 					dataType: success.data[i].attributes.data_type,
-					filter: {}
+					filters: success.data[i].attributes.headers,
+					columnFilters: []
 
 				});
-				columns.reportColumns[columns.reportColumns.length - 1].filter[success.data[i].attributes.field_name] = success.data[i].attributes.field_name;
 			}
+			//$log.error(columns.reportColumns);
 
 			Utils.setInStorage('report_columns', columns.reportColumns);
 
