@@ -92,7 +92,8 @@ angular
 .config(['$authProvider',
 	function($authProvider) {
 		// Parametros de configuración
-		$authProvider.loginUrl = 'http://50.16.161.152/efinding/oauth/token'; 	//Produccion
+		//$authProvider.loginUrl = 'http://50.16.161.152/efinding/oauth/token'; 	//Produccion
+		$authProvider.loginUrl = 'http://50.16.161.152/pitagora/oauth/token'; 	//Pitagora
 		//$authProvider.loginUrl = 'http://localhost:3000/oauth/token'; 					//Local
 		$authProvider.tokenName = 'access_token';
 	}
@@ -256,6 +257,22 @@ angular
 				templateUrl: 'views/tmpl/masters/history-massive-loads.html',
 				controller: 'HistoryMassiveLoadsCtrl'
 			})
+			.state('efinding.obras.companies', {
+				url: '/empresas',
+				templateUrl: 'views/tmpl/masters/companies.html',
+				controller: 'MastersCompaniesCtrl'
+			})
+			.state('efinding.obras.pitagora', {
+				url: '/pitagora',
+				templateUrl: 'views/tmpl/masters/construction-pitagora.html',
+				controller: 'MastersConstructionPitagoraCtrl'
+			})
+			.state('efinding.obras.contractor', {
+				url: '/contratistas',
+				templateUrl: 'views/tmpl/masters/contractors.html',
+				controller: 'MastersContractorsCtrl'
+			})
+
     
 		//Areas
 		.state('efinding.areas', {

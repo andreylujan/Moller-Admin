@@ -1,9 +1,11 @@
 'use strict';
 
-var API_URL = 'http://50.16.161.152/efinding/api/v1';		//Producción
-var URL_SERVER = 'http://50.16.161.152/efinding/';		//Producción
+//var API_URL = 'http://50.16.161.152/efinding/api/v1';		//Producción
+//var URL_SERVER = 'http://50.16.161.152/efinding/';		//Producción
 //var API_URL = 'http://50.16.161.152/efinding-staging/api/v1';		//Desarrollo
 //var URL_SERVER = 'http://50.16.161.152/efinding-staging/';		//Desarrollo
+var API_URL = 'http://50.16.161.152/pitagora/api/v1';		//Pitagora
+var URL_SERVER = 'http://50.16.161.152/pitagora/';			//Pitagora
 //var API_URL = 'http://192.168.0.2:3000/api/v1';						//Local
 //var URL_SERVER = 'http://192.168.0.2:3000/';							//Local
 
@@ -475,6 +477,95 @@ angular.module('efindingAdminApp')
 
 })
 
+/// Companies
+.factory('Companies', function($resource) {
+
+	return $resource(API_URL + '/companies/:companyId', {
+		companyId: '@companyId'
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		detail: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		save: {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		update: {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		delete: {
+			method: 'DELETE',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			}
+		}
+	});
+
+})
+
+
+/// Contractors
+.factory('Contractors', function($resource) {
+
+	return $resource(API_URL + '/contractors/:contractorId', {
+		contractorId: '@contractorId'
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		detail: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		save: {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		update: {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		delete: {
+			method: 'DELETE',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			}
+		}
+	});
+
+})
+
 // Personnel
 .factory('Personnel', function($resource) {
 
@@ -788,6 +879,71 @@ angular.module('efindingAdminApp')
 					'Content-Type': undefined
 				}
 			});
+		}
+	};
+
+})
+
+// CSV
+.service('CsvCompanies', function($resource, $http, $log) {
+	var fd = new FormData();
+	return {
+		upload: function(form) {
+
+			for (var i = 0; i < form.length; i++) {
+				fd.append(form[i].field, form[i].value);
+			}
+
+			return $http.post(API_URL + '/companies/csv', fd, {
+				transformRequest: angular.identity,
+				headers: {
+					'Content-Type': undefined
+				}
+			});
+		}
+	};
+
+})
+
+.factory('ExcelCompanies', function($auth) {
+	return {
+		getFile: function(elem, fileName) {
+			var downloadLink = angular.element(elem);
+			downloadLink.attr('href', API_URL + '/companies/csv?access_token=' + $auth.getToken());
+			downloadLink.attr('download', fileName + '.csv');
+		}
+	};
+
+})
+
+
+// CSV
+.service('CsvContractors', function($resource, $http, $log) {
+	var fd = new FormData();
+	return {
+		upload: function(form) {
+
+			for (var i = 0; i < form.length; i++) {
+				fd.append(form[i].field, form[i].value);
+			}
+
+			return $http.post(API_URL + '/contractors/csv', fd, {
+				transformRequest: angular.identity,
+				headers: {
+					'Content-Type': undefined
+				}
+			});
+		}
+	};
+
+})
+
+.factory('ExcelContractors', function($auth) {
+	return {
+		getFile: function(elem, fileName) {
+			var downloadLink = angular.element(elem);
+			downloadLink.attr('href', API_URL + '/contractors/csv?access_token=' + $auth.getToken());
+			downloadLink.attr('download', fileName + '.csv');
 		}
 	};
 
