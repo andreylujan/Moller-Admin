@@ -267,7 +267,7 @@ angular
 				templateUrl: 'views/tmpl/masters/construction-pitagora.html',
 				controller: 'MastersConstructionPitagoraCtrl'
 			})
-			.state('efinding.obras.contractor', {
+			.state('efinding.obras.contractors', {
 				url: '/contratistas',
 				templateUrl: 'views/tmpl/masters/contractors.html',
 				controller: 'MastersContractorsCtrl'

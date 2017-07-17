@@ -282,10 +282,10 @@ angular.module('efindingAdminApp')
 
 				//Cambiar ids en produccion
 				//Administradores de obra
-				//$scope.admObra = _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: IDADMOBRA});
-				//$scope.experts = _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: IDEXPERTS});
-				//$scope.inspectors = _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: IDINSPECTOR});
-				//$scope.supervisors = _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: IDSUPERVISOR});
+				$scope.admObra 		= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: '13'});
+				$scope.experts 		= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: '12'});
+				$scope.inspectors 	= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: '16'});
+				$scope.supervisors 	= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: '14'});
 
 
 			} else {
