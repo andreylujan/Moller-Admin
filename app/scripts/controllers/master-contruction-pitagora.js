@@ -101,6 +101,305 @@ angular.module('efindingAdminApp')
 		}, function() {});
 	};
 
+	$scope.openModalNewConstruction = function() {
+
+		var modalInstance = $uibModal.open({
+			animation: true,
+			templateUrl: 'newConstruction.html',
+			controller: 'NewConstructionModalInstance',
+			resolve: {
+				CompanyId: function() {
+					return auxiliar;
+				}
+			}
+		});
+
+		modalInstance.result.then(function(datos) {
+			if (datos.action === 'save') {
+				data.push({
+					fullname: datos.success.data.attributes.code + ' - ' +datos.success.data.attributes.name,
+					id: datos.success.data.id
+				});
+			}
+			$scope.tableParams.reload();
+		}, function() {});
+	};
+
+})
+
+.controller('NewConstructionModalInstance', function($scope, $log, $state, $uibModalInstance, Utils, Validators, Constructions, Users, Contractors, Companies) {
+
+	$scope.construction = {
+		id: null,
+		name: {
+			text: '',
+			disabled: true
+		},
+		contractors: []
+	};
+
+	$scope.experts		= [];
+	$scope.companies	= [];
+	$scope.contractors 	= [];
+	$scope.inspectors 	= [];
+	$scope.jefesTerreno = [];
+	$scope.admObra 		= [];
+	$scope.supervisors 	= [];
+
+	$scope.elements = {
+		alert: {
+			show: false,
+			title: '',
+			text: '',
+			color: '',
+		}
+	};
+
+
+	$scope.getUsers = function() {
+
+		Users.query({
+			idUser: ''
+		}, function(success) {
+			if (success.data) {
+				var data = [];
+				for (var i = 0; i < success.data.length; i++) {
+					data.push({
+						id: success.data[i].id,
+						firstName: success.data[i].attributes.first_name,
+						lastName: success.data[i].attributes.last_name,
+						email: success.data[i].attributes.email,
+						roleName: success.data[i].attributes.role_name,
+						roleId: success.data[i].attributes.role_id,
+						active: success.data[i].attributes.active,
+						fullName: success.data[i].attributes.first_name + ' ' + success.data[i].attributes.last_name
+					});
+				}
+
+				$scope.admObra = data;
+				$scope.experts = data;
+				$scope.inspectors = data;
+				$scope.supervisors = data;
+
+				//$scope.admObra 		= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: '13'});
+				//$scope.experts 		= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: '12'});
+				//$scope.inspectors 	= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: '16'});
+				//$scope.supervisors 	= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: '14'});
+
+
+			} else {
+				$log.error(success);
+			}
+		}, function(error) {
+			$log.error(error);
+			if (error.status === 401) {
+				Utils.refreshToken($scope.getUsers);
+			}
+		});
+
+	};
+
+	$scope.getContractors = function(e) {
+
+ 		Contractors.query({
+ 		}, function(success) {
+ 			if (success.data) {
+				 var data = [];
+				for (var i = 0; i < success.data.length; i++) {
+					data.push({
+						name: success.data[i].attributes.name,
+						id: success.data[i].id,
+					});
+				}
+				$scope.contractors = data;
+			} else {
+				$log.error(success);
+			}
+ 		}, function(error) {
+ 			$log.error(error);
+ 			if (error.status === 401) {
+ 				Utils.refreshToken($scope.getContractors);
+ 			}
+ 		});
+ 	};
+
+ 	$scope.getCompanies = function(e) {
+
+ 		Companies.query({
+ 		}, function(success) {
+ 			if (success.data) {
+				 var data = [];
+				for (var i = 0; i < success.data.length; i++) {
+					data.push({
+						name: success.data[i].attributes.name,
+						id: success.data[i].id,
+					});
+				}
+				$scope.companies = data;
+			} else {
+				$log.error(success);
+			}
+ 		}, function(error) {
+ 			$log.error(error);
+ 			if (error.status === 401) {
+ 				Utils.refreshToken($scope.getContractors);
+ 			}
+ 		});
+ 	};
+
+	$scope.getUsers();
+	$scope.getCompanies();
+	$scope.getContractors();
+
+	$scope.saveConstruction = function() {
+
+		if (!Validators.validateRequiredField($scope.construction.name.text)) {
+			$scope.elements.alert.title = 'Faltan datos por rellenar';
+			$scope.elements.alert.text = 'Nombre';
+			$scope.elements.alert.color = 'danger';
+			$scope.elements.alert.show = true;
+			return;
+		}
+		if (!Validators.validateRequiredField($scope.construction.code)) {
+			$scope.elements.alert.title = 'Faltan datos por rellenar';
+			$scope.elements.alert.text = 'Código';
+			$scope.elements.alert.color = 'danger';
+			$scope.elements.alert.show = true;
+			return;
+		}
+		if (!Validators.validateRequiredField($scope.construction.selectedCompany)) {
+			$scope.elements.alert.title = 'Faltan datos por rellenar';
+			$scope.elements.alert.text = 'Empresa';
+			$scope.elements.alert.color = 'danger';
+			$scope.elements.alert.show = true;
+			return;
+		}
+		if (!Validators.validateRequiredField($scope.construction.selectedAdministrador)) {
+			$scope.elements.alert.title = 'Faltan datos por rellenar';
+			$scope.elements.alert.text = 'Adminsitrador de obra';
+			$scope.elements.alert.color = 'danger';
+			$scope.elements.alert.show = true;
+			return;
+		}
+		if (!Validators.validateRequiredField($scope.construction.selectedSupervisor)) {
+			$scope.elements.alert.title = 'Faltan datos por rellenar';
+			$scope.elements.alert.text = 'APR';
+			$scope.elements.alert.color = 'danger';
+			$scope.elements.alert.show = true;
+			return;
+		}
+		if (!Validators.validateRequiredField($scope.construction.selectedExpert)) {
+			$scope.elements.alert.title = 'Faltan datos por rellenar';
+			$scope.elements.alert.text = 'Jefe de terreno';
+			$scope.elements.alert.color = 'danger';
+			$scope.elements.alert.show = true;
+			return;
+		}
+		if (!Validators.validateRequiredField($scope.construction.selectedInspector)) {
+			$scope.elements.alert.title = 'Faltan datos por rellenar';
+			$scope.elements.alert.text = 'Inspector';
+			$scope.elements.alert.color = 'danger';
+			$scope.elements.alert.show = true;
+			return;
+		}
+
+		if ($scope.construction.contractors.length == 0) {
+			$scope.elements.alert.title = 'Faltan datos por rellenar';
+			$scope.elements.alert.text = 'Contratistas';
+			$scope.elements.alert.color = 'danger';
+			$scope.elements.alert.show = true;
+			return;
+		}
+
+		$scope.elements.alert.show = false;
+		var contratistas = []
+		
+		angular.forEach($scope.construction.contractors, function(value){
+			contratistas.push({ id:value.id, type:"contractors"});
+		});
+
+			var aux = { 
+						data: { 
+							type: 'constructions', 
+							attributes: { 
+								name: $scope.construction.name.text,
+								code: $scope.construction.code,
+							}, 
+							relationships: { 
+								company: { 
+									data: { 
+										type: "companies", 
+										id: $scope.construction.selectedCompany.id
+									} 
+								},
+								administrator: { 
+									data: { 
+										type: "users", 
+										id: $scope.construction.selectedAdministrador.id
+									} 
+								},
+								expert: { 
+									data: { 
+										type: "users", 
+										id: $scope.construction.selectedExpert.id
+									} 
+								},
+								inspector: { 
+									data: { 
+										type: "users", 
+										id: $scope.construction.selectedInspector.id
+									} 
+								},
+								supervisor: { 
+									data: { 
+										type: "users", 
+										id: $scope.construction.selectedSupervisor.id
+									} 
+								},
+								contractors: {
+									data: contratistas
+								}
+							} 
+						}};
+
+		Constructions.save(aux, 
+			function(success) {
+				if (success.data) {
+					$uibModalInstance.close({
+						action: 'save',
+						success: success
+					});
+				} 
+				else 
+				{
+					$log.error(success);
+					$scope.elements.alert.title = 'Error al Guardar';
+					$scope.elements.alert.text = '';
+					$scope.elements.alert.color = 'danger';
+					$scope.elements.alert.show = true;
+					return;
+				}
+			}, function(error) {
+				$log.error(error);
+				if (error.status === 401) {
+					Utils.refreshToken($scope.saveConstruction);
+				}
+				$scope.elements.alert.title = 'Error al Guardar';
+				$scope.elements.alert.text = '';
+				$scope.elements.alert.color = 'danger';
+				$scope.elements.alert.show = true;
+				return;
+			}
+		);
+
+	};
+
+	
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');
+	};
+
 })
 
 .controller('constructionDetailsPitagoraInstance', function($scope, $log, $uibModalInstance, idObject, idCompany, Validators, Utils, Constructions, Users, Contractors) {
@@ -275,10 +574,10 @@ angular.module('efindingAdminApp')
 					}
 				}
 
-				$scope.admObra = data;
+				/*$scope.admObra = data;
 				$scope.experts = data;
 				$scope.inspectors = data;
-				$scope.supervisors = data;
+				$scope.supervisors = data;*/
 
 				//Cambiar ids en produccion
 				//Administradores de obra
