@@ -264,8 +264,8 @@ angular
 			})
 			.state('efinding.obras.pitagora', {
 				url: '/pitagora',
-				templateUrl: 'views/tmpl/masters/construction.html',
-				controller: 'MastersConstructionCtrl'
+				templateUrl: 'views/tmpl/masters/construction-pitagora.html',
+				controller: 'MastersConstructionPitagoraCtrl'
 			})
 			.state('efinding.obras.contractor', {
 				url: '/contratistas',
