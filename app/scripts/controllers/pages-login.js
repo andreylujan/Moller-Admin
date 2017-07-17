@@ -240,7 +240,7 @@ angular.module('efindingAdminApp')
 	};
 
 	var gotoReportList = function() {
-		$state.go('efinding.dashboard.generic');
+		$state.go('efinding.inspecciones.list');
 	};
 	//Dashboard para Manflas
 	var gotoManflas = function() {
