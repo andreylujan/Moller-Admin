@@ -382,14 +382,14 @@ angular.module('efindingAdminApp')
 	};*/
 
 
-	/*$scope.downloadPdf = function(event) {
+	$scope.downloadPdf = function(event) {
 		var pdf = angular.element(event.target).data('pdf');
 		if (pdf) {
 			$window.open(pdf, '_blank');
 		}
-	};*/
+	};
 
-	/*$scope.openModalDownloadPdfs = function() {
+	$scope.openModalDownloadPdfs = function() {
 		var modalInstance = $uibModal.open({
 			animation: true,
 			templateUrl: 'modalDownloadPdfs.html',
@@ -398,9 +398,9 @@ angular.module('efindingAdminApp')
 		});
 
 		modalInstance.result.then(function() {}, function() {});
-	};*/
+	};
 
-	/*$scope.openModalDownloadPdfsByMonth = function() {
+	$scope.openModalDownloadPdfsByMonth = function() {
 		var modalInstance = $uibModal.open({
 			animation: true,
 			backdrop: false,
@@ -410,9 +410,9 @@ angular.module('efindingAdminApp')
 		});
 
 		modalInstance.result.then(function() {}, function() {});
-	};*/
+	};
 
-	/*$scope.incrementPage = function() {
+	$scope.incrementPage = function() {
 		if ($scope.pagination.pages.current <= $scope.pagination.pages.total - 1) {
 			$scope.pagination.pages.current++;
 			$scope.filter['page[number]'] = $scope.pagination.pages.current;
@@ -420,9 +420,9 @@ angular.module('efindingAdminApp')
 				success: true
 			}, $scope.pagination.pages.current, $scope.filter);
 		}
-	};*/
+	};
 
-	/*$scope.decrementPage = function() {
+	$scope.decrementPage = function() {
 		if ($scope.pagination.pages.current > 1) {
 			$scope.pagination.pages.current--;
 			$scope.filter['page[number]'] = $scope.pagination.pages.current;
@@ -430,7 +430,7 @@ angular.module('efindingAdminApp')
 				success: true
 			}, $scope.pagination.pages.current, $scope.filter);
 		}
-	};*/
+	};
 
 	/*$scope.FirmaInspeccionInstance = function(idInspection) {
 
@@ -463,19 +463,7 @@ angular.module('efindingAdminApp')
 		}, function() {});
 	};*/
 
-	/*$scope.openModalDownloadPdfsByMonth = function() {
-		var modalInstance = $uibModal.open({
-			animation: true,
-			backdrop: false,
-			templateUrl: 'modalDownloadPdfsByMonth.html',
-			controller: 'DownloadPdfsByMonthModalInstance',
-			resolve: {}
-		});
-
-		modalInstance.result.then(function() {}, function() {});
-	};
-
-	$scope.openModalRemoveInspection = function(idInspection) {
+	/*$scope.openModalRemoveInspection = function(idInspection) {
 		var modalInstance = $uibModal.open({
 			animation: true,
 			templateUrl: 'removeModal.html',
