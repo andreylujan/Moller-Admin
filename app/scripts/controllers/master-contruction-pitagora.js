@@ -9,7 +9,7 @@
  */
 angular.module('efindingAdminApp')
 
-.controller('MastersConstructionPitagoraCtrl', function($scope, $log, $timeout, $state, $uibModal, NgTableParams, $filter, Utils, Constructions, ExcelConstruction) {
+.controller('MastersConstructionPitagoraCtrl', function($scope, $log, $timeout, $state, $uibModal, NgTableParams, $filter, Utils, Constructions, ExcelConstructionPitagora) {
 
 	$scope.page = {
 		title: 'Obras'
@@ -81,7 +81,7 @@ angular.module('efindingAdminApp')
 			$log.error(e.detail);
 			return;
 		}
-		ExcelConstruction.getFile('#downloadExcel', 'construction_personel');
+		ExcelConstructionPitagora.getFile('#downloadExcel', 'construction');
 		$timeout(function() {
 		}, 3000);
 	};
@@ -176,15 +176,15 @@ angular.module('efindingAdminApp')
 					});
 				}
 
-				$scope.admObra = data;
+				/*$scope.admObra = data;
 				$scope.experts = data;
 				$scope.inspectors = data;
-				$scope.supervisors = data;
+				$scope.supervisors = data;*/
 
-				//$scope.admObra 		= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: '13'});
-				//$scope.experts 		= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: '12'});
-				//$scope.inspectors 	= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: '16'});
-				//$scope.supervisors 	= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: '14'});
+				$scope.admObra 		= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: '13'});
+				$scope.experts 		= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: '12'});
+				$scope.inspectors 	= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: '16'});
+				$scope.supervisors 	= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: '14'});
 
 
 			} else {
@@ -760,7 +760,7 @@ angular.module('efindingAdminApp')
 
 })
 
-.controller('newGenericConstructionMasive', function($scope, Utils, $log, $uibModalInstance, $uibModal, CsvContructions) {
+.controller('newGenericConstructionMasive', function($scope, Utils, $log, $uibModalInstance, $uibModal, CsvConstructionPitagora) {
 	$scope.modal = {
 		csvFile: null,
 		btns: {
@@ -800,7 +800,7 @@ angular.module('efindingAdminApp')
 
 		$scope.modal.overlay.show = true;
 
-		CsvContructions.upload(form)
+		CsvConstructionPitagora.upload(form)
 			.success(function(success) {
 				$scope.modal.overlay.show = false;
 				$uibModalInstance.close();

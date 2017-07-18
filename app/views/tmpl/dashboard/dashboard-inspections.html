@@ -1,0 +1,284 @@
+<style type="text/css">
+	.solid 
+	{
+		border-style: solid;
+	}
+</style>
+<div class="page page-dashboard">
+	<div class="overlay" ng-show="page.loader.show">
+		<div style="position:absolute;top: 50%;left:50%;transform: translate(-50%, -50%);">
+			<div>
+				<p><strong>Descargando archivo...</strong></p>
+				<p class="text-center">
+					<img src="images/loader.gif" alt="loader" class="size-45x45">
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="pageheader">
+		<h2><b>{{page.title}}</b></h2>
+
+		<div class="row">
+			<div class="col-md-3 mt-5">
+				<div class="gray-ps-1 br-15 b-0">
+					<input style="cursor:pointer;" id="daterangeDashGoals2" date-range-picker class="bg-gray-ps-1 br-15 text-sm form-control b-0n date-picker" type="text" ng-model="page.filters.dateRange.date" options="page.filters.dateRange.options" placeholder="Seleccionar periodo" />
+				</div>
+			</div>
+			<div class="col-md-3 mt-5">
+				<ui-select class="gray-ps-3 br-15 b-0" ng-model="page.filters.companies.selected" close-on-select="true" ng-change="getConstructions({success:true,detail:'OK'},page.filters.companies.selected);getDashboardInfo({success:true,detail:'OK'})" title="Empresas">
+					<ui-select-match placeholder="Empresa"><span ng-bind="$select.selected.name  | capitalize:true"></span></ui-select-match>
+					<ui-select-choices repeat="company in page.filters.companies.list | propsFilter: {name: $select.search}">
+						<div ng-bind-html="company.name | highlight: $select.search | capitalize:true"></div>
+					</ui-select-choices>
+				</ui-select>
+			</div>
+			<div class="col-md-3 mt-5">
+				<ui-select class="gray-ps-1 br-15 b-0" ng-model="page.filters.supervisor.selected" close-on-select="true" ng-disabled="page.filters.supervisor.disabled" ng-change="getDashboardInfo({success:true,detail:'OK'})" title="Supervisores">
+					<ui-select-match placeholder="Supervisor"><span ng-bind="$select.selected.name | capitalize:true"></span></ui-select-match>
+					<ui-select-choices repeat="user in page.filters.supervisor.list | propsFilter: {name: $select.search}">
+						<div ng-bind-html="user.name | highlight: $select.search | capitalize:true"></div>
+					</ui-select-choices>
+				</ui-select>
+			</div>
+			<div class="col-md-3 mt-5">
+				<ui-select class="blue-ps-2 br-15 b-0" ng-model="page.filters.status.selected" sortable="true" close-on-select="true" ng-disabled="page.filters.status.disabled" ng-change="getDashboardInfo({success:true,detail:'OK'})" title="Tiendas">
+					<ui-select-match placeholder="Estado"><span ng-bind="$select.selected.nameB | capitalize:true"></span></ui-select-match>
+					<ui-select-choices repeat="estado in page.filters.status.list | propsFilter: {name: $select.search}">
+						<div ng-bind-html="estado.nameB | highlight: $select.search | capitalize:true"></div>
+					</ui-select-choices>
+				</ui-select>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<section class="tile">
+          	<div class="tile-header dvd dvd-btm">
+            	<h1 class="custom-font"><strong>Cantidad de hallazgos</strong> (Globales)</h1>
+          	</div>
+
+          	<div class="tile-body">
+            	<div class="row">
+              		<div class="col-md-8 solid">
+              			<div id="grafico1"></div>
+              		</div>
+              		<div class="col-md-4">
+              			<div class="col-md-12 solid">
+			        		<section class="tile tile-simple">
+					          <div class="tile-body text-center">
+					            <h1 class="m-0" style="color: green;"><b>64</b></h1>
+					            <span class="text-muted">Hallazgos encontrados</span>
+					          </div>
+					        </section>
+			        	</div>
+			        	<div class="col-md-12 solid">
+			        		<section class="tile" >
+								<div class="tile-widget">
+									<div id="grafico2"></div>
+								</div>
+							</section>
+			        	</div>
+              		</div>
+            	</div>
+           	</div>
+        </section>
+	</div>
+
+	<div class="row">
+		<section class="tile">
+          	<div class="tile-header dvd dvd-btm">
+            	<h1 class="custom-font"><strong>Cumplimiento de hallazgos</strong> (Globales)</h1>
+          	</div>
+          	<div class="tile-body">
+            	<div class="row">
+              		<div class="col-md-3 solid">
+              			<div id="grafico3" style="height: 200px;"></div>
+              		</div>
+              		<div class="col-md-3 solid">
+		        		<section class="tile tile-simple">
+				          <div class="tile-body text-center">
+				            <h1 class="m-0" style="color: orange;"><b>75%</b></h1>
+				            <span class="text-muted">Cumplimiento</span>
+				          </div>
+				        </section>
+			       	</div>
+		        	<div class="col-md-6">
+		        		<section class="tile" >
+							<div class="tile-widget">
+					          	<div class="tile-body text-center solid">
+					            	<div style="display:inline-block;width:80%; text-align: left"><b>Cumplimiento interno</b></div>
+				            		<div style="display:inline-block;width:19%; text-align: left"><b style="color: orange;">55%</b></div>
+					          	</div>
+					          	<div class="tile-body text-center solid">
+					            	<div style="display:inline-block;width:80%; text-align: left"><b>Cumplimiento contratistas</b></div>
+				            		<div style="display:inline-block;width:19%; text-align: left"><b style="color: orange;">20%</b></div>
+					          	</div>
+							</div>
+						</section>
+		        	</div>
+            	</div>
+           	</div>
+        </section>
+	</div>
+
+	<div class="row">
+		<section class="tile">
+          	<div class="tile-header dvd dvd-btm">
+            	<h1 class="custom-font"><strong>Cumplimiento de hallazgos</strong> (Globales)</h1>
+          	</div>
+          	<div class="tile-body">
+            	<div class="row">
+              		<div class="col-md-6 solid">
+              			<section class="tile tile-simple">
+				          	<div class="tile-body text-center">
+				          		<ui-select class="blue-ps-1 br-15 b-0" ng-model="page.filters.constructions.selected" close-on-select="true" ng-change="getStores({success:true,detail:'OK'},page.filters.zone.selected,page.filters.constructions.selected);getDashboardInfo({success:true,detail:'OK'})" ng-disabled="page.filters.constructions.disabled" title="Dealers">
+									<ui-select-match placeholder="Obra"><span ng-bind="$select.selected.name | capitalize:true"></span></ui-select-match>
+									<ui-select-choices repeat="construction in page.filters.constructions.list | propsFilter: {name: $select.search}">
+										<div ng-bind-html="construction.name | highlight: $select.search | capitalize:true"></div>
+									</ui-select-choices>
+								</ui-select>
+				          	</div>
+				          	<div class="tile-body text-center">
+				          		<div class="tile-body p-0">
+					            	<table class="table table-striped" style="text-align: left">
+					            		<thead>
+							                <tr>
+							                  	<th>Obra</th>
+							                  	<th>Abril</th>
+							                  	<th>Mayo</th>
+							                  	<th>Junio</th>
+							                </tr>
+							            </thead>
+						              	<tbody>
+						                	<tr>
+						                  		<td>Obra1</td>
+						                  		<td>Mark</td>
+						                  		<td>Otto</td>
+						                  		<td>@mdo</td>
+						                	</tr>
+						                	<tr>
+						                  		<td>Obra2</td>
+						                  		<td>Jacob</td>
+						                  		<td>Thornton</td>
+						                  		<td>@fat</td>
+						                	</tr>
+						                	<tr>
+						                  		<td>Obra3</td>
+						                  		<td>Larry</td>
+						                  		<td>the Bird</td>
+						                  		<td>@twitter</td>
+						                	</tr>
+						              	</tbody>
+					            	</table>
+					          	</div>
+				          	</div>
+				        </section> 
+              		</div>
+		        	<div class="col-md-6">
+		        		<div id="grafico4" class="solid"></div>
+		        	</div>
+            	</div>
+           	</div>
+        </section>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<section class="tile">
+          		<div class="tile-header dvd dvd-btm">
+            		<h1 class="custom-font"><strong>Causas Directas</strong></h1>
+          		</div>
+          		<div class="tile-body">
+            		<div class="row">
+              			<div class="col-md-4">
+              				<div id="grafico5" style="height: 200px;"></div>
+              			</div>
+              			<div class="col-md-8">
+              				<div class="tile-body text-center">
+					            <h1  style="color: orange;"><b>75</b></h1>
+					            <span class="text-muted"><b>Directas</b></span>
+					        </div>
+              			</div>
+              			<div class="col-md-12">
+					        <section class="tile tile-simple">
+					          <div class="tile-body p-0">
+					            <div class="list-group no-radius no-border">
+					              <a class="list-group-item">
+					                <div style="display:inline-block;width:80%; text-align: left"><b>Cumplimiento contratistas</b></div>
+				            		<div style="display:inline-block;width:19%; text-align: left"><b style="color: orange;">20</b></div>
+					              </a>
+					              <a class="list-group-item">
+					                <div style="display:inline-block;width:80%; text-align: left"><b>Cumplimiento contratistas</b></div>
+				            		<div style="display:inline-block;width:19%; text-align: left"><b style="color: orange;">20</b></div>
+					              </a>
+					              <a class="list-group-item">
+					                <div style="display:inline-block;width:80%; text-align: left"><b>Cumplimiento contratistas</b></div>
+				            		<div style="display:inline-block;width:19%; text-align: left"><b style="color: orange;">20</b></div>
+					              </a>
+					              <a class="list-group-item">
+					                <div style="text-align: center">
+				                		<b style="color:green;">
+				                			Ver Todas
+				                		</b>
+					                </div>
+					              </a>
+					            </div>
+
+					          </div>
+					        </section>
+              			</div>
+            		</div>
+          		</div>
+        	</section>
+		</div>
+
+		<div class="col-md-6">
+			<section class="tile">
+          		<div class="tile-header dvd dvd-btm">
+            		<h1 class="custom-font"><strong>Causas básicas</strong></h1>
+          		</div>
+          		<div class="tile-body">
+            		<div class="row">
+              			<div class="col-md-4">
+              				<div id="grafico6" style="height: 200px;"></div>
+              			</div>
+              			<div class="col-md-8">
+              				<div class="tile-body text-center">
+					            <h1  style="color: orange;"><b>75</b></h1>
+					            <span class="text-muted"><b>básicas</b></span>
+					        </div>
+              			</div>
+              			<div class="col-md-12">
+					        <section class="tile tile-simple">
+					          <div class="tile-body p-0">
+					            <div class="list-group no-radius no-border">
+					              <a class="list-group-item">
+					                <div style="display:inline-block;width:80%; text-align: left"><b>Cumplimiento contratistas</b></div>
+				            		<div style="display:inline-block;width:19%; text-align: left"><b style="color: orange;">20</b></div>
+					              </a>
+					              <a class="list-group-item">
+					                <div style="display:inline-block;width:80%; text-align: left"><b>Cumplimiento contratistas</b></div>
+				            		<div style="display:inline-block;width:19%; text-align: left"><b style="color: orange;">20</b></div>
+					              </a>
+					              <a class="list-group-item">
+					                <div style="display:inline-block;width:80%; text-align: left"><b>Cumplimiento contratistas</b></div>
+				            		<div style="display:inline-block;width:19%; text-align: left"><b style="color: orange;">20</b></div>
+					              </a>
+					              <a class="list-group-item">
+					                <div style="text-align: center">
+				                		<b style="color:green;">
+				                			Ver Todas
+				                		</b>
+					                </div>
+					              </a>
+					            </div>
+
+					          </div>
+					        </section>
+              			</div>
+            		</div>
+          		</div>
+        	</section>
+		</div>
+	</div>
+</div>
