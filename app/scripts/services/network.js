@@ -1,11 +1,11 @@
 'use strict';
 
-var API_URL = 'http://50.16.161.152/efinding/api/v1';		//Producción
-var URL_SERVER = 'http://50.16.161.152/efinding/';		//Producción
+//var API_URL = 'http://50.16.161.152/efinding/api/v1';		//Producción
+//var URL_SERVER = 'http://50.16.161.152/efinding/';		//Producción
 //var API_URL = 'http://50.16.161.152/efinding-staging/api/v1';		//Desarrollo
 //var URL_SERVER = 'http://50.16.161.152/efinding-staging/';		//Desarrollo
-//var API_URL = 'http://50.16.161.152/pitagora/api/v1';		//Pitagora
-//var URL_SERVER = 'http://50.16.161.152/pitagora/';			//Pitagora
+var API_URL = 'http://50.16.161.152/pitagora/api/v1';		//Pitagora
+var URL_SERVER = 'http://50.16.161.152/pitagora/';			//Pitagora
 //var API_URL = 'http://192.168.0.2:3000/api/v1';						//Local
 //var URL_SERVER = 'http://192.168.0.2:3000/';							//Local
 
@@ -910,6 +910,39 @@ angular.module('efindingAdminApp')
 		getFile: function(elem, fileName) {
 			var downloadLink = angular.element(elem);
 			downloadLink.attr('href', API_URL + '/companies/csv?access_token=' + $auth.getToken());
+			downloadLink.attr('download', fileName + '.csv');
+		}
+	};
+
+})
+
+
+// CSV
+.service('CsvConstructionPitagora', function($resource, $http, $log) {
+	var fd = new FormData();
+	return {
+		upload: function(form) {
+
+			for (var i = 0; i < form.length; i++) {
+				fd.append(form[i].field, form[i].value);
+			}
+
+			return $http.post(API_URL + '/constructions/csv', fd, {
+				transformRequest: angular.identity,
+				headers: {
+					'Content-Type': undefined
+				}
+			});
+		}
+	};
+
+})
+
+.factory('ExcelConstructionPitagora', function($auth) {
+	return {
+		getFile: function(elem, fileName) {
+			var downloadLink = angular.element(elem);
+			downloadLink.attr('href', API_URL + '/constructions/csv?access_token=' + $auth.getToken());
 			downloadLink.attr('download', fileName + '.csv');
 		}
 	};
