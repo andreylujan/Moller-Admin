@@ -15,7 +15,7 @@
 					<a href="javascript:;">Maestros</a>
 				</li>
 				<li>
-					<a ui-sref="app.playStation.reports">{{page.title}}</a>
+					<a>{{page.title}}</a>
 				</li>
 			</ul>
 		</div>
@@ -32,9 +32,10 @@
 					<!-- tile body -->
 					<div class="tile-body">
 						<div class="row">
-							<!--div class="col-md-1">
-								<button class="btn btn-default" ng-click="openModalNewCollectionItem()">Nuevo</button>
-							</div-->
+							<div class="col-md-1">
+								<button class="btn btn-default" ng-click="openModalNewConstruction()">Nueva</button>
+							</div>
+
 							<div class="col-md-1">
 								<a id="downloadExcel" ng-click="getExcel({success:true,detail:'OK'})" uib-tooltip="Descargar Excel">
 									<img src="https://s3-sa-east-1.amazonaws.com/efinding/icons/abajo.png">
@@ -152,6 +153,104 @@
       <button class="btn btn-cancelRecit btn-rounded-10 mb-10" type="button" ng-click="cancel()">Cerrar</button>
     </div>
   </script>
+
+
+  	<script type="text/ng-template" id="newConstruction.html">
+    	<div class="modal-header text-gray">
+      	<h3 class="text-center">Nueva Obra</h3>
+    	</div>
+    	<div class="modal-body text-gray">
+      		<div class="alert alert-{{elements.alert.color}}" ng-show="elements.alert.show"> <h4 class="text-md"><strong>{{elements.alert.title}}</strong></h4> {{elements.alert.text}} </div>
+      		<div class="row">
+	        	<div class="col-md-11">
+	          		<form name="form" class="form-validation form-horizontal" role="form" novalidate>
+			            <div class="form-group">
+			              <label class="col-sm-3 control-label">Nombre</label>
+			              <div class="col-md-8">
+			                <input type="text" id="name" class="form-control underline-input" placeholder="Nombre" ng-model="construction.name.text" ng-change="hideAlert()" required>
+			              </div>
+			            </div>
+			            <div class="form-group">
+			              <label class="col-sm-3 control-label">Código</label>
+			              <div class="col-md-8">
+			                <input type="text" id="name" class="form-control underline-input" placeholder="Código" ng-model="construction.code" ng-change="hideAlert()">
+			              </div>
+			            </div>
+			            <div class="form-group">
+			              	<label class="col-sm-3 control-label">Empresa</label>
+			              	<div class="col-md-8">
+			                	<ui-select class="bg-white b-solid br-15" ng-model="construction.selectedCompany" close-on-select="true">
+					  				<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.name}}</ui-select-match>
+					  				<ui-select-choices repeat="company in companies track by company.name | propsFilter: {name: $select.search}" refresh-delay="200">
+					  					<div ng-bind-html="company.name"></div>
+					  				</ui-select-choices>
+					  			</ui-select>
+			              	</div>
+			            </div>
+			            <div class="form-group">
+			              	<label class="col-sm-3 control-label">Administrador de obra</label>
+			              	<div class="col-md-8">
+			                	<ui-select class="bg-white b-solid br-15" ng-model="construction.selectedAdministrador" close-on-select="true">
+					  				<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.fullName}}</ui-select-match>
+					  				<ui-select-choices repeat="adm in admObra track by adm.fullName | propsFilter: {fullName: $select.search}" refresh-delay="200">
+					  					<div ng-bind-html="adm.fullName"></div>
+					  				</ui-select-choices>
+					  			</ui-select>
+			              	</div>
+			            </div>
+			            <div class="form-group">
+					  		<label for="inputPassword3" class="col-sm-3 control-label">APR Jefe</label>
+					  		<div class="col-sm-8">
+					  			<ui-select class="bg-white b-solid br-15" ng-model="construction.selectedSupervisor" close-on-select="true">
+					  				<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.fullName}}</ui-select-match>
+					  				<ui-select-choices repeat="supervisor in supervisors track by supervisor.id | propsFilter: {fullName: $select.search}" refresh-delay="200">
+					  					<div ng-bind-html="supervisor.fullName"></div>
+					  				</ui-select-choices>
+					  			</ui-select>
+					  		</div>
+					  	</div>
+			            <div class="form-group">
+					  		<label for="inputPassword3" class="col-sm-3 control-label">Jefe de terreno</label>
+					  		<div class="col-sm-8">
+					  			<ui-select class="bg-white b-solid br-15" ng-model="construction.selectedExpert" close-on-select="true">
+					  				<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.fullName}}</ui-select-match>
+					  				<ui-select-choices repeat="expert in experts track by expert.id | propsFilter: {fullName: $select.search}" refresh-delay="200">
+					  					<div ng-bind-html="expert.fullName"></div>
+					  				</ui-select-choices>
+					  			</ui-select>
+					  		</div>
+					  	</div>
+					  	<div class="form-group">
+					  		<label for="inputPassword3" class="col-sm-3 control-label">Inspector</label>
+					  		<div class="col-sm-8">
+					  			<ui-select class="bg-white b-solid br-15" ng-model="construction.selectedInspector" close-on-select="true">
+					  				<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.fullName}}</ui-select-match>
+					  				<ui-select-choices repeat="inspector in inspectors track by inspector.id | propsFilter: {fullName: $select.search}" refresh-delay="200">
+					  					<div ng-bind-html="inspector.fullName"></div>
+					  				</ui-select-choices>
+					  			</ui-select>
+					  		</div>
+					  	</div>
+			            <div class="form-group">
+			              	<label for="userRole" class="col-sm-3 control-label">Contratistas</label>
+			              	<div class="col-md-8">
+				             	<ui-select class="b-solid br-15" multiple ng-model="construction.contractors" close-on-select="false">
+							    	<ui-select-match placeholder="Buscar...">{{$item.name}}</ui-select-match>
+							    	<ui-select-choices repeat="contractor in contractors track by contractor.id | propsFilter: {name: $select.search}">
+							      	{{contractor.name}}
+							    	</ui-select-choices>
+							  	</ui-select>
+				            </div>
+			            </div>
+			        </form>
+	        	</div>
+      		</div>
+    	</div>
+    	<div class="modal-footer">
+      		<button class="btn btn-success br-20 pl-20 pr-20" type="submit" ng-click="saveConstruction()">Guardar</button>
+	    	<button class="btn btn-default br-20 pl-20 pr-20" type="button" ng-click="cancel()" >Cerrar</button>
+    	</div>
+  	</script>
 
 
   	<script type="text/ng-template" id="newGenericConstructionMasive.html">

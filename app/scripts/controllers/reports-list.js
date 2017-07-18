@@ -135,7 +135,7 @@ angular.module('efindingAdminApp')
 		var filtersToSearch = {};
 		for (var attr in filters) {
 			if (attr.indexOf('filter') !== -1) {
-				/*var aux = filters[attr].filterName;
+				var aux = filters[attr].filterName;
 				if (filters[attr].type == 'text') 
 				{
 					filtersToSearch[aux] = filters[attr].filter;
@@ -154,14 +154,12 @@ angular.module('efindingAdminApp')
 				else
 				{
 					filtersToSearch[aux] = filters[attr];
-				}*/
+				}
 
 			} else {
 				filtersToSearch[attr] = filters[attr];
 			}
 		}
-
-		//$log.error($scope.columns);
 
 		Inspections.query(filtersToSearch, function(success) 
 		{
@@ -173,11 +171,12 @@ angular.module('efindingAdminApp')
 			for (i = 0; i < success.data.length; i++) {
 				test.push({});
 
+				test[test.length - 1]['pdf'] 			= success.data[i].attributes.pdf;
+				test[test.length - 1]['pdfUploaded'] 	= success.data[i].attributes.pdf_uploaded;
+				test[test.length - 1]['state'] 			= success.data[i].attributes.state;
+				test[test.length - 1]['id'] 			= success.data[i].id;
+
 				for (var j = 0; j < $scope.columns.length; j++) {
-					test[test.length - 1]['pdf'] 			= success.data[i].attributes.pdf;
-					test[test.length - 1]['pdfUploaded'] 	= success.data[i].attributes.pdf_uploaded;
-					test[test.length - 1]['state'] 			= success.data[i].attributes.state;
-					test[test.length - 1]['id'] 			= success.data[i].id;
 					//no tiene relacion o es un objeto de consulta directa al dato
 					if (success.data[i].attributes[$scope.columns[j].field]) {
 						test[test.length - 1][$scope.columns[j].field_a] 	= success.data[i].attributes[$scope.columns[j].field];
@@ -362,7 +361,7 @@ angular.module('efindingAdminApp')
 	};
 
 
-	/*$scope.sortBy = function(name) {
+	$scope.sortBy = function(name) {
 		for (var column in $scope.filter) 
 		{
 			if (column == name) 
@@ -379,17 +378,17 @@ angular.module('efindingAdminApp')
 				}
 			}
 		}
-	};*/
+	};
 
 
-	/*$scope.downloadPdf = function(event) {
+	$scope.downloadPdf = function(event) {
 		var pdf = angular.element(event.target).data('pdf');
 		if (pdf) {
 			$window.open(pdf, '_blank');
 		}
-	};*/
+	};
 
-	/*$scope.openModalDownloadPdfs = function() {
+	$scope.openModalDownloadPdfs = function() {
 		var modalInstance = $uibModal.open({
 			animation: true,
 			templateUrl: 'modalDownloadPdfs.html',
@@ -398,9 +397,9 @@ angular.module('efindingAdminApp')
 		});
 
 		modalInstance.result.then(function() {}, function() {});
-	};*/
+	};
 
-	/*$scope.openModalDownloadPdfsByMonth = function() {
+	$scope.openModalDownloadPdfsByMonth = function() {
 		var modalInstance = $uibModal.open({
 			animation: true,
 			backdrop: false,
@@ -410,9 +409,9 @@ angular.module('efindingAdminApp')
 		});
 
 		modalInstance.result.then(function() {}, function() {});
-	};*/
+	};
 
-	/*$scope.incrementPage = function() {
+	$scope.incrementPage = function() {
 		if ($scope.pagination.pages.current <= $scope.pagination.pages.total - 1) {
 			$scope.pagination.pages.current++;
 			$scope.filter['page[number]'] = $scope.pagination.pages.current;
@@ -420,9 +419,9 @@ angular.module('efindingAdminApp')
 				success: true
 			}, $scope.pagination.pages.current, $scope.filter);
 		}
-	};*/
+	};
 
-	/*$scope.decrementPage = function() {
+	$scope.decrementPage = function() {
 		if ($scope.pagination.pages.current > 1) {
 			$scope.pagination.pages.current--;
 			$scope.filter['page[number]'] = $scope.pagination.pages.current;
@@ -430,9 +429,9 @@ angular.module('efindingAdminApp')
 				success: true
 			}, $scope.pagination.pages.current, $scope.filter);
 		}
-	};*/
+	};
 
-	/*$scope.FirmaInspeccionInstance = function(idInspection) {
+	$scope.FirmaInspeccionInstance = function(idInspection) {
 
 		var modalInstance = $uibModal.open({
 			animation: true,
@@ -461,25 +460,13 @@ angular.module('efindingAdminApp')
 			}
 			$scope.tableParams.reload();
 		}, function() {});
-	};*/
-
-	/*$scope.openModalDownloadPdfsByMonth = function() {
-		var modalInstance = $uibModal.open({
-			animation: true,
-			backdrop: false,
-			templateUrl: 'modalDownloadPdfsByMonth.html',
-			controller: 'DownloadPdfsByMonthModalInstance',
-			resolve: {}
-		});
-
-		modalInstance.result.then(function() {}, function() {});
 	};
 
 	$scope.openModalRemoveInspection = function(idInspection) {
 		var modalInstance = $uibModal.open({
 			animation: true,
-			templateUrl: 'removeModal.html',
-			controller: 'RemoveModalInstance',
+			templateUrl: 'removeInspectionModal.html',
+			controller: 'RemoveModalInspectionInstance',
 			resolve: {
 				idInspection: function() {
 					return idInspection;
@@ -492,11 +479,11 @@ angular.module('efindingAdminApp')
 		}, function() {
 			// getPromotions();
 		});
-	};*/
+	};
 
 })
 
-.controller('RemoveModalInstance', function($scope, $filter, $log, $uibModalInstance, idInspection, Utils, Inspections, InspectionsRemove) {
+.controller('RemoveModalInspectionInstance', function($scope, $filter, $log, $uibModalInstance, idInspection, Utils, Inspections, InspectionsRemove) {
 
 	$scope.modal = {
 		inspection: {
@@ -517,7 +504,6 @@ angular.module('efindingAdminApp')
 		Inspections.query({
 			idInspection: idInspection
 		}, function(success) {
-			$log.error(success);
 			if (success.data) {
 				//$scope.modal.inspection.title = success.data.attributes.title;
 			} else {

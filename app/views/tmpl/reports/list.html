@@ -15,7 +15,7 @@
 					<a href="javascript:;">Inspecciones</a>
 				</li>
 				<li>
-					<a ui-sref="app.playStation.reports">{{page.title}}</a>
+					<a>{{page.title}}</a>
 				</li>
 			</ul>
 
@@ -50,7 +50,7 @@
 									<th ng-repeat="column in columns" class="text-center sortable">{{column.title}}</th>
 									<th class="text-center"> PDF </th>
 									<th class="text-center"> Firma </th>
-									<th class="text-center" ng-show="role_id==1"> Eliminar </th>
+									<th class="text-center" ng-show="role_id==15"> Eliminar </th>
 								</tr>
 								<tr>
 									<th ng-repeat="column in columns" class="text-center sortable" >
@@ -98,14 +98,13 @@
 									</th>
 									<th class="text-center" ></th>
 									<th class="text-center" ></th>
-									<th class="text-center" ng-show="role_id==1"></th>
+									<th class="text-center" ng-show="role_id==15"></th>
 								</tr>
 							</thead>
 
 							<tbody>
 								<tr ng-repeat="inspection in $data | filter: filtro">
 									<td ng-repeat="column in columns">
-										<!--p ng-bind-html="inspection[column.field_a]"></p-->
 										<p data-ng-bind-html="trustAsHtml(inspection[column.field_a])"></p>
 									</td>
 									<td>
@@ -119,17 +118,17 @@
 										<a ng-click="FirmaInspeccionInstance(inspection.id)" ng-if="inspection.state == 'final_signature_pending'">Pendiente de firma final</a>
 										<label ng-if="inspection.state == 'finished'">Teminado</label>
 									</td>
-									<td ng-show="role_id==1">
+									<td ng-show="role_id==15">
 										<img ng-click="openModalRemoveInspection(inspection.id)" ng-src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/delete.png" style="width:18px;" tooltip="Borrar inspección">
 									</td>
 								</tr>
 							</tbody>
 						</table>
-						<!--div class="row">
+						<div class="row">
 							<div class="col-md-6" style="margin: 0 auto;float: none;">
 								<pager prev="decrementPage()" next="incrementPage()" change-page="getReports({success:true,detail:'OK'},pagination.pages.current)" current="pagination.pages.current" total="pagination.pages.total"></pager>
 							</div>
-						</div-->
+						</div>
 					</div>
 					<!-- /tile body -->
 				</section>
@@ -327,7 +326,7 @@
 
 </script>
 
-<script type="text/ng-template" id="removeModal.html" class="">
+<script type="text/ng-template" id="removeInspectionModal.html" class="">
   <div class="modal-body text-gray">
     <div class="row">
       <div class="col-md-12">
