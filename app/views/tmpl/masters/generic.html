@@ -198,13 +198,13 @@
 			<ul>
 
 				<li>
-					<ng-pluralize count="modal.countCreated" when="{'0': 'No se ingresaron equipos nuevos','one': '{} equipo se ingresó','other': '{} se ingresaron'}"></ng-pluralize>
+					<ng-pluralize count="modal.countCreated" when="{'0': 'No se ingresaron nuevos {{modal.name}}','one': '{} equipo se ingresó','other': '{} se ingresaron'}"></ng-pluralize>
 				</li>
 				<li>
-					<ng-pluralize count="modal.countChanged" when="{'0': 'No se actualizó ningún equipo','one': '{} equipo se actualizó','other': '{} se actualizaron'}"></ng-pluralize>
+					<ng-pluralize count="modal.countChanged" when="{'0': 'No se actualizó ningún {{modal.name}}','one': '{} {{modal.name}} se actualizó','other': '{} se actualizaron'}"></ng-pluralize>
 				</li>
 				<li>
-					<ng-pluralize count="modal.countErrors" when="{'0': 'Ningún equipo produjo error','one': '{} equipo NO se ingresó','other': '{} NO se ingresaron'}"></ng-pluralize>
+					<ng-pluralize count="modal.countErrors" when="{'0': 'Ningún {{modal.name}} produjo error','one': '{} {{modal.name}} NO se ingresó','other': '{} NO se ingresaron'}"></ng-pluralize>
 				</li>
 			</ul>
 
