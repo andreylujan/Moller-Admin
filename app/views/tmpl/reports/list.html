@@ -58,11 +58,11 @@
 											<div ng-if="filter[filtro.name].type  == 'text'" style="margin-bottom: 5px">
 												<table cellpadding="100">
 													<tr>
-														<th style="padding: 1px !important;">
+														<th style="padding: 5px !important;">
 															<span ng-click="sortBy(filter[filtro.name].name)">
-														    	<input value="up" type="button" ng-if="filter[filtro.name].sort_direction == 'asc'" />
+														    	<i class="fa fa-arrow-circle-o-up fa-2x" aria-hidden="true" ng-if="filter[filtro.name].sort_direction == 'asc'" ></i>
 
-														    	<input value="do" type="button" ng-if="filter[filtro.name].sort_direction == 'desc'"/>
+														    	<i class="fa fa-arrow-circle-o-down fa-2x" aria-hidden="true" ng-if="filter[filtro.name].sort_direction == 'desc'"></i>
 														    </span>
 														</th>
 														<th style="padding: 1px !important;">
@@ -104,7 +104,7 @@
 
 							<tbody>
 								<tr ng-repeat="inspection in $data | filter: filtro">
-									<td ng-repeat="column in columns">
+									<td ng-repeat="column in columns" class="text-center">
 										<p data-ng-bind-html="trustAsHtml(inspection[column.field_a])"></p>
 									</td>
 									<td>

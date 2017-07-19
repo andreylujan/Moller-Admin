@@ -2,15 +2,23 @@
 
 /**
  * @ngdoc function
- * @name efindingAdminApp.controller:AccidentalnessDashboardCtrl
+ * @name efindingAdminApp.controller:ManflasPublicDashboardCtrl
  * @description
- * # AccidentalnessDashboardCtrl
+ * # ManflasPublicDashboardCtrl
  * Controller of the efindingAdminApp
  */
  angular.module('efindingAdminApp')
- .controller('AccidentalnessDashboardCtrl', function($scope, $filter, $log, $moment, Utils, NgTableParams, Dashboard, Companies, Constructions, Users, NgMap) {
+ .controller('AccidentalnessPublicDashboardCtrl', function($scope, $auth, $filter, $state, $log, 
+ 	$timeout, $moment, Utils) {
  	
- 	var currentDate = new Date();
+ 	//traer el token
+ 	var token = $state.params.token;
+ 	var refresh_token = $state.params.refresh;
+ 	
+ 	Utils.setInStorage('refresh_t', refresh_token);
+ 	$auth.setToken(token);
+
+	var currentDate = new Date();
  	var firstMonthDay = new Date();
  	firstMonthDay.setDate(1);
 
