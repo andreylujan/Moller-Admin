@@ -167,6 +167,11 @@ angular
 				templateUrl: 'views/tmpl/dashboard/dashboard-checklist.html',
 				controller: 'ChecklistDashboardCtrl'
 			})
+			.state('efinding.dashboard.accidentalness', {
+				url: '/accidentalness',
+				templateUrl: 'views/tmpl/dashboard/dashboard-accidentalness.html',
+				controller: 'AccidentalnessDashboardCtrl'
+			})
 
 
 		//Users

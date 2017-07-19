@@ -10,278 +10,13 @@
  angular.module('efindingAdminApp')
  .controller('InspectionsDashboardCtrl', function($scope, $filter, $log, $moment, Utils, NgTableParams, Dashboard, Companies, Constructions, Users, NgMap) {
  	
- 	$scope.page = {
- 		title: 'Inspecciones'
- 	};
-
-
- 	//GRAFICO DE BARRAS 1
- 	Highcharts.chart('grafico1', {
-	    chart: {
-	        type: 'column'
-	    },
-	    title: {
-	        text: null
-	    },
-	    subtitle: {
-	        text: null
-	    },
-	    xAxis: {
-	        categories: [
-	            'Jan',
-	            'Feb',
-	            'Mar',
-	            'Apr',
-	            'May',
-	            'Jun',
-	            'Jul',
-	            'Aug',
-	            'Sep',
-	            'Oct',
-	            'Nov',
-	            'Dec'
-	        ],
-	        crosshair: true
-	    },
-	    yAxis: {
-	        min: 0,
-	        title: {
-	            text: 'Rainfall (mm)'
-	        }
-	    },
-	    tooltip: {
-	        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-	        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-	            '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
-	        footerFormat: '</table>',
-	        shared: true,
-	        useHTML: true
-	    },
-	    plotOptions: {
-	        column: {
-	            pointPadding: 0.2,
-	            borderWidth: 0
-	        }
-	    },
-	    series: [   
-	    	{
-	        	name: 'Tokyo',
-	        	data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
-	    	}, {
-	        	name: 'New York',
-	        	data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5, 105.0, 104.3, 91.2, 83.5, 106.6, 92.3]
-	    	}, {     
-    			name: 'London',
-        		data: [48.9, 38.8, 39.3, 41.4, 47.0, 48.3, 59.0, 59.6, 52.4, 65.2, 59.3, 51.2]
-    		}
-    	]
-	});
-
-	//Grafico de donuts 1
-	Highcharts.chart('grafico2', {
-	    chart: {
-            plotBackgroundColor: null,
-            plotBorderWidth: 0,
-            plotShadow: false,
-            type: 'pie'
-        },
-	    title: {
-	        text: null
-	    },
-	    tooltip: {
-	        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-	    },
-	    plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: false
-                },
-                showInLegend: true
-            }
-        },
-	    series: [{
-	        name: 'Brands',
-	        colorByPoint: true,
-	        innerSize: '80%',
-	        data: [{
-	            name: 'Microsoft Internet Explorer',
-	            y: 20
-	        }, {
-	            name: 'Chrome',
-	            y: 20,
-	        }, {
-	            name: 'Firefox',
-	            y: 60
-	        }]
-	    }]
-	});
-
-	//Grafico de donuts3
-	Highcharts.chart('grafico3', {
-	    chart: {
-            plotBackgroundColor: null,
-            plotBorderWidth: 0,
-            plotShadow: false,
-            type: 'pie'
-        },
-	    title: {
-	        text: null
-	    },
-	    tooltip: {
-	        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-	    },
-	    plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: false
-                },
-                showInLegend: true
-            }
-        },
-	    series: [{
-	        name: 'Brands',
-	        colorByPoint: true,
-	        innerSize: '80%',
-	        data: [{
-	            name: 'Microsoft Internet Explorer',
-	            y: 20
-	        }, {
-	            name: 'Chrome',
-	            y: 20,
-	        }, {
-	            name: 'Firefox',
-	            y: 60
-	        }]
-	    }]
-	});
-
-
-	//GRAFICO 4 COLUMNAS Y PUNTOS
-	Highcharts.chart('grafico4', {
-	    title: {
-	        text: null
-	    },
-	    xAxis: {
-	        categories: ['ABR', 'MAY', 'JUN']
-	    },
-	    labels: {
-	        items: [{
-	            style: {
-	                left: '50px',
-	                top: '18px',
-	                color: (Highcharts.theme && Highcharts.theme.textColor) || 'black'
-	            }
-	        }]
-	    },
-	    series: [{
-	        type: 'column',
-	        name: 'Hallazgos',
-	        data: [3, 2, 1]
-	    }, {
-	        type: 'spline',
-	        name: 'Accidentes',
-	        data: [3, 2.67, 3],
-	        marker: {
-	            lineWidth: 2,
-	            lineColor: Highcharts.getOptions().colors[3],
-	            fillColor: 'white'
-	        }
-	    }]
-	});
-
-
-	//Grafico de donuts5
-	Highcharts.chart('grafico6', {
-	    chart: {
-            plotBackgroundColor: null,
-            plotBorderWidth: 0,
-            plotShadow: false,
-            type: 'pie'
-        },
-       	title: {
-	        text: null
-	    },
-	    tooltip: {
-	        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-	    },
-	    plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: false
-                },
-                showInLegend: true
-            }
-        },
-	    series: [{
-	        name: 'Brands',
-	        colorByPoint: true,
-	        innerSize: '80%',
-	        data: [{
-	            name: 'Chrome',
-	            y: 20,
-	        }, {
-	            name: 'Firefox',
-	            y: 60
-	        }]
-	    }]
-	});
-
-
-	//Grafico de donuts5
-	Highcharts.chart('grafico5', {
-	    chart: {
-            plotBackgroundColor: null,
-            plotBorderWidth: 0,
-            plotShadow: false,
-            type: 'pie'
-        },
-       	title: {
-	        text: null
-	    },
-	    tooltip: {
-	        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-	    },
-	    plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: false
-                },
-                showInLegend: true
-            }
-        },
-	    series: [{
-	        name: 'Brands',
-	        colorByPoint: true,
-	        innerSize: '80%',
-	        data: [{
-	            name: 'Chrome',
-	            y: 20,
-	        }, {
-	            name: 'Firefox',
-	            y: 60
-	        }]
-	    }]
-	});
-
-
-
-
-
  	var currentDate = new Date();
  	var firstMonthDay = new Date();
  	firstMonthDay.setDate(1);
 
 
  	$scope.page = {
- 		title: 'Dashboard',
+ 		title: 'Inspecciones',
  		filters: {
  			companies: {
  				list: [],
@@ -354,363 +89,241 @@
 		}
  	};
 
- 	//$scope.map = { center: { latitude: 45, longitude: -73 }, zoom: 8 };
-	
- 	/*$scope.ratioHallazgos = {
- 		chartConfig:[],
- 		data: []
- 	}*/
 
- 	/*var storesIncluded = [],
- 	i = 0,
- 	j = 0,
- 	k = 0;
+ 	///COMIENZAN LOS CHARTS
 
- 	var getCompanies = function() {
- 		$scope.page.filters.companies.list = [];
+ 	$scope.cantidadHallazgos = Utils.setChartConfig(
+ 								'column', 
+ 								null, 
+ 								{
+	        						column: 
+	        						{
+	            						pointPadding: 0.2,
+	            						borderWidth: 0
+	        						}
+	    						}, 
+	    						{
+						        	min: 0,
+						        	title: {
+						            	text: 'Rainfall (mm)'
+						        	}
+						    	}, 
+	    						{
+							        categories: [
+							            'Jan',
+							            'Feb',
+							            'Mar',
+							            'Apr',
+							            'May',
+							            'Jun',
+							            'Jul',
+							            'Aug',
+							            'Sep',
+							            'Oct',
+							            'Nov',
+							            'Dec'
+							        ],
+							        crosshair: true
+							    }, 
+	    						[   
+	    							{
+							        	name: 'Bajo',
+							        	data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+							    	}, {
+							        	name: 'Medio',
+							        	data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5, 105.0, 104.3, 91.2, 83.5, 106.6, 92.3]
+							    	}, {     
+						    			name: 'Alto',
+						        		data: [48.9, 38.8, 39.3, 41.4, 47.0, 48.3, 59.0, 59.6, 52.4, 65.2, 59.3, 51.2]
+						    		}
+    							]
+	    					);
 
- 		Companies.query({}, function(success) {
- 			if (success.data) {
- 				$scope.page.filters.companies.list.push({
- 					id: '',
- 					name: 'Todas las Empresas',
- 					companiesIds: []
- 				});
-
- 				angular.forEach(success.data, function(value, key) {
- 					$scope.page.filters.companies.list.push({
- 						id: parseInt(value.id),
- 						name: value.attributes.name,
- 						dealersIds: value.attributes.dealer_ids
- 					});
- 				});
-
- 				$scope.page.filters.companies.selected = $scope.page.filters.companies.list[0];
- 				$scope.getConstructions({
- 					success: true,
- 					detail: 'OK'
- 				}, $scope.page.filters.companies.selected);
- 				$scope.page.filters.constructions.disabled = true;
-
- 			} else {
- 				$log.error(success);
- 			}
- 		}, function(error) {
- 			$log.error(error);
- 			if (error.status === 401) {
- 				Utils.refreshToken(getCompanies);
- 			}
- 		});
- 	};
-
- 	$scope.getConstructions = function(e, companySelected) {
-
- 		$scope.page.filters.constructions.selected = [];
- 		$scope.page.filters.constructions.list = [];
- 		Constructions.query({
- 			'filter[company_id]': companySelected.id
- 		}, function(success) {
- 			if (success.data) {
-
- 				$scope.page.filters.constructions.list.push({
- 					id: '',
- 					name: 'Todas las obras'
- 				});
-
- 				for (i = 0; i < success.data.length; i++) {
- 					$scope.page.filters.constructions.list.push({
- 						id: parseInt(success.data[i].id),
- 						name: $filter('capitalize')(success.data[i].attributes.name, true),
- 						type: 'dealers'
- 					});
- 				}
-
- 				$scope.page.filters.constructions.selected = $scope.page.filters.constructions.list[0];
- 				$scope.page.filters.constructions.disabled = false;
-
- 				$scope.getStatus({
- 					success: true,
- 					detail: 'OK'
- 				});
-
- 			} else {
- 				$log.error(success);
- 			}
- 		}, function(error) {
- 			$log.error(error);
- 			if (error.status === 401) {
- 				Utils.refreshToken($scope.getConstructions);
- 			}
- 		});
- 	};
-
- 	$scope.getStatus = function(e) {
-
- 		$scope.page.filters.status.selected = [];
- 		$scope.page.filters.status.list = [];
-
-		$scope.page.filters.status.list.push({
-			name: '',
-			nameB: 'Todos los estados'
-		});
-
-		$scope.page.filters.status.list.push({
-			name: 'reports_pending',
-			nameB: 'Pendiente de envío'
-		});
-		$scope.page.filters.status.list.push({
-			name: 'first_signature_pending',
-			nameB: 'Pendiente de firma'
-		});
-		$scope.page.filters.status.list.push({
-			name: 'first_signature_done',
-			nameB: 'Firmado'
-		});
-		$scope.page.filters.status.list.push({
-			name: 'final_signature_pending',
-			nameB: 'Pendiente de firma final'
-		});
-		$scope.page.filters.status.list.push({
-			name: 'finished',
-			nameB: 'Teminado'
-		});
-
-		$scope.page.filters.status.selected = $scope.page.filters.status.list[0];
-		$scope.page.filters.status.disabled = false;
-
-		getUsers({
-			success: true,
-			detail: 'OK'
-		});
- 	};
-
- 	var getUsers = function(e) {
-
- 		$scope.page.filters.supervisor.selected = [];
- 		$scope.page.filters.supervisor.list = [];
-
- 		Users.query({}, function(success) {
- 			if (success.data) {
-
- 				$scope.page.filters.supervisor.list.push({
- 					id: '',
- 					name: 'Todos los supervisores'
- 				});
-
- 			angular.forEach(success.data, function(value, key) {
-	          if (value.attributes.role_id === 1) { // supervisor
-	          	$scope.page.filters.supervisor.list.push({
-	          		id: parseInt(value.id),
-	          		name: value.attributes.first_name + ' ' + value.attributes.last_name
-	          	});
-	          }
-	      	});
-
- 				$scope.page.filters.supervisor.selected = $scope.page.filters.supervisor.list[0];
- 				$scope.page.filters.supervisor.loaded = true;
-
- 			} else {
- 				$log.error(success);
- 			}
- 		}, function(error) {
- 			$log.error(error);
- 			if (error.status === 401) {
- 				Utils.refreshToken(getUsers);
- 			}
- 		});
- 	};
-
- 	$scope.$watch('page.filters.supervisor.loaded', function() {
-		if ($scope.page.filters.supervisor.loaded) {
-			$scope.$watch('page.filters.dateRange.date', function(newValue, oldValue) {
-				var startDate = new Date($scope.page.filters.dateRange.date.startDate);
-				var endDate = new Date($scope.page.filters.dateRange.date.endDate);
-
-				$scope.getDashboardInfo({
-					success: true,
-					detail: 'OK'
-				});
-			});
-		}
-	});
-
- 	$scope.getDashboardInfo = function(e) {
- 		if (!e.success) {
- 			$log.error(e.detail);
- 			return;
- 		}
+ 	$scope.cantidadHallazgosDonut = Utils.setChartConfig(
+ 								'pie', 
+ 								200, 
+ 								{
+						            pie: {
+						                allowPointSelect: true,
+						                cursor: 'pointer',
+						                dataLabels: {
+						                    enabled: false
+						                },
+						                showInLegend: true
+						            }
+						        }, 
+	    						{}, 
+	    						{}, 
+	    						[
+	    							{
+								        name: 'Riesgo',
+								        colorByPoint: true,
+								        innerSize: '80%',
+								        data: [{
+								            name: 'Bajo',
+								            y: 20
+								        }, {
+								            name: 'Medio',
+								            y: 20,
+								        }, {
+								            name: 'Alto',
+								            y: 60
+								        }]
+							    	}
+							    ]
+	    					);
 
 
- 		var companyIdSelected = $scope.page.filters.companies.selected ? $scope.page.filters.companies.selected.id : '';
- 		var constructionIdSelected = $scope.page.filters.constructions.selected ? $scope.page.filters.constructions.selected.id : '';
- 		var statusIdSelected = $scope.page.filters.status.selected ? $scope.page.filters.status.selected.name : '';
- 		var supervisorIdSelected = $scope.page.filters.supervisor.selected ? $scope.page.filters.supervisor.selected.id : '';
- 		var startDate = new Date($scope.page.filters.dateRange.date.startDate);
- 		var endDate = new Date($scope.page.filters.dateRange.date.endDate);
+ 	$scope.cumplimientoHallazgosDonut = Utils.setChartConfig(
+ 								'pie', 
+ 								200, 
+ 								{
+						            pie: {
+						                allowPointSelect: true,
+						                cursor: 'pointer',
+						                dataLabels: {
+						                    enabled: false
+						                },
+						                showInLegend: true
+						            }
+						        }, 
+	    						{}, 
+	    						{}, 
+	    						[
+	    							{
+								        name: 'Riesgo',
+								        colorByPoint: true,
+								        innerSize: '80%',
+								        data: [{
+								            name: 'Bajo',
+								            y: 20
+								        }, {
+								            name: 'Medio',
+								            y: 20,
+								        }, {
+								            name: 'Alto',
+								            y: 60
+								        }]
+							    	}
+							    ]
+	    					);
 
- 		Dashboard.query({
- 			'filter[construction][id]': constructionIdSelected,
- 			'filter[construction][company][id]': companyIdSelected,
- 			'filter[state_name]': statusIdSelected,
- 			'filter[creator][id]': supervisorIdSelected,
- 			'filter[start_date]': startDate,
- 			'filter[end_date]': endDate
- 		}, function(success) {
-		    if (success.data) {
-		    	var actividadVsRiesgo = {
-					categories: [],
-					riesgo: []
-				},
-				cumplimientoHallazgos = {
-					inspeccion: [],
-					datos: []
-				};
 
-				// INI grado de riesgo
-				angular.forEach(success.data.attributes.grupos_actividad, function(value, key) {
-					actividadVsRiesgo.categories.push($filter('capitalize')(value, true));
-				});
-				angular.forEach(success.data.attributes.grados_riesgo, function(value, key) {
-					var aux = {name: 'Grado ' + value, data: []};
-					actividadVsRiesgo.riesgo.push(aux);
-				});
-				for (var i = 0; i < actividadVsRiesgo.riesgo.length; i++) {
-					for (var j = 0; j < success.data.attributes.grupos_actividad_vs_riesgo.length; j++) {
-						actividadVsRiesgo.riesgo[i].data.push(success.data.attributes.grupos_actividad_vs_riesgo[j][i]);
-					}
-				}
-				console.log(actividadVsRiesgo.riesgo);
-				
-				$scope.page.charts.actividadVsRiesgo.data = actividadVsRiesgo;
+ 	$scope.indiceHallazgos = Utils.setChartConfig(
+ 								'column', 
+ 								null, 
+ 								{
+ 									spline : {
+					                	dataLabels : {
+					                    	enabled : true,
+					                    	color: 'orange',
+					                    	style: {"fontSize": "15px", "fontWeight": "bold", "textOutline": "1px" },
+					                    	formatter : function() {
+					                        	return this.y + '%';
+					                    	}
+					                	}
+					            	},
+					            	column : {
+					                	dataLabels : {
+					                    	enabled : true,
+					                    	color: 'green',
+					                    	style: {"fontSize": "15px", "fontWeight": "bold", "textOutline": "1px" },
+					                    	formatter : function() {
+					                        	return this.y + '%';
+					                    	}
+					                	}
+					            	}
+ 								}, 
+	    						{}, 
+	    					 	{
+	        						categories: ['ABR', 'MAY', 'JUN']
+	    						}, 
+	    						[{
+							        type: 'column',
+							        name: 'Índice global de hallazgos - Pitagora',
+							        data: [1.50, 1, 1.20]
+							    }, {
+							        type: 'spline',
+							        name: 'Índice de acctidentes obras seleccionadas',
+							        data: [2.33, 1.27, 1.94],
+							        marker: {
+							            lineWidth: 2,
+							            lineColor: Highcharts.getOptions().colors[3],
+							            fillColor: 'orange',
+							            symbol: 'circle',
+							            radius: 7
+							        }
+							    }]
+	    					);
 
-				$scope.page.charts.actividadVsRiesgo.chartConfig = Utils.setChartConfig('column', 400, {}, {
-					min: 0,
-					title: {
-						text: null
-					}
-				}, {
-					categories: actividadVsRiesgo.categories,
-					title: {
-						text: 'Grupos de actividad'
-					}
-				}, actividadVsRiesgo.riesgo);
 
-				// FIN grado de riesgo
+ 	$scope.causasDirectas = Utils.setChartConfig(
+ 								'pie', 
+ 								250, 
+ 								{
+						            pie: {
+						                allowPointSelect: true,
+						                cursor: 'pointer',
+						                dataLabels: {
+						                    enabled: false
+						                },
+						                showInLegend: true
+						            }
+						        }, 
+	    						{}, 
+	    						{}, 
+	    						[
+	    							{
+								        name: 'Riesgo',
+								        colorByPoint: true,
+								        innerSize: '80%',
+								        data: [{
+								            name: 'Bajo',
+								            y: 20
+								        }, {
+								            name: 'Medio',
+								            y: 20,
+								        }, {
+								            name: 'Alto',
+								            y: 60
+								        }]
+							    	}
+							    ]
+	    					);
 
-				//INI cumplimiento de hallazgos
 
-		        angular.forEach(success.data.attributes.report_fulfillment, function(value, key) {
-		        	cumplimientoHallazgos.inspeccion.push(value.inspection_id);
-		        });
-		        cumplimientoHallazgos.datos.push({name: "Pendientes", data:[]})
-		        cumplimientoHallazgos.datos.push({name: "Resueltos", data:[]})
-		        cumplimientoHallazgos.datos.push({name: "No revisados", data:[]})
 
-		        for (var i = 0; i < success.data.attributes.report_fulfillment.length; i++) {
-		        	cumplimientoHallazgos.datos[2].data.push(success.data.attributes.report_fulfillment[i].num_pending);
-		        	cumplimientoHallazgos.datos[1].data.push(success.data.attributes.report_fulfillment[i].num_resolved);
-		        	cumplimientoHallazgos.datos[0].data.push(success.data.attributes.report_fulfillment[i].num_unchecked);
-				}
-
-				$scope.charCumplimientoHallazgos = Utils.setChartConfig('column', 513, {
-			    	column: {
-			    		stacking: 'normal',
-			    		dataLabels: {
-			    			enabled: true,
-			    			color: 'white',
-			    			style: {
-			    				textShadow: '0 0 3px black',
-			    				fontWeight: 'normal'
-			    			}
-			    		}
-			    	}
-			    }, 
-			    {
-			    	min: 0,
-			    	title: {
-			    		text: null
-			    	},
-			    	stackLabels: {
-			    		enabled: true,
-			    		style: {
-			    			fontWeight: 'normal',
-			    			color: 'gray'
-			    		}
-			    	}
-			    }, 
-			    {
-	    			categories: cumplimientoHallazgos.inspeccion,
-	    			title: {
-	    				text: 'Inspecciones'
-	    			}
-	    		},cumplimientoHallazgos.datos);
-				$scope.charCumplimientoHallazgos.data = cumplimientoHallazgos.inspeccion;
-			    //FIN cumplimiento de hallazgos
-
-			    //INI ratio de hallazgos
-
-			    var unchecked = success.data.attributes.report_ratios[0].num_reports;
-			    var resolved = success.data.attributes.report_ratios[1].num_reports;
-
-			    $scope.ratioHallazgosShow = false;
-
-			    unchecked>0? $scope.ratioHallazgosShow=true:$scope.ratioHallazgosShow=false;
-
-			    $scope.ratioHallazgos = Utils.setChartConfig('pie', 500, {
-			    	pie: {
-		                allowPointSelect: true,
-		                cursor: 'pointer',
-		                dataLabels: {
-		                    enabled: false
-		                },
-		                showInLegend: true
-		            }
-			    }, 
-			    {
-			    	min: 0,
-			    	title: {
-			    		text: null
-			    	},
-			    	stackLabels: {
-			    		enabled: true,
-			    		style: {
-			    			fontWeight: 'normal',
-			    			color: 'gray'
-			    		}
-			    	}
-			    }, 
-			    {
-	    			categories: cumplimientoHallazgos.inspeccion,
-	    			title: {
-	    				text: 'Zonas'
-	    			}
-	    		}, 
-	    		[
-	    			{
-			        	name: 'Número Hallazgos',
-			        	colorByPoint: true,
-				        data: [{
-				            name: 'Pendientes',
-				            y: unchecked
-				        }, {
-				            name: 'Resueltos',
-				            y: resolved
-				        }]
-			    	}
-			    ]
-			    );
-
-			    //INI MAPA
-			    $scope.page.markers.unchecked = success.data.attributes.report_locations[0].coordinates;
-				$scope.page.markers.resolved = success.data.attributes.report_locations[1].coordinates;
-			    //FIN MAPA
-    		}
-		}, function(error) {
-			$log.error(error);
-			if (error.status === 401) {
-				Utils.refreshToken($scope.getDashboardInfo);
-			}
-		});
-	};
-	getCompanies();*/
+ 	$scope.causasBasicas = Utils.setChartConfig(
+ 								'pie', 
+ 								250, 
+ 								{
+						            pie: {
+						                allowPointSelect: true,
+						                cursor: 'pointer',
+						                dataLabels: {
+						                    enabled: false
+						                },
+						                showInLegend: true
+						            }
+						        }, 
+	    						{}, 
+	    						{}, 
+	    						[
+	    							{
+								        name: 'Riesgo',
+								        colorByPoint: true,
+								        innerSize: '80%',
+								        data: [{
+								            name: 'Bajo',
+								            y: 20
+								        }, {
+								            name: 'Medio',
+								            y: 20,
+								        }, {
+								            name: 'Alto',
+								            y: 60
+								        }]
+							    	}
+							    ]
+	    					);
 });

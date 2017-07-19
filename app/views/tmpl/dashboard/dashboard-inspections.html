@@ -1,9 +1,3 @@
-<style type="text/css">
-	.solid 
-	{
-		border-style: solid;
-	}
-</style>
 <div class="page page-dashboard">
 	<div class="overlay" ng-show="page.loader.show">
 		<div style="position:absolute;top: 50%;left:50%;transform: translate(-50%, -50%);">
@@ -61,21 +55,21 @@
           	<div class="tile-body">
             	<div class="row">
               		<div class="col-md-8 solid">
-              			<div id="grafico1"></div>
+              			<highchart config="cantidadHallazgos"></highchart>
               		</div>
               		<div class="col-md-4">
               			<div class="col-md-12 solid">
 			        		<section class="tile tile-simple">
 					          <div class="tile-body text-center">
-					            <h1 class="m-0" style="color: green;"><b>64</b></h1>
-					            <span class="text-muted">Hallazgos encontrados</span>
+					            <h1 class="m-0" style="color: green; font-size: 500%;"><b>64</b></h1>
+					            <span class="text" style="font-size: 150%;"><b>Hallazgos encontrados</b></span>
 					          </div>
 					        </section>
 			        	</div>
 			        	<div class="col-md-12 solid">
 			        		<section class="tile" >
 								<div class="tile-widget">
-									<div id="grafico2"></div>
+									<highchart config="cantidadHallazgosDonut"></highchart>
 								</div>
 							</section>
 			        	</div>
@@ -93,26 +87,26 @@
           	<div class="tile-body">
             	<div class="row">
               		<div class="col-md-3 solid">
-              			<div id="grafico3" style="height: 200px;"></div>
+              			<highchart config="cumplimientoHallazgosDonut"></highchart>
               		</div>
               		<div class="col-md-3 solid">
 		        		<section class="tile tile-simple">
-				          <div class="tile-body text-center">
-				            <h1 class="m-0" style="color: orange;"><b>75%</b></h1>
-				            <span class="text-muted">Cumplimiento</span>
-				          </div>
+				          	<div class="tile-body text-center">
+				           		<h1 class="m-0" style="color: orange; font-size: 500%;"><b>75%</b></h1>
+					        	<span class="text" style="font-size: 150%;"><b>Cumplimiento</b></span>
+				          	</div>
 				        </section>
 			       	</div>
 		        	<div class="col-md-6">
 		        		<section class="tile" >
 							<div class="tile-widget">
 					          	<div class="tile-body text-center solid">
-					            	<div style="display:inline-block;width:80%; text-align: left"><b>Cumplimiento interno</b></div>
-				            		<div style="display:inline-block;width:19%; text-align: left"><b style="color: orange;">55%</b></div>
+					            	<div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Cumplimiento interno</b></div>
+				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">55%</b></div>
 					          	</div>
 					          	<div class="tile-body text-center solid">
-					            	<div style="display:inline-block;width:80%; text-align: left"><b>Cumplimiento contratistas</b></div>
-				            		<div style="display:inline-block;width:19%; text-align: left"><b style="color: orange;">20%</b></div>
+					            	<div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Cumplimiento contratistas</b></div>
+				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
 					          	</div>
 							</div>
 						</section>
@@ -125,7 +119,7 @@
 	<div class="row">
 		<section class="tile">
           	<div class="tile-header dvd dvd-btm">
-            	<h1 class="custom-font"><strong>Cumplimiento de hallazgos</strong> (Globales)</h1>
+            	<h1 class="custom-font"><strong>Indice de hallazgos por mes para obras seleccionadas</strong></h1>
           	</div>
           	<div class="tile-body">
             	<div class="row">
@@ -176,7 +170,7 @@
 				        </section> 
               		</div>
 		        	<div class="col-md-6">
-		        		<div id="grafico4" class="solid"></div>
+		        		<highchart config="indiceHallazgos"></highchart>
 		        	</div>
             	</div>
            	</div>
@@ -190,30 +184,30 @@
           		</div>
           		<div class="tile-body">
             		<div class="row">
-              			<div class="col-md-4">
-              				<div id="grafico5" style="height: 200px;"></div>
+              			<div class="col-md-6">
+              				<highchart config="causasDirectas"></highchart>
               			</div>
-              			<div class="col-md-8">
+              			<div class="col-md-6">
               				<div class="tile-body text-center">
-					            <h1  style="color: orange;"><b>75</b></h1>
-					            <span class="text-muted"><b>Directas</b></span>
-					        </div>
+				           		<h1 class="m-0" style="color: orange; font-size: 500%;"><b>25</b></h1>
+					        	<span class="text" style="font-size: 150%;"><b>Directas</b></span>
+				          	</div>
               			</div>
               			<div class="col-md-12">
 					        <section class="tile tile-simple">
 					          <div class="tile-body p-0">
 					            <div class="list-group no-radius no-border">
 					              <a class="list-group-item">
-					                <div style="display:inline-block;width:80%; text-align: left"><b>Cumplimiento contratistas</b></div>
-				            		<div style="display:inline-block;width:19%; text-align: left"><b style="color: orange;">20</b></div>
+					                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Demasiada actividad fisica</b></div>
+				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">10</b></div>
 					              </a>
 					              <a class="list-group-item">
-					                <div style="display:inline-block;width:80%; text-align: left"><b>Cumplimiento contratistas</b></div>
-				            		<div style="display:inline-block;width:19%; text-align: left"><b style="color: orange;">20</b></div>
+					                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Uso incorrecto de herramientas</b></div>
+				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">15</b></div>
 					              </a>
 					              <a class="list-group-item">
-					                <div style="display:inline-block;width:80%; text-align: left"><b>Cumplimiento contratistas</b></div>
-				            		<div style="display:inline-block;width:19%; text-align: left"><b style="color: orange;">20</b></div>
+					                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Falta de conocimiento de peligros</b></div>
+				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">10</b></div>
 					              </a>
 					              <a class="list-group-item">
 					                <div style="text-align: center">
@@ -239,30 +233,30 @@
           		</div>
           		<div class="tile-body">
             		<div class="row">
-              			<div class="col-md-4">
-              				<div id="grafico6" style="height: 200px;"></div>
+              			<div class="col-md-6">
+              				<highchart config="causasBasicas"></highchart>
               			</div>
-              			<div class="col-md-8">
+              			<div class="col-md-6">
               				<div class="tile-body text-center">
-					            <h1  style="color: orange;"><b>75</b></h1>
-					            <span class="text-muted"><b>básicas</b></span>
-					        </div>
+				           		<h1 class="m-0" style="color: orange; font-size: 500%;"><b>25</b></h1>
+					        	<span class="text" style="font-size: 150%;"><b>Básicas</b></span>
+				          	</div>
               			</div>
               			<div class="col-md-12">
 					        <section class="tile tile-simple">
 					          <div class="tile-body p-0">
 					            <div class="list-group no-radius no-border">
 					              <a class="list-group-item">
-					                <div style="display:inline-block;width:80%; text-align: left"><b>Cumplimiento contratistas</b></div>
-				            		<div style="display:inline-block;width:19%; text-align: left"><b style="color: orange;">20</b></div>
+					                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Capacidad respiratoria débil</b></div>
+				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">10</b></div>
 					              </a>
 					              <a class="list-group-item">
-					                <div style="display:inline-block;width:80%; text-align: left"><b>Cumplimiento contratistas</b></div>
-				            		<div style="display:inline-block;width:19%; text-align: left"><b style="color: orange;">20</b></div>
+					                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Lesión o enfermedad anterior</b></div>
+				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">15</b></div>
 					              </a>
 					              <a class="list-group-item">
-					                <div style="display:inline-block;width:80%; text-align: left"><b>Cumplimiento contratistas</b></div>
-				            		<div style="display:inline-block;width:19%; text-align: left"><b style="color: orange;">20</b></div>
+					                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Desconcentración / distracción</b></div>
+				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">10</b></div>
 					              </a>
 					              <a class="list-group-item">
 					                <div style="text-align: center">

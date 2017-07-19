@@ -125,9 +125,9 @@ angular.module('efindingAdminApp')
 		// if (!type) {
 		// 	type = 'column';
 		// }
-		if (!height) {
+		/*if (!height) {
 			height = 250;
-		}
+		}*/
 		return {
 			options: {
 				title: {
@@ -135,10 +135,10 @@ angular.module('efindingAdminApp')
 				},
 				navigation: {
 					buttonOptions: {
-						enabled: false
+						enabled: true
 					}
 				},
-				colors: ['#F69022', '#119848', '#EF3200'],
+				colors: [ '#119848', '#F69022', '#EF3200'],
 				tooltip: {
 					style: {
 						padding: 10,
