@@ -1,0 +1,106 @@
+<div class="page page-dashboard">
+  <div class="overlay" ng-show="page.loader.show">
+    <div style="position:absolute;top: 50%;left:50%;transform: translate(-50%, -50%);">
+      <div>
+        <p><strong>Descargando archivo...</strong></p>
+        <p class="text-center">
+          <img src="images/loader.gif" alt="loader" class="size-45x45">
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="pageheader">
+    <h2><b>{{page.title}}</b></h2>
+  <div class="row">
+    <div class="col-md-5">
+      <section class="tile">
+              <div class="tile-header dvd dvd-btm">
+                <h1 class="custom-font"><strong>Cumplimiento</strong></h1>
+              </div>
+              <div class="tile-body">
+                <div class="row">
+                  <section class="tile tile-simple">
+                    <div class="tile-body text-center">
+                      <h1 class="m-0" style="color: orange; font-size: 500%;"><b>25%</b></h1>
+                      <span class="text" style="font-size: 150%;"><b>Cumplimiento Global</b></span>
+                    </div>
+                    <div class="col-md-12">
+                    <section class="tile tile-simple">
+                      <div class="tile-body p-0">
+                        <div class="list-group no-radius no-border">
+                          <a class="list-group-item">
+                            <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
+                          <div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
+                          </a>
+                          <a class="list-group-item">
+                            <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
+                          <div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
+                          </a>
+                          <a class="list-group-item">
+                            <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
+                          <div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
+                          </a>
+                          <a class="list-group-item">
+                            <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
+                          <div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
+                          </a>
+                          <a class="list-group-item">
+                            <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
+                          <div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
+                          </a>
+                          <a class="list-group-item">
+                            <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
+                          <div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
+                          </a>
+                          <a class="list-group-item">
+                            <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
+                          <div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
+                          </a>
+                          <a class="list-group-item">
+                            <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
+                          <div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
+                          </a>
+                          <a class="list-group-item">
+                            <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
+                          <div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
+                          </a>
+                          <a class="list-group-item">
+                            <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
+                          <div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
+                          </a>
+                        </div>
+                      </div>
+                    </section>
+                      </div>
+                </section>
+                </div>
+              </div>
+          </section>
+    </div>
+    <div class="col-md-7">
+      <div class="col-md-12">
+        <section class="tile">
+                <div class="tile-header dvd dvd-btm">
+                  <h1 class="custom-font"><strong>Lista de Chequeo: cumplimiento global obras</strong></h1>
+                </div>
+                <div class="tile-body">
+                  <!--div id="grafico1"></div-->
+                  <highchart config="listaChequeo"></highchart>
+                </div>
+            </section>
+      </div>
+      <div class="col-md-12">
+        <section class="tile">
+                <div class="tile-header dvd dvd-btm">
+                  <h1 class="custom-font"><strong>Ranking bajo cumplimiento</strong></h1>
+                </div>
+                <div class="tile-body">
+                  <!--div id="grafico2"></div-->
+                  <highchart config="bajoCumplimiento"></highchart>
+                </div>
+            </section>
+      </div>
+    </div>
+  </div>
+</div>

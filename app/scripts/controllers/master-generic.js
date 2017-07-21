@@ -133,6 +133,9 @@ angular.module('efindingAdminApp')
 			resolve: {
 				idCollection: function() {
 					return id_collection;
+				},
+				nameCollection: function() {
+					return $scope.page.title;
 				}
 			}
 		});
@@ -149,8 +152,6 @@ angular.module('efindingAdminApp')
 		}
 		ExcelCollection.getFile('#downloadExcel', id_collection, $scope.page.title);
 		$timeout(function() {
-			//$scope.page.buttons.getExcel.disabled = false;
-			//$scope.page.loader.show = false;
 		}, 3000);
 	};
 
@@ -159,7 +160,8 @@ angular.module('efindingAdminApp')
 
 })
 
-.controller('newGenericMasive', function($scope, $log, $uibModalInstance, $uibModal, Csv, idCollection) {
+.controller('newGenericMasive', function($scope, $log, $uibModalInstance, $uibModal, Csv, idCollection, nameCollection) {
+
 	$scope.modal = {
 		csvFile: null,
 		btns: {
@@ -178,7 +180,6 @@ angular.module('efindingAdminApp')
 			text: ''
 		}
 	};
-	$log.error('masive');
 
 	$scope.save = function() {
 
@@ -209,7 +210,7 @@ angular.module('efindingAdminApp')
 			.success(function(success) {
 				$scope.modal.overlay.show = false;
 				$uibModalInstance.close();
-				openModalSummary(success);
+				openModalSummary(success, nameCollection);
 			}).error(function(error) {
 				$log.error(error);
 				$scope.modal.overlay.show = false;
@@ -221,14 +222,17 @@ angular.module('efindingAdminApp')
 
 	};
 
-	var openModalSummary = function(data) {
+	var openModalSummary = function(data, nameCollection) {
 		var modalInstance = $uibModal.open({
 			animation: true,
 			templateUrl: 'summary.html',
-			controller: 'SummaryLoadModalInstance',
+			controller: 'SummaryGenericLoadModalInstance',
 			resolve: {
 				data: function() {
 					return data;
+				},
+				nameCollection: function() {
+					return nameCollection;
 				}
 			}
 		});
@@ -249,7 +253,7 @@ angular.module('efindingAdminApp')
 
 })
 
-.controller('SummaryLoadModalInstance', function($scope, $log, $uibModalInstance, data) {
+.controller('SummaryGenericLoadModalInstance', function($scope, $log, $uibModalInstance, data, nameCollection) {
 
 	$scope.modal = {
 		countErrors: 0,
@@ -257,7 +261,8 @@ angular.module('efindingAdminApp')
 		countCreated: 0,
 		countChanged: 0,
 		errors: [],
-		successes: []
+		successes: [],
+		name: nameCollection
 	};
 	var i = 0;
 

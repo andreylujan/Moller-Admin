@@ -1,31 +1,13 @@
-<style type="text/css">
-	.solid 
-	{
-		border-style: solid;
-	}
-</style>
 <div class="page page-dashboard">
-	<div class="overlay" ng-show="page.loader.show">
-		<div style="position:absolute;top: 50%;left:50%;transform: translate(-50%, -50%);">
-			<div>
-				<p><strong>Descargando archivo...</strong></p>
-				<p class="text-center">
-					<img src="images/loader.gif" alt="loader" class="size-45x45">
-				</p>
-			</div>
-		</div>
-	</div>
-
 	<div class="pageheader">
 		<h2><b>{{page.title}}</b></h2>
-
 		<div class="row">
-			<div class="col-md-3 mt-5">
+			<div class="col-md-3">
 				<div class="gray-ps-1 br-15 b-0">
-					<input style="cursor:pointer;" id="daterangeDashGoals2" date-range-picker class="bg-gray-ps-1 br-15 text-sm form-control b-0n date-picker" type="text" ng-model="page.filters.dateRange.date" options="page.filters.dateRange.options" placeholder="Seleccionar periodo" />
+					<input type="text" class="bg-gray-ps-1 br-15 text-sm form-control b-0n date-picker" uib-datepicker-popup="{{page.filters.date.format}}" ng-model="page.filters.date.value" is-open="page.filters.date.opened" min-date="minDate" datepicker-options="page.filters.date.dateOptions" ng-required="true" ng-click="open($event)" close-text="Cerrar" clear-text="Limpiar" current-text="Hoy" readonly />
 				</div>
 			</div>
-			<div class="col-md-3 mt-5">
+			<div class="col-md-3">
 				<ui-select class="gray-ps-3 br-15 b-0" ng-model="page.filters.companies.selected" close-on-select="true" ng-change="getConstructions({success:true,detail:'OK'},page.filters.companies.selected);getDashboardInfo({success:true,detail:'OK'})" title="Empresas">
 					<ui-select-match placeholder="Empresa"><span ng-bind="$select.selected.name  | capitalize:true"></span></ui-select-match>
 					<ui-select-choices repeat="company in page.filters.companies.list | propsFilter: {name: $select.search}">
@@ -33,19 +15,19 @@
 					</ui-select-choices>
 				</ui-select>
 			</div>
-			<div class="col-md-3 mt-5">
-				<ui-select class="gray-ps-1 br-15 b-0" ng-model="page.filters.supervisor.selected" close-on-select="true" ng-disabled="page.filters.supervisor.disabled" ng-change="getDashboardInfo({success:true,detail:'OK'})" title="Supervisores">
-					<ui-select-match placeholder="Supervisor"><span ng-bind="$select.selected.name | capitalize:true"></span></ui-select-match>
-					<ui-select-choices repeat="user in page.filters.supervisor.list | propsFilter: {name: $select.search}">
-						<div ng-bind-html="user.name | highlight: $select.search | capitalize:true"></div>
+			<div class="col-md-3">
+				<ui-select class="blue-ps-1 br-15 b-0" ng-model="page.filters.constructions.selected" close-on-select="true" ng-change="getStores({success:true,detail:'OK'},page.filters.zone.selected,page.filters.constructions.selected);getDashboardInfo({success:true,detail:'OK'})" ng-disabled="page.filters.constructions.disabled" title="Dealers">
+					<ui-select-match placeholder="Obra"><span ng-bind="$select.selected.name | capitalize:true"></span></ui-select-match>
+					<ui-select-choices repeat="construction in page.filters.constructions.list | propsFilter: {name: $select.search}">
+						<div ng-bind-html="construction.name | highlight: $select.search | capitalize:true"></div>
 					</ui-select-choices>
 				</ui-select>
 			</div>
-			<div class="col-md-3 mt-5">
-				<ui-select class="blue-ps-2 br-15 b-0" ng-model="page.filters.status.selected" sortable="true" close-on-select="true" ng-disabled="page.filters.status.disabled" ng-change="getDashboardInfo({success:true,detail:'OK'})" title="Tiendas">
-					<ui-select-match placeholder="Estado"><span ng-bind="$select.selected.nameB | capitalize:true"></span></ui-select-match>
-					<ui-select-choices repeat="estado in page.filters.status.list | propsFilter: {name: $select.search}">
-						<div ng-bind-html="estado.nameB | highlight: $select.search | capitalize:true"></div>
+			<div class="col-md-3">
+				<ui-select class="blue-ps-1 br-15 b-0" ng-model="page.filters.checklist.selected" close-on-select="true" ng-change="getStores({success:true,detail:'OK'},page.filters.zone.selected,page.filters.constructions.selected);getDashboardInfo({success:true,detail:'OK'})" ng-disabled="page.filters.checklist.disabled" title="Dealers">
+					<ui-select-match placeholder="Lista de chequeo"><span ng-bind="$select.selected.name | capitalize:true"></span></ui-select-match>
+					<ui-select-choices repeat="check in page.filters.checklist.list | propsFilter: {name: $select.search}">
+						<div ng-bind-html="check.name | highlight: $select.search | capitalize:true"></div>
 					</ui-select-choices>
 				</ui-select>
 			</div>
@@ -53,7 +35,7 @@
 	</div>
 
 	<div class="row">
-		<div class="col-md-4">
+		<div class="col-md-5">
 			<section class="tile">
 	          	<div class="tile-header dvd dvd-btm">
 	            	<h1 class="custom-font"><strong>Cumplimiento</strong></h1>
@@ -62,52 +44,52 @@
 	            	<div class="row">
 	            		<section class="tile tile-simple">
 				          	<div class="tile-body text-center">
-				            	<h1 class="m-0" style="color: orange;"><b>25%</b></h1>
-				            	<span class="text-muted">Cumplimiento global</span>
+				            	<h1 class="m-0" style="color: orange; font-size: 500%;"><b>25%</b></h1>
+					            <span class="text" style="font-size: 150%;"><b>Cumplimiento Global</b></span>
 				          	</div>
 				          	<div class="col-md-12">
 						        <section class="tile tile-simple">
 						          <div class="tile-body p-0">
 						            <div class="list-group no-radius no-border">
 						              <a class="list-group-item">
-						                <div style="display:inline-block;width:80%; text-align: left"><b>Obra Obra</b></div>
-					            		<div style="display:inline-block;width:10%; text-align: left"><b style="color: orange;">20%</b></div>
+						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
+				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
 						              </a>
 						              <a class="list-group-item">
-						                <div style="display:inline-block;width:80%; text-align: left"><b>Obra Obra</b></div>
-					            		<div style="display:inline-block;width:10%; text-align: left"><b style="color: orange;">20%</b></div>
+						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
+				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
 						              </a>
 						              <a class="list-group-item">
-						                <div style="display:inline-block;width:80%; text-align: left"><b>Obra Obra</b></div>
-					            		<div style="display:inline-block;width:10%; text-align: left"><b style="color: orange;">20%</b></div>
+						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
+				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
 						              </a>
 						              <a class="list-group-item">
-						                <div style="display:inline-block;width:80%; text-align: left"><b>Obra Obra</b></div>
-					            		<div style="display:inline-block;width:10%; text-align: left"><b style="color: orange;">20%</b></div>
+						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
+				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
 						              </a>
 						              <a class="list-group-item">
-						                <div style="display:inline-block;width:80%; text-align: left"><b>Obra Obra</b></div>
-					            		<div style="display:inline-block;width:10%; text-align: left"><b style="color: orange;">20%</b></div>
+						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
+				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
 						              </a>
 						              <a class="list-group-item">
-						                <div style="display:inline-block;width:80%; text-align: left"><b>Obra Obra</b></div>
-					            		<div style="display:inline-block;width:10%; text-align: left"><b style="color: orange;">20%</b></div>
+						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
+				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
 						              </a>
 						              <a class="list-group-item">
-						                <div style="display:inline-block;width:80%; text-align: left"><b>Obra Obra</b></div>
-					            		<div style="display:inline-block;width:10%; text-align: left"><b style="color: orange;">20%</b></div>
+						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
+				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
 						              </a>
 						              <a class="list-group-item">
-						                <div style="display:inline-block;width:80%; text-align: left"><b>Obra Obra</b></div>
-					            		<div style="display:inline-block;width:10%; text-align: left"><b style="color: orange;">20%</b></div>
+						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
+				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
 						              </a>
 						              <a class="list-group-item">
-						                <div style="display:inline-block;width:80%; text-align: left"><b>Obra Obra</b></div>
-					            		<div style="display:inline-block;width:10%; text-align: left"><b style="color: orange;">20%</b></div>
+						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
+				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
 						              </a>
 						              <a class="list-group-item">
-						                <div style="display:inline-block;width:80%; text-align: left"><b>Obra Obra</b></div>
-					            		<div style="display:inline-block;width:10%; text-align: left"><b style="color: orange;">20%</b></div>
+						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
+				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
 						              </a>
 						            </div>
 						          </div>
@@ -118,14 +100,15 @@
 	           	</div>
 	        </section>
 		</div>
-		<div class="col-md-8">
+		<div class="col-md-7">
 			<div class="col-md-12">
 				<section class="tile">
 		          	<div class="tile-header dvd dvd-btm">
 		            	<h1 class="custom-font"><strong>Lista de Chequeo: cumplimiento global obras</strong></h1>
 		          	</div>
 		          	<div class="tile-body">
-		            	<div id="grafico1"></div>
+		            	<!--div id="grafico1"></div-->
+		            	<highchart config="listaChequeo"></highchart>
 		           	</div>
 		        </section>
 			</div>
@@ -135,7 +118,8 @@
 		            	<h1 class="custom-font"><strong>Ranking bajo cumplimiento</strong></h1>
 		          	</div>
 		          	<div class="tile-body">
-		            	<div id="grafico2"></div>
+		            	<!--div id="grafico2"></div-->
+		            	<highchart config="bajoCumplimiento"></highchart>
 		           	</div>
 		        </section>
 			</div>

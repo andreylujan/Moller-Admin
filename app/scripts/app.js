@@ -59,8 +59,11 @@ angular
 		});
 
 		$rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
-
-			var isLogin = toState.name === 'login' || toState.name === 'signup' || toState.name === 'forgotpass' || toState.name === 'publicDashboard';
+			
+			var isLogin = toState.name === 'login' || toState.name === 'signup' 
+			|| toState.name === 'forgotpass' || toState.name === 'publicDashboard'
+			|| toState.name === 'publicInspectionsDashboard' || toState.name === 'pub'
+			|| toState.name === 'accidentalnessDashboard';
 
 			if (isLogin) {
 				return;
@@ -129,10 +132,26 @@ angular
 			templateUrl: 'views/tmpl/pages/page404.html'
 		})
 
+		//DASHBOARDS PUBLICOS
 		.state('publicDashboard', {
 			url: '/public?token&refresh',
 			templateUrl: 'views/tmpl/pages/dashboard-manflas-public.html',
-			controller: 'ManflasPublicDashboardCtrl',
+			controller: 'InspectionsPublicDashboardCtrl',
+		})
+		.state('publicInspectionsDashboard', {
+			url: '/inspectionsDashboard?token&refresh',
+			templateUrl: 'views/tmpl/dashboard-public/inspections.html',
+			controller: 'InspectionsPublicDashboardCtrl',
+		})
+		.state('publicChecklistDashboard', {
+			url: '/checklistDashboard?token&refresh',
+			templateUrl: 'views/tmpl/dashboard-public/checklist.html',
+			controller: 'ChecklistPublicDashboardCtrl',
+		})
+		.state('publicAccidentalnessDashboard', {
+			url: '/accidentalnessDashboard?token&refresh',
+			templateUrl: 'views/tmpl/dashboard-public/accidentalness.html',
+			controller: 'AccidentalnessPublicDashboardCtrl',
 		})
 		
 
@@ -166,6 +185,11 @@ angular
 				url: '/checklist',
 				templateUrl: 'views/tmpl/dashboard/dashboard-checklist.html',
 				controller: 'ChecklistDashboardCtrl'
+			})
+			.state('efinding.dashboard.accidentalness', {
+				url: '/accidentalness',
+				templateUrl: 'views/tmpl/dashboard/dashboard-accidentalness.html',
+				controller: 'AccidentalnessDashboardCtrl'
 			})
 
 

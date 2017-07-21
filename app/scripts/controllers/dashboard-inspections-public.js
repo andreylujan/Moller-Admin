@@ -2,14 +2,21 @@
 
 /**
  * @ngdoc function
- * @name efindingAdminApp.controller:InspectionsDashboardCtrl
+ * @name efindingAdminApp.controller:InspectionsPublicDashboardCtrl
  * @description
- * # InspectionsDashboardCtrl
+ * # InspectionsPublicDashboardCtrl
  * Controller of the efindingAdminApp
  */
  angular.module('efindingAdminApp')
- .controller('InspectionsDashboardCtrl', function($scope, $filter, $log, $moment, Utils, NgTableParams, Dashboard, Companies, Constructions, Users, NgMap) {
+ .controller('InspectionsPublicDashboardCtrl', function($scope, $auth, $filter, $state, $log, 
+ 	$timeout, $moment, Utils, $q) {
  	
+ 	var token = $state.params.token;
+ 	var refresh_token = $state.params.refresh;
+ 	
+ 	Utils.setInStorage('refresh_t', refresh_token);
+ 	$auth.setToken(token);
+
  	var currentDate = new Date();
  	var firstMonthDay = new Date();
  	firstMonthDay.setDate(1);
@@ -18,18 +25,75 @@
  	$scope.page = {
  		title: 'Inspecciones',
  		filters: {
- 			date: {
- 				dateOptions: 
- 				{
- 					formatYear: 'yy',
-				    startingDay: 1,
-				    'class': 'datepicker'
- 				},
- 				format: 'dd-MM-yyyy',
+ 			companies: {
+ 				list: [],
+ 				selected: null
+ 			},
+ 			constructions: {
+ 				list: [],
+ 				selected: null,
+ 				disabled: false
+ 			},
+ 			status: {
+ 				list: [],
+ 				selected: null,
+ 				disabled: false
+ 			},
+ 			supervisor: {
+ 				list: [],
+ 				selected: null,
+ 				disabled: false
+ 			},
+ 			month: {
  				value: new Date(),
- 				opened: false
+ 				isOpen: false
+ 			},
+ 			dateRange: {
+ 				options: {
+ 					locale: {
+ 						format: 'DD/MM/YYYY',
+ 						applyLabel: 'Buscar',
+ 						cancelLabel: 'Cerrar',
+ 						fromLabel: 'Desde',
+ 						toLabel: 'Hasta',
+ 						customRangeLabel: 'Personalizado',
+ 						daysOfWeek: ['Dom', 'Lun', 'Mar', 'Mier', 'Jue', 'Vie', 'Sab'],
+ 						monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+ 						firstDay: 1
+ 					},
+ 					autoApply: true,
+ 					maxDate: $moment().add(1, 'months').date(1).subtract(1, 'days'),
+ 				},
+ 				date: {
+ 					startDate: firstMonthDay,
+ 					endDate: currentDate
+ 				}
  			}
- 		}
+ 		},
+ 		buttons: {
+ 			getExcel: {
+ 				disabled: false
+ 			}
+ 		},
+ 		loader: {
+ 			show: false
+ 		},
+ 		charts: {
+			actividadVsRiesgo: {
+				loaded: false,
+				table: {
+					headers: [],
+					row1: [],
+					row2: [],
+					row3: []
+				},
+				chartConfig: Utils.setChartConfig('column', 400, {}, {}, {}, [])
+			}
+		},
+		markers: {
+			resolved: [],
+			unchecked: []
+		}
  	};
 
 
