@@ -142,9 +142,9 @@ angular.module('efindingAdminApp')
 	$scope.company = {
 		id: null,
 		name: {
-			text: '',
-			disabled: true
-		}
+			text: ''
+		},
+		disabled: true
 	};
 
 	$scope.elements = {
@@ -200,6 +200,7 @@ angular.module('efindingAdminApp')
 		if ($scope.elements.buttons.editUser.text === 'Editar') {
 			$scope.elements.buttons.editUser.text = 'Guardar';
 			$scope.elements.buttons.editUser.border = '';
+			$scope.company.disabled = false;
 		} else {
 			$scope.elements.buttons.editUser.text = 'Editar';
 			$scope.elements.buttons.editUser.border = 'btn-border';
@@ -223,6 +224,7 @@ angular.module('efindingAdminApp')
 
 					} else {
 						$log.log(success);
+						$scope.company.disabled = true;
 					}
 				}, function(error) {
 					$log.log(error);
@@ -242,7 +244,7 @@ angular.module('efindingAdminApp')
 			$scope.elements.buttons.removeUser.border = '';
 			$scope.elements.alert.show = true;
 			$scope.elements.alert.title = '¿Seguro que desea eliminar la empresa?';
-			$scope.elements.alert.text = 'Para eliminarla, vuelva a presionar el botón';
+			$scope.elements.alert.text = 'Para eliminarla vuelva a presionar el botón.';
 			$scope.elements.alert.color = 'danger';
 
 		} else {

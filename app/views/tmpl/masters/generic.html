@@ -1,16 +1,11 @@
 <div class="page">
-
-	<!-- page header -->
 	<div class="pageheader">
-
 		<h2>{{page.title}} <span></span></h2>
-
 		<div class="page-bar">
-
 			<ul class="page-breadcrumb">
 				<li>
-          <a ui-sref="efinding.dashboard.generic"> {{main.title}}</a>
-        </li>
+          			<a ui-sref="efinding.dashboard.generic"> {{main.title}}</a>
+        		</li>
 				<li>
 					<a href="javascript:;">Maestros</a>
 				</li>
@@ -20,16 +15,10 @@
 			</ul>
 		</div>
 	</div>
-	<!-- /page header -->
-	<!-- page content -->
 	<div class="pagecontent">
-		<!-- row -->
 		<div class="row">
-			<!-- col -->
 			<div class="col-md-12">
-				<!-- tile -->
 				<section class="tile" fullscreen="isFullscreen06">
-					<!-- tile body -->
 					<div class="tile-body">
 						<div class="row">
 							<div class="col-md-1">
@@ -57,27 +46,15 @@
 							</tr>
 						</table>
 					</div>
-					<!-- /tile body -->
 				</section>
-				<!-- /tile -->
 			</div>
-			<!-- /col -->
 		</div>
-		<!-- /row -->
 	</div>
-	<!-- /page content -->
 	<script type="text/ng-template" id="newCollectionItem.html">
 		<div class="modal-header text-gray">
       		<h3 class="text-center">{{page.title}}</h3>
     	</div>
 	    <div class="modal-body text-gray">
-	    	<!-- <div class="row">
-	       		<div class="col-md-12">
-	        		<h4 class="text-center">Carga masiva (csv)</h4>
-					<input type="file" class="form-control rounded" file-model="modal.csvFile">
-	        	</div>
-	      	</div>
-	      	<hr> -->
 	      <div class="row">
 	        <div class="col-md-12">
 	        	<h4 class="text-center">Carga manual</h4>
@@ -130,13 +107,13 @@
             <div class="form-group">
               <label class="col-sm-3 control-label">Tipo</label>
               <div class="col-md-8">
-                <input type="text" id="name" class="form-control underline-input" placeholder="Tipo..." ng-model="collection.name" ng-change="hideAlert()" required>
+                <input type="text" id="name" class="form-control underline-input" placeholder="Tipo..." ng-model="collection.name" ng-change="hideAlert()" required ng-disabled="collection.disabled">
               </div>
             </div>
             <div class="form-group" ng-show="parentCollection.visible">
   				<label for="inputPassword3" class="col-sm-3 control-label">Pertenece a </label>
   				<div class="col-sm-8">
-  					<ui-select class="bg-white b-solid br-15" ng-model="collection.selectedParent" close-on-select="true">
+  					<ui-select class="bg-white b-solid br-15" ng-disabled="parentCollection.disabled" ng-model="collection.selectedParent" close-on-select="true">
   						<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.name}}</ui-select-match>
   						<ui-select-choices repeat="parent in parentCollection.data track by parent.name | propsFilter: {name: $select.search}" refresh-delay="200">
   							<div ng-bind-html="parent.name"></div>

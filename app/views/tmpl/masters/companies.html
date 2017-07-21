@@ -1,16 +1,11 @@
 <div class="page">
-
-	<!-- page header -->
 	<div class="pageheader">
-
 		<h2>{{page.title}} <span></span></h2>
-
 		<div class="page-bar">
-
 			<ul class="page-breadcrumb">
 				<li>
-          <a ui-sref="efinding.dashboard.generic"> {{main.title}}</a>
-        </li>
+          			<a ui-sref="efinding.dashboard.generic"> {{main.title}}</a>
+        		</li>
 				<li>
 					<a href="javascript:;">Maestros</a>
 				</li>
@@ -20,16 +15,10 @@
 			</ul>
 		</div>
 	</div>
-	<!-- /page header -->
-	<!-- page content -->
 	<div class="pagecontent">
-		<!-- row -->
 		<div class="row">
-			<!-- col -->
 			<div class="col-md-12">
-				<!-- tile -->
 				<section class="tile" fullscreen="isFullscreen06">
-					<!-- tile body -->
 					<div class="tile-body">
 						<div class="row">
 							<div class="col-md-1">
@@ -57,15 +46,10 @@
 							</tr>
 						</table>
 					</div>
-					<!-- /tile body -->
 				</section>
-				<!-- /tile -->
 			</div>
-			<!-- /col -->
 		</div>
-		<!-- /row -->
 	</div>
-	<!-- /page content -->
 
   <script type="text/ng-template" id="companyDetails.html">
     <div class="modal-header text-gray">
@@ -79,7 +63,7 @@
             <div class="form-group">
               <label class="col-sm-3 control-label">Nombre</label>
               <div class="col-md-8">
-                <input type="text" id="name" class="form-control underline-input" placeholder="Nombre" ng-model="company.name.text" ng-change="hideAlert()" required>
+                <input type="text" id="name" class="form-control underline-input" placeholder="Nombre" ng-model="company.name.text" ng-disabled="company.disabled" ng-change="hideAlert()" required>
               </div>
             </div>
             

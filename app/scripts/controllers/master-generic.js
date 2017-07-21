@@ -295,14 +295,15 @@ angular.module('efindingAdminApp')
 	$scope.collection = {
 		id: null,
 		name: {
-			text: '',
-			disabled: true
+			text: ''
 		},
+		disabled: true,
 		parent_item_id: null
 	};
 
 	$scope.parentCollection = {
 		visible: false,
+		disabled: true,
 		data: []
 	};
 
@@ -396,6 +397,10 @@ angular.module('efindingAdminApp')
 		if ($scope.elements.buttons.editUser.text === 'Editar') {
 			$scope.elements.buttons.editUser.text = 'Guardar';
 			$scope.elements.buttons.editUser.border = '';
+
+			$scope.collection.disabled = false;
+			$scope.parentCollection.disabled = false;
+
 		} else {
 			if (!Validators.validateRequiredField($scope.collection.name)) {
 				$scope.elements.alert.title = 'Faltan datos por rellenar';
@@ -424,7 +429,7 @@ angular.module('efindingAdminApp')
 			Collection_Item.update(aux, 
 				function(success) {
 					if (success.data) {
-						$scope.elements.alert.title = 'Se han actualizado los datos de la actividad';
+						$scope.elements.alert.title = 'Se han actualizado los datos de '+$scope.collection.name;
 						$scope.elements.alert.text = '';
 						$scope.elements.alert.color = 'success';
 						$scope.elements.alert.show = true;
@@ -455,8 +460,8 @@ angular.module('efindingAdminApp')
 
 			$scope.elements.buttons.removeUser.border = '';
 			$scope.elements.alert.show = true;
-			$scope.elements.alert.title = '¿Seguro que desea eliminar la actividad?';
-			$scope.elements.alert.text = 'Para eliminarla, vuelva a presionar el botón';
+			$scope.elements.alert.title = '¿Seguro que desea eliminar?';
+			$scope.elements.alert.text = 'Para eliminar este item, vuelva a presionar el botón.';
 			$scope.elements.alert.color = 'danger';
 
 		} else {

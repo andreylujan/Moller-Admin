@@ -348,7 +348,7 @@ angular.module('efindingAdminApp')
 			$scope.elements.buttons.removeUser.border = '';
 			$scope.elements.alert.show = true;
 			$scope.elements.alert.title = '¿Seguro que desea eliminar al usuario?';
-			$scope.elements.alert.text = 'Para eliminarlo, vuelva a presionar el botón';
+			$scope.elements.alert.text = 'Para eliminarlo vuelva a presionar el botón';
 			$scope.elements.alert.color = 'danger';
 
 		} else {
