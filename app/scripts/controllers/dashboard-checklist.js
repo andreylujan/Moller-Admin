@@ -9,7 +9,7 @@
  */
  angular.module('efindingAdminApp')
  .controller('ChecklistDashboardCtrl', function($scope, $filter, $log, $moment, Utils, 
- 												Dashboard, Companies, Constructions) {
+ 												Dashboard, Companies, Constructions, ChecklistActions) {
  	
  	$scope.page = {
  		title: 'Lista de Chequeo',
@@ -37,7 +37,8 @@
  			checklist: {
  				list: [],
  				selected: null,
- 				disabled: false
+ 				disabled: false,
+ 				loaded: false
  			}
  		}
  	};
@@ -108,16 +109,69 @@
  				$scope.page.filters.constructions.disabled = false;
 
  			} else {
+ 				$scope.page.filters.constructions.disabled = true;
  				$log.error(success);
  			}
  		}, function(error) {
+ 			$scope.page.filters.constructions.disabled = true;
  			$log.error(error);
  			if (error.status === 401) {
  				Utils.refreshToken($scope.getConstructions);
  			}
  		});
  	};
+
+ 	$scope.getChecklist = function() {
+
+ 		$scope.page.filters.checklist.selected = [];
+ 		$scope.page.filters.checklist.list = [];
+ 		ChecklistActions.query({}, 
+ 			function(success) {
+	 			if (success.data) {
+
+	 				$scope.page.filters.checklist.list.push({
+	 					id: '',
+	 					name: 'Todas las listas'
+	 				});
+
+	 				for (var i = 0; i < success.data.length; i++) {
+	 					$scope.page.filters.checklist.list.push({
+	 						id: parseInt(success.data[i].id),
+	 						name: $filter('capitalize')(success.data[i].attributes.name, true),
+	 					});
+	 				}
+
+	 				$scope.page.filters.checklist.selected = $scope.page.filters.checklist.list[0];
+	 				$scope.page.filters.checklist.disabled = false;
+	 				$scope.page.filters.checklist.loaded = true;
+
+	 			} 
+	 			else 
+	 			{
+	 				$log.error(success);
+	 				$scope.page.filters.checklist.disabled = true;
+	 			}
+	 		}, function(error) {
+	 			$log.error(error);
+	 			$scope.page.filters.checklist.disabled = true
+	 			if (error.status === 401) {
+	 				Utils.refreshToken($scope.getChecklist);
+	 			}
+ 			});
+ 	};
  	getCompanies();
+ 	$scope.getChecklist();
+
+
+
+ 	$scope.$watch('page.filters.checklist.loaded', function() {
+		if ($scope.page.filters.checklist.loaded) {
+			$scope.$watch('page.filters.date.value', function() {
+				$log.error('YO DEBO LLAMAR AL SERVICIO');
+				/*$scope.getDashboardInfo();*/
+			});
+		}
+	});
 
 
  	///INICIO CHARTS

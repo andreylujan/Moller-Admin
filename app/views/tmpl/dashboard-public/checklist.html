@@ -1,17 +1,20 @@
 <div class="page page-dashboard">
-  <div class="overlay" ng-show="page.loader.show">
-    <div style="position:absolute;top: 50%;left:50%;transform: translate(-50%, -50%);">
-      <div>
-        <p><strong>Descargando archivo...</strong></p>
-        <p class="text-center">
-          <img src="images/loader.gif" alt="loader" class="size-45x45">
-        </p>
-      </div>
-    </div>
-  </div>
 
   <div class="pageheader">
     <h2><b>{{page.title}}</b></h2>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="gray-ps-1 br-15 b-0">
+          <ui-select class="blue-ps-1 br-15 b-0" ng-model="page.filters.checklist.selected" close-on-select="true" ng-change="getDashboardInfo()" ng-disabled="page.filters.checklist.disabled" title="Checklist">
+            <ui-select-match placeholder="Lista de chequeo"><span ng-bind="$select.selected.name | capitalize:true"></span></ui-select-match>
+            <ui-select-choices repeat="check in page.filters.checklist.list | propsFilter: {name: $select.search}">
+              <div ng-bind-html="check.name | highlight: $select.search | capitalize:true"></div>
+            </ui-select-choices>
+          </ui-select>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="row">
     <div class="col-md-5">
       <section class="tile">
