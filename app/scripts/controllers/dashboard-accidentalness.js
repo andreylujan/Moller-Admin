@@ -18,75 +18,18 @@
  	$scope.page = {
  		title: 'Accidentabilidad',
  		filters: {
- 			companies: {
- 				list: [],
- 				selected: null
- 			},
- 			constructions: {
- 				list: [],
- 				selected: null,
- 				disabled: false
- 			},
- 			status: {
- 				list: [],
- 				selected: null,
- 				disabled: false
- 			},
- 			supervisor: {
- 				list: [],
- 				selected: null,
- 				disabled: false
- 			},
- 			month: {
- 				value: new Date(),
- 				isOpen: false
- 			},
- 			dateRange: {
- 				options: {
- 					locale: {
- 						format: 'DD/MM/YYYY',
- 						applyLabel: 'Buscar',
- 						cancelLabel: 'Cerrar',
- 						fromLabel: 'Desde',
- 						toLabel: 'Hasta',
- 						customRangeLabel: 'Personalizado',
- 						daysOfWeek: ['Dom', 'Lun', 'Mar', 'Mier', 'Jue', 'Vie', 'Sab'],
- 						monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
- 						firstDay: 1
- 					},
- 					autoApply: true,
- 					maxDate: $moment().add(1, 'months').date(1).subtract(1, 'days'),
+ 			date: {
+ 				dateOptions: 
+ 				{
+ 					formatYear: 'yy',
+				    startingDay: 1,
+				    'class': 'datepicker'
  				},
- 				date: {
- 					startDate: firstMonthDay,
- 					endDate: currentDate
- 				}
+ 				format: 'dd-MM-yyyy',
+ 				value: new Date(),
+ 				opened: false
  			}
- 		},
- 		buttons: {
- 			getExcel: {
- 				disabled: false
- 			}
- 		},
- 		loader: {
- 			show: false
- 		},
- 		charts: {
-			actividadVsRiesgo: {
-				loaded: false,
-				table: {
-					headers: [],
-					row1: [],
-					row2: [],
-					row3: []
-				},
-				chartConfig: Utils.setChartConfig('column', 400, {}, {}, {}, [])
-			}
-		},
-		markers: {
-			resolved: [],
-			unchecked: []
-		}
+ 		}
  	};
 
  	///INICIO CHARTS

@@ -152,8 +152,6 @@ angular.module('efindingAdminApp')
 		}
 		ExcelCollection.getFile('#downloadExcel', id_collection, $scope.page.title);
 		$timeout(function() {
-			//$scope.page.buttons.getExcel.disabled = false;
-			//$scope.page.loader.show = false;
 		}, 3000);
 	};
 

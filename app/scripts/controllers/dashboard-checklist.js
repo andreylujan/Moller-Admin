@@ -8,16 +8,23 @@
  * Controller of the efindingAdminApp
  */
  angular.module('efindingAdminApp')
- .controller('ChecklistDashboardCtrl', function($scope, $filter, $log, $moment, Utils, NgTableParams, Dashboard, Companies, Constructions, Users, NgMap) {
+ .controller('ChecklistDashboardCtrl', function($scope, $filter, $log, $moment, Utils, 
+ 												Dashboard, Companies, Constructions) {
  	
- 	var currentDate = new Date();
- 	var firstMonthDay = new Date();
- 	firstMonthDay.setDate(1);
-
-
  	$scope.page = {
  		title: 'Lista de Chequeo',
  		filters: {
+ 			date: {
+ 				dateOptions: 
+ 				{
+ 					formatYear: 'yy',
+				    startingDay: 1,
+				    'class': 'datepicker'
+ 				},
+ 				format: 'dd-MM-yyyy',
+ 				value: new Date(),
+ 				opened: false
+ 			},
  			companies: {
  				list: [],
  				selected: null
@@ -27,67 +34,90 @@
  				selected: null,
  				disabled: false
  			},
- 			status: {
+ 			checklist: {
  				list: [],
  				selected: null,
  				disabled: false
- 			},
- 			supervisor: {
- 				list: [],
- 				selected: null,
- 				disabled: false
- 			},
- 			month: {
- 				value: new Date(),
- 				isOpen: false
- 			},
- 			dateRange: {
- 				options: {
- 					locale: {
- 						format: 'DD/MM/YYYY',
- 						applyLabel: 'Buscar',
- 						cancelLabel: 'Cerrar',
- 						fromLabel: 'Desde',
- 						toLabel: 'Hasta',
- 						customRangeLabel: 'Personalizado',
- 						daysOfWeek: ['Dom', 'Lun', 'Mar', 'Mier', 'Jue', 'Vie', 'Sab'],
- 						monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
- 						firstDay: 1
- 					},
- 					autoApply: true,
- 					maxDate: $moment().add(1, 'months').date(1).subtract(1, 'days'),
- 				},
- 				date: {
- 					startDate: firstMonthDay,
- 					endDate: currentDate
- 				}
  			}
- 		},
- 		buttons: {
- 			getExcel: {
- 				disabled: false
- 			}
- 		},
- 		loader: {
- 			show: false
- 		},
- 		charts: {
-			actividadVsRiesgo: {
-				loaded: false,
-				table: {
-					headers: [],
-					row1: [],
-					row2: [],
-					row3: []
-				},
-				chartConfig: Utils.setChartConfig('column', 400, {}, {}, {}, [])
-			}
-		},
-		markers: {
-			resolved: [],
-			unchecked: []
-		}
+ 		}
  	};
+
+    $scope.open = function($event) {
+      $event.preventDefault();
+      $event.stopPropagation();
+      $scope.page.filters.date.opened = true;
+    };
+
+    var getCompanies = function() {
+ 		$scope.page.filters.companies.list = [];
+
+ 		Companies.query({}, function(success) {
+ 			if (success.data) {
+ 				$scope.page.filters.companies.list.push({
+ 					id: '',
+ 					name: 'Todas las Empresas',
+ 					companiesIds: []
+ 				});
+
+ 				angular.forEach(success.data, function(value, key) {
+ 					$scope.page.filters.companies.list.push({
+ 						id: parseInt(value.id),
+ 						name: value.attributes.name,
+ 						dealersIds: value.attributes.dealer_ids
+ 					});
+ 				});
+
+ 				$scope.page.filters.companies.selected = $scope.page.filters.companies.list[0];
+ 				$scope.getConstructions($scope.page.filters.companies.selected);
+ 				$scope.page.filters.constructions.disabled = true;
+
+ 			} else {
+ 				$log.error(success);
+ 			}
+ 		}, function(error) {
+ 			$log.error(error);
+ 			if (error.status === 401) {
+ 				Utils.refreshToken(getCompanies);
+ 			}
+ 		});
+ 	};
+
+ 	$scope.getConstructions = function(companySelected) {
+
+ 		$scope.page.filters.constructions.selected = [];
+ 		$scope.page.filters.constructions.list = [];
+ 		Constructions.query({
+ 			'filter[company_id]': companySelected.id
+ 		}, function(success) {
+ 			if (success.data) {
+
+ 				$scope.page.filters.constructions.list.push({
+ 					id: '',
+ 					name: 'Todas las obras'
+ 				});
+
+ 				for (var i = 0; i < success.data.length; i++) {
+ 					$scope.page.filters.constructions.list.push({
+ 						id: parseInt(success.data[i].id),
+ 						name: $filter('capitalize')(success.data[i].attributes.name, true),
+ 						type: 'dealers'
+ 					});
+ 				}
+
+ 				$scope.page.filters.constructions.selected = $scope.page.filters.constructions.list[0];
+ 				$scope.page.filters.constructions.disabled = false;
+
+ 			} else {
+ 				$log.error(success);
+ 			}
+ 		}, function(error) {
+ 			$log.error(error);
+ 			if (error.status === 401) {
+ 				Utils.refreshToken($scope.getConstructions);
+ 			}
+ 		});
+ 	};
+ 	getCompanies();
 
 
  	///INICIO CHARTS
