@@ -307,6 +307,11 @@ angular
 				templateUrl: 'views/tmpl/masters/contractors.html',
 				controller: 'MastersContractorsCtrl'
 			})
+			.state('efinding.obras.accidentalness', {
+				url: '/accidentabilidad',
+				templateUrl: 'views/tmpl/masters/accidentalness.html',
+				controller: 'MastersAccidentalnessCtrl'
+			})
 
     
 		//Areas

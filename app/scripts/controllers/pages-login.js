@@ -53,6 +53,7 @@ angular.module('efindingAdminApp')
 						.then(function(data) {
 							Utils.setInStorage('fullName', data.data.fullName);
 							Utils.setInStorage('image', data.data.image);
+							Utils.setInStorage('is_superuser', data.data.is_superuser);
 
 							getMenu();
 							getColumns();
@@ -79,7 +80,6 @@ angular.module('efindingAdminApp')
 				}
 				else
 				{
-					$log.log('null');
 					$state.go('login');
 				}
 			})
@@ -106,11 +106,11 @@ angular.module('efindingAdminApp')
 			idUser: idUser,
 			include: 'role.organization.report_types.sections.data_parts.collection.collection_items,role.organization.report_types.sections,role.organization.roles'
 		}, function(success) {
-			$log.log(success);
 
 			user.fullName = success.data.attributes.full_name;
 			user.image = success.data.attributes.image;
 			user.type = success.data.type;
+			user.is_superuser = success.data.attributes.is_superuser;
 
 			for (var i = 0; i < success.included.length; i++) {
 				if (success.included[i].type === 'organizations') 
@@ -137,6 +137,9 @@ angular.module('efindingAdminApp')
 	};
 
 	var getMenu = function() {
+
+		var defered = $q.defer();
+		var promise = defered.promise;
 		menu = [];
 
 		MenuSections.query({
@@ -171,15 +174,33 @@ angular.module('efindingAdminApp')
 				Utils.setInStorage('menu', menu);
 				$scope.page.menu = menu;
 				$scope.page.menuLoaded = true;
+
+				defered.resolve({
+					success: true,
+					detail: 'OK',
+					data: menu
+				});
 			} else {
 				$log.error(success);
+				defered.reject({
+					success: false,
+					detail: error,
+					data: ''
+				});
 			}
 		}, function(error) {
 			$log.error();
+			defered.reject({
+				success: false,
+				detail: error,
+				data: ''
+			});
 			if (error.status === 401) {
         		Utils.refreshToken(getMenu);
       		}
 		});
+
+		return promise;
 
 	};
 
@@ -192,17 +213,9 @@ angular.module('efindingAdminApp')
 		TableColumns.query({
 			type: Utils.getInStorage('collection_name')
 		}, function(success) {
-
-			$log.log(success);
-
 			columns.reportColumns = [];
 
 			for (i = 0; i < success.data.length; i++) {
-				/*
-					title: Titulo de la columna
-					field: Se utiliza para ir a ese dato en especifico
-					field: para filtrar en servicio
-				*/
 				columns.reportColumns.push({
 					title: success.data[i].attributes.column_name,
 					field: success.data[i].attributes.field_name,

@@ -641,6 +641,26 @@ angular.module('efindingAdminApp')
 
 })
 
+/// DASHBOARDInspections
+.factory('DashboardInspections', function($resource) {
+
+	return $resource(API_URL + '/pitagora/dashboards/inspections', {
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: '@include',
+				fieldsReports: '@fieldsReports',
+			}
+		}
+	});
+
+})
+
 /// COLLECTIONS
 .factory('Collection', function($resource) {
 
@@ -781,6 +801,59 @@ angular.module('efindingAdminApp')
 				Accept: 'application/vnd.api+json'
 			}
 		},
+	});
+
+})
+
+
+/// Accident_Rates
+.factory('Accidents', function($resource) {
+
+	return $resource(API_URL + '/accident_rates/:accidentId', {
+		accidentId: '@accidentId'
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: 'construction',
+				'fields[constructions]': 'id,name'
+			}
+		},
+		detail: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: 'construction',
+				'fields[constructions]': 'id,name'
+			}
+		},
+		save: {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		update: {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			}
+		},
+		delete: {
+			method: 'DELETE',
+			headers: {
+				Accept: 'application/vnd.api+json'
+			}
+		}
 	});
 
 })

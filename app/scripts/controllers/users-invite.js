@@ -19,7 +19,8 @@ angular.module('efindingAdminApp')
 				email: '',
 				index: 0,
 				roleId: null,
-				showIcon: false
+				showIcon: false,
+				is_superuser: false,
 			}]
 		},
 		csvFile: null,
@@ -29,16 +30,12 @@ angular.module('efindingAdminApp')
 			color: ''
 		}
 	};
+
+	$scope.is_superuser = Utils.getInStorage('is_superuser');
 	$scope.roles = [];
 	$scope.responseInvitations = [];
 
 	var getRoles = function(e) {
-		// Valida si el parametro e.success se seteó true para el refresh token
-		if (!e.success) {
-			$log.error(e.detail);
-			return;
-		}
-
 		$scope.roles = [];
 
 		Roles.query({
@@ -67,10 +64,7 @@ angular.module('efindingAdminApp')
 
 	};
 
-	getRoles({
-		success: true,
-		detail: 'OK'
-	});
+	getRoles();
 
 	$scope.validateMailAndRol = function(index) {
 
@@ -80,58 +74,22 @@ angular.module('efindingAdminApp')
 	};
 
 	$scope.invite = function() {
-
-		if ($scope.page.csvFile) {
-			uploadCsvInvitation();
-		} else {
-			sendInvitations();
-		}
-
+		sendInvitations();
 	};
-
-	var uploadCsvInvitation = function() {
-
-		// $log.log($scope.page.csvFile);
-
-		var form = [{
-			field: 'type',
-			value: 'invitations'
-		}, {
-			field: 'csv',
-			value: $scope.page.csvFile
-		}];
-
-		var csvFile = $scope.page.csvFile;
-
-		Csv.upload(form)
-			.success(function(success) {
-				$log.log(success);
-				openModalSummary(success);
-			}).error(function(error) {
-				$log.error(error);
-				$scope.page.msg.color = 'danger';
-				$scope.page.msg.show = true;
-				$scope.page.msg.text = 'Error '+ error.errors[0].status + ' - ' + error.errors[0].detail;
-				//openModalSummary(error);
-			});
-
-	};
-
 	$scope.sendInvitations = function() {
-
+		
 		$scope.responseInvitations = [];
 		$scope.page.msg.color = 'orange-ps';
 		$scope.page.msg.show = true;
 		$scope.page.msg.text = 'Se han enviado las invitaciones a:';
-		/* jshint ignore:start */
 		for (var i = 0; i < $scope.page.formGroups.invite.length; i++) {
-			//$log.error($scope.page.formGroups.invite[i].roleId);
 			Invitations.save({
 				"data": {
 					"type": "invitations",
 					"attributes": {
 						"role_id": $scope.page.formGroups.invite[i].roleId,
-						"email": $scope.page.formGroups.invite[i].email
+						"email": $scope.page.formGroups.invite[i].email,
+						"is_superuser": $scope.page.formGroups.invite[i].is_superuser
 					}
 				}
 			}, function(success) {
@@ -166,8 +124,6 @@ angular.module('efindingAdminApp')
 
 			});
 		}
-		/* jshint ignore:end */
-
 		clearFormGroups();
 	};
 

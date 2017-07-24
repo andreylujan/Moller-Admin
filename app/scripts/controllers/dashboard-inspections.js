@@ -8,7 +8,8 @@
  * Controller of the efindingAdminApp
  */
  angular.module('efindingAdminApp')
- .controller('InspectionsDashboardCtrl', function($scope, $filter, $log, $moment, Utils, NgTableParams, Dashboard, Companies, Constructions, Users, NgMap) {
+ .controller('InspectionsDashboardCtrl', function($scope, $filter, $log, $moment, Utils, 
+ 	 									Companies, Constructions, DashboardInspections) {
  	
  	$scope.page = {
  		title: 'Inspecciones',
@@ -37,100 +38,42 @@
  		}
  	};
 
-
- 	$scope.open = function($event) {
-      $event.preventDefault();
-      $event.stopPropagation();
-      $scope.page.filters.date.opened = true;
-    };
-
-    var getCompanies = function() {
- 		$scope.page.filters.companies.list = [];
-
- 		Companies.query({}, function(success) {
- 			if (success.data) {
- 				$scope.page.filters.companies.list.push({
- 					id: '',
- 					name: 'Todas las Empresas',
- 					companiesIds: []
- 				});
-
- 				angular.forEach(success.data, function(value, key) {
- 					$scope.page.filters.companies.list.push({
- 						id: parseInt(value.id),
- 						name: value.attributes.name,
- 						dealersIds: value.attributes.dealer_ids
- 					});
- 				});
-
- 				$scope.page.filters.companies.selected = $scope.page.filters.companies.list[0];
- 				$scope.getConstructions($scope.page.filters.companies.selected);
- 				$scope.page.filters.constructions.disabled = true;
-
- 			} else {
- 				$log.error(success);
- 			}
- 		}, function(error) {
- 			$log.error(error);
- 			if (error.status === 401) {
- 				Utils.refreshToken(getCompanies);
- 			}
- 		});
+ 	$scope.dashboard = 
+ 	{
+ 		cantHallazgosGlobales: 0,
+ 		cantHallazgosGlobalesAltoTotal: 0,
+ 		cantHallazgosGlobalesMedioTotal: 0,
+ 		cantHallazgosGlobalesBajoTotal: 0,
  	};
 
- 	$scope.getConstructions = function(companySelected) {
 
- 		$scope.page.filters.constructions.selected = [];
- 		$scope.page.filters.constructions.list = [];
- 		Constructions.query({
- 			'filter[company_id]': companySelected.id
+	$scope.getDashboardInfo = function() {
+ 		DashboardInspections.query({
  		}, function(success) {
- 			if (success.data) {
+		    if (success.data) {
+		    	angular.forEach(success.data.attributes.reportes_por_grupo.grados_riesgo, function(grados)
+		    	{
+		    		angular.forEach(grados.data, function(data)
+		    		{	
+		    			if (grados.name == 'Alto') 
+		    			{
+		    				$scope.dashboard.cantHallazgosGlobalesAltoTotal = $scope.dashboard.cantHallazgosGlobalesAltoTotal + data; 
+		    			}
+		    			if (grados.name == 'Medio') 
+		    			{
+		    				$scope.dashboard.cantHallazgosGlobalesMedioTotal = $scope.dashboard.cantHallazgosGlobalesMedioTotal + data; 
+		    			}
+		    		 	if (grados.name == 'Bajo') 
+		    			{
+		    				$scope.dashboard.cantHallazgosGlobalesBajoTotal = $scope.dashboard.cantHallazgosGlobalesBajoTotal + data; 
+		    			}
 
- 				$scope.page.filters.constructions.list.push({
- 					id: '',
- 					name: 'Todas las obras'
- 				});
+		    			$scope.dashboard.cantHallazgosGlobales = $scope.dashboard.cantHallazgosGlobales + data;
+		    		});
+		    	});
 
- 				for (var i = 0; i < success.data.length; i++) {
- 					$scope.page.filters.constructions.list.push({
- 						id: parseInt(success.data[i].id),
- 						name: $filter('capitalize')(success.data[i].attributes.name, true),
- 						type: 'dealers'
- 					});
- 				}
-
- 				$scope.page.filters.constructions.selected = $scope.page.filters.constructions.list[0];
- 				$scope.page.filters.constructions.disabled = false;
- 				$scope.page.filters.constructions.loaded = true;
-
- 			} else {
- 				$scope.page.filters.constructions.disabled = true;
- 				$log.error(success);
- 			}
- 		}, function(error) {
- 			$scope.page.filters.constructions.disabled = true;
- 			$log.error(error);
- 			if (error.status === 401) {
- 				Utils.refreshToken($scope.getConstructions);
- 			}
- 		});
- 	};
- 	getCompanies();
-
-
- 	$scope.$watch('page.filters.constructions.loaded', function() {
-		if ($scope.page.filters.constructions.loaded) {
-			$scope.$watch('page.filters.date.value', function() {
-				$log.error('YO DEBO LLAMAR AL SERVICIO');
-			});
-		}
-	});
-
-
- 	///COMIENZAN LOS CHARTS
-
- 	$scope.cantidadHallazgos = Utils.setChartConfig(
+		    	//GRAFICO 1
+		    	$scope.cantidadHallazgos = Utils.setChartConfig(
  								'column', 
  								null, 
  								{
@@ -143,41 +86,18 @@
 	    						{
 						        	min: 0,
 						        	title: {
-						            	text: 'Rainfall (mm)'
+						            	text: 'Hallazgos'
 						        	}
 						    	}, 
 	    						{
-							        categories: [
-							            'Jan',
-							            'Feb',
-							            'Mar',
-							            'Apr',
-							            'May',
-							            'Jun',
-							            'Jul',
-							            'Aug',
-							            'Sep',
-							            'Oct',
-							            'Nov',
-							            'Dec'
-							        ],
+							        categories: success.data.attributes.reportes_por_grupo.grupos_actividad,
 							        crosshair: true
 							    }, 
-	    						[   
-	    							{
-							        	name: 'Bajo',
-							        	data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
-							    	}, {
-							        	name: 'Medio',
-							        	data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5, 105.0, 104.3, 91.2, 83.5, 106.6, 92.3]
-							    	}, {     
-						    			name: 'Alto',
-						        		data: [48.9, 38.8, 39.3, 41.4, 47.0, 48.3, 59.0, 59.6, 52.4, 65.2, 59.3, 51.2]
-						    		}
-    							]
+							    success.data.attributes.reportes_por_grupo.grados_riesgo
 	    					);
 
- 	$scope.cantidadHallazgosDonut = Utils.setChartConfig(
+		    	//Grafico 2
+		    	$scope.cantidadHallazgosDonut = Utils.setChartConfig(
  								'pie', 
  								200, 
  								{
@@ -199,18 +119,28 @@
 								        innerSize: '80%',
 								        data: [{
 								            name: 'Bajo',
-								            y: 20
+								            y: $scope.dashboard.cantHallazgosGlobalesBajoTotal
 								        }, {
 								            name: 'Medio',
-								            y: 20,
+								            y: $scope.dashboard.cantHallazgosGlobalesMedioTotal,
 								        }, {
 								            name: 'Alto',
-								            y: 60
+								            y: $scope.dashboard.cantHallazgosGlobalesAltoTotal
 								        }]
 							    	}
 							    ]
 	    					);
+		    	
+    		}
+		}, function(error) {
+			$log.error(error);
+			if (error.status === 401) {
+				Utils.refreshToken($scope.getDashboardInfo);
 
+
+			}
+		});
+	};
 
  	$scope.cumplimientoHallazgosDonut = Utils.setChartConfig(
  								'pie', 
@@ -364,4 +294,95 @@
 							    	}
 							    ]
 	    					);
+
+
+
+ 	$scope.open = function($event) {
+      $event.preventDefault();
+      $event.stopPropagation();
+      $scope.page.filters.date.opened = true;
+    };
+
+    var getCompanies = function() {
+ 		$scope.page.filters.companies.list = [];
+
+ 		Companies.query({}, function(success) {
+ 			if (success.data) {
+ 				$scope.page.filters.companies.list.push({
+ 					id: '',
+ 					name: 'Todas las Empresas',
+ 					companiesIds: []
+ 				});
+
+ 				angular.forEach(success.data, function(value, key) {
+ 					$scope.page.filters.companies.list.push({
+ 						id: parseInt(value.id),
+ 						name: value.attributes.name,
+ 						dealersIds: value.attributes.dealer_ids
+ 					});
+ 				});
+
+ 				$scope.page.filters.companies.selected = $scope.page.filters.companies.list[0];
+ 				$scope.getConstructions($scope.page.filters.companies.selected);
+ 				$scope.page.filters.constructions.disabled = true;
+
+ 			} else {
+ 				$log.error(success);
+ 			}
+ 		}, function(error) {
+ 			$log.error(error);
+ 			if (error.status === 401) {
+ 				Utils.refreshToken(getCompanies);
+ 			}
+ 		});
+ 	};
+
+ 	$scope.getConstructions = function(companySelected) {
+
+ 		$scope.page.filters.constructions.selected = [];
+ 		$scope.page.filters.constructions.list = [];
+ 		Constructions.query({
+ 			'filter[company_id]': companySelected.id
+ 		}, function(success) {
+ 			if (success.data) {
+
+ 				$scope.page.filters.constructions.list.push({
+ 					id: '',
+ 					name: 'Todas las obras'
+ 				});
+
+ 				for (var i = 0; i < success.data.length; i++) {
+ 					$scope.page.filters.constructions.list.push({
+ 						id: parseInt(success.data[i].id),
+ 						name: $filter('capitalize')(success.data[i].attributes.name, true),
+ 						type: 'dealers'
+ 					});
+ 				}
+
+ 				$scope.page.filters.constructions.selected = $scope.page.filters.constructions.list[0];
+ 				$scope.page.filters.constructions.disabled = false;
+ 				$scope.page.filters.constructions.loaded = true;
+
+ 			} else {
+ 				$scope.page.filters.constructions.disabled = true;
+ 				$log.error(success);
+ 			}
+ 		}, function(error) {
+ 			$scope.page.filters.constructions.disabled = true;
+ 			$log.error(error);
+ 			if (error.status === 401) {
+ 				Utils.refreshToken($scope.getConstructions);
+ 			}
+ 		});
+ 	};
+ 	getCompanies();
+
+
+ 	$scope.$watch('page.filters.constructions.loaded', function() {
+		if ($scope.page.filters.constructions.loaded) {
+			$scope.$watch('page.filters.date.value', function() {
+				$scope.getDashboardInfo();
+			});
+		}
+	});
 });

@@ -89,40 +89,48 @@
     <div class="modal-body text-gray">
       <div class="alert alert-{{elements.alert.color}}" ng-show="elements.alert.show"> <h4 class="text-md"><strong>{{elements.alert.title}}</strong></h4> {{elements.alert.text}} </div>
       <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-4">
           <img class="img-responsive" ng-src="{{user.image}}" alt="profile-pic">
         </div>
-        <div class="col-md-7">
+        <div class="col-md-8">
           <form name="form" class="form-validation form-horizontal" role="form" novalidate>
             <div class="form-group">
-              <label for="userFirstName" class="col-sm-3 control-label">Nombre</label>
+              <label for="userFirstName" class="col-md-4 control-label">Nombre</label>
               <div class="col-md-8">
                 <input type="text" id="userFirstName" class="form-control underline-input" placeholder="Nombre de usuario..." ng-model="user.firstName.text" ng-disabled="user.firstName.disabled" ng-change="hideAlert()" required>
               </div>
             </div>
             <div class="form-group">
-              <label for="userLastName" class="col-sm-3 control-label">Apellido</label>
+              <label for="userLastName" class="col-md-4 control-label">Apellido</label>
               <div class="col-md-8">
                 <input type="text" id="userLastName" class="form-control underline-input" placeholder="Apellido de usuario..." ng-model="user.lastName.text" ng-disabled="user.lastName.disabled" ng-change="hideAlert()" required>
               </div>
             </div>
             <div class="form-group">
-              <label for="userEmail" class="col-sm-3 control-label">Email</label>
+              <label for="userEmail" class="col-md-4 control-label">Email</label>
               <div class="col-md-8">
                 <input type="text" id="userEmail" class="form-control underline-input" placeholder="Email de usuario..." ng-model="user.email.text" ng-disabled="user.email.disabled" required>
               </div>
             </div>
             <div class="form-group">
-              <label for="userEmail" class="col-sm-3 control-label">Rut</label>
+              <label for="userEmail" class="col-md-4 control-label">Rut</label>
               <div class="col-md-8">
                 <input type="text" id="userRut" class="form-control underline-input" placeholder="Rut del usuario..." ng-model="user.rut.text" ng-disabled="user.rut.disabled" ng-blur="formatRut(user.rut.text)" required>
               </div>
             </div>
             <div class="form-group">
-              <label for="userRole" class="col-sm-3 control-label">Rol</label>
+              <label for="userRole" class="col-md-4 control-label">Rol</label>
               <div class="col-md-8">
                 <label class="checkbox checkbox-custom-alt" id="userRole" ng-repeat="role in roles">
                   <input type="radio" value="{{role.id}}" name="{{role.index}}" ng-model="user.role.id" ng-disabled="user.role.disabled" ng-change="hideAlert()" required><i></i> {{role.name}}
+                </label>
+              </div>
+            </div>
+            <div class="form-group" ng-show="is_superuser">
+              <label for="userEmail" class="col-md-4 control-label">Superusuario</label>
+              <div class="col-md-8">
+                <label class="checkbox checkbox-custom-alt">
+                  <input type="checkbox" style="margin-left: 0px" ng-model="user.is_superuser.value" ng-disabled="user.is_superuser.disabled" >
                 </label>
               </div>
             </div>

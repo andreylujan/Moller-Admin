@@ -173,8 +173,15 @@ angular.module('efindingAdminApp')
 		phoneNumber: {
 			text: '',
 			disabled: true
+		},
+		is_superuser: {
+			value: false,
+			disabled: true
 		}
 	};
+
+	$scope.is_superuser = Utils.getInStorage('is_superuser');
+
 	$scope.roles = [];
 	$scope.elements = {
 		buttons: {
@@ -215,14 +222,15 @@ angular.module('efindingAdminApp')
 
 				$scope.elements.title = success.data.attributes.first_name + ' ' + success.data.attributes.last_name;
 
-				$scope.user.id = success.data.id;
-				$scope.user.firstName.text = success.data.attributes.first_name;
-				$scope.user.lastName.text = success.data.attributes.last_name;
-				$scope.user.email.text = success.data.attributes.email;
-				$scope.user.role.id = success.data.attributes.role_id;
-				$scope.user.role.text = success.data.attributes.role_name;
-				$scope.user.phoneNumber.text = success.data.attributes.phone_number;
-				$scope.user.rut.text = success.data.attributes.rut;
+				$scope.user.id 					= success.data.id;
+				$scope.user.firstName.text 		= success.data.attributes.first_name;
+				$scope.user.lastName.text 		= success.data.attributes.last_name;
+				$scope.user.email.text 			= success.data.attributes.email;
+				$scope.user.role.id 			= success.data.attributes.role_id;
+				$scope.user.role.text 			= success.data.attributes.role_name;
+				$scope.user.phoneNumber.text 	= success.data.attributes.phone_number;
+				$scope.user.rut.text 			= success.data.attributes.rut;
+				$scope.user.is_superuser.value 	= success.data.attributes.is_superuser;
 
 				if (success.data.attributes.image) {
 					$scope.user.image = success.data.attributes.image;
@@ -306,7 +314,8 @@ angular.module('efindingAdminApp')
 						first_name: $scope.user.firstName.text,
 						last_name: $scope.user.lastName.text,
 						role_id: $scope.user.role.id,
-						rut: $scope.user.rut.text
+						rut: $scope.user.rut.text,
+						is_superuser: $scope.user.is_superuser.value
 					}
 				},
 				idUser: idUser
@@ -401,6 +410,7 @@ angular.module('efindingAdminApp')
 		$scope.user.rut.disabled = false;
 		$scope.user.phoneNumber.disabled = false;
 		$scope.user.role.disabled = false;
+		$scope.user.is_superuser.disabled = false; 
 	};
 
 	var disableFormInputs = function() {
@@ -409,6 +419,7 @@ angular.module('efindingAdminApp')
 		$scope.user.rut.disabled = true;
 		$scope.user.phoneNumber.disabled = true;
 		$scope.user.role.disabled = true;
+		$scope.user.is_superuser.disabled = true; 
 	};
 
 	$scope.hideAlert = function() {

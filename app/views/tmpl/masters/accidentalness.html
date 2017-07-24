@@ -1,0 +1,261 @@
+<div class="page">
+	<div class="pageheader">
+		<h2>{{page.title}} <span></span></h2>
+		<div class="page-bar">
+
+			<ul class="page-breadcrumb">
+				<li>
+          			<a ui-sref="efinding.dashboard.generic"> {{main.title}}</a>
+        		</li>
+				<li>
+					<a href="javascript:;">Maestros</a>
+				</li>
+				<li>
+					<a>{{page.title}}</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="pagecontent">
+		<div class="row">
+			<div class="col-md-12">
+				<section class="tile" fullscreen="isFullscreen06">
+					<div class="tile-body">
+						<div class="row">
+							<div class="col-md-1">
+								<button class="btn btn-default" ng-click="openModalNewAccidentalness()">Nueva</button>
+							</div>
+							<!--div class="col-md-1">
+								<a id="downloadExcel" ng-click="getExcel({success:true,detail:'OK'})" uib-tooltip="Descargar Excel">
+									<img src="https://s3-sa-east-1.amazonaws.com/efinding/icons/abajo.png">
+								</a>
+							</div>
+							<div class="col-md-1">
+								<a id="downloadExcel" ng-click="openModalNewGeneric()" uib-tooltip="Carga Masiva">
+									<img src="https://s3-sa-east-1.amazonaws.com/efinding/icons/arriba.png">
+								</a>
+							</div-->
+						</div>
+						<table ng-table="tableParams" show-filter="true" class="table table-custom">
+							<tr ng-repeat="object in $data">
+								<td data-title="'Obra'" sortable="'obra'" filter="{ 'obra': 'text' }">
+									{{object.obra}}
+								</td>
+								<td data-title="'Mes'" sortable="'mes'" filter="{ 'mes': 'text' }">
+									{{object.mes}}
+								</td>
+								<td data-title="'Año'" sortable="'ano'" filter="{ 'ano': 'text' }">
+									{{object.ano}}
+								</td>
+								<td data-title="'Info'">
+                  					<img ng-click="openModalObjectDetails(object.id)" src="https://s3-sa-east-1.amazonaws.com/efinding/icons/USUARIOS_INFO.png" style="width:24px; cursor:pointer" tooltip="Más info">
+                				</td>
+							</tr>
+						</table>
+					</div>
+				</section>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/ng-template" id="accidentallnessDetail.html">
+    	<div class="modal-header text-gray">
+     		<h3 class="text-center">{{elements.title}}</h3>
+    	</div>
+    	<div class="modal-body text-gray">
+      		<div class="alert alert-{{elements.alert.color}}" ng-show="elements.alert.show"> <h4 class="text-md"><strong>{{elements.alert.title}}</strong></h4> {{elements.alert.text}} </div>
+      		<div class="row">
+        		<div class="col-md-11">
+          			<form name="form" class="form-validation form-horizontal" role="form" novalidate>
+			            <div class="form-group">
+			              	<label class="col-sm-3 control-label">Obra</label>
+			              	<div class="col-md-8">
+			                	<input type="text" class="form-control underline-input" ng-model="accidentalness.obra.text" readonly>
+			              	</div>
+			            </div>
+			            <div class="form-group">
+			              	<label class="col-sm-3 control-label">Fecha</label>
+			              	<div class="col-md-8">
+			                	<input type="text"  class="form-control underline-input" ng-model="accidentalness.fecha.text" readonly>
+			              	</div>
+			            </div>
+			            <div class="form-group">
+			              	<label class="col-sm-3 control-label">Promedio trabajadores</label>
+			              	<div class="col-md-8">
+			                	<input type="number" min="0" id="name" class="form-control underline-input" placeholder="Promedio trabajadores" ng-model="accidentalness.trabajadores.text" ng-change="hideAlert()" ng-disabled="accidentalness.trabajadores.disabled">
+			              	</div>
+			            </div>
+			            <div class="form-group">
+					  		<label for="inputPassword3" class="col-sm-3 control-label">H/H</label>
+					  		<div class="col-sm-8">
+					  			<input type="number" min="0" id="name" class="form-control underline-input" placeholder="H/H" ng-model="accidentalness.hh.text" ng-change="hideAlert()" ng-disabled="accidentalness.hh.disabled">
+					  		</div>
+					  	</div>
+			            <div class="form-group">
+					  		<label for="inputPassword3" class="col-sm-3 control-label">Cantidad de accidentes</label>
+					  		<div class="col-sm-8">
+					  			<input type="number" min="0" id="name" class="form-control underline-input" placeholder="Cantidad de accidentes" ng-model="accidentalness.accidentes.text" ng-change="hideAlert()" ng-disabled="accidentalness.accidentes.disabled">
+					  		</div>
+					  	</div>
+					  	<div class="form-group">
+					  		<label for="inputPassword3" class="col-sm-3 control-label">Cantidad días Perdidos</label>
+					  		<div class="col-sm-8">
+					  			<input type="number" min="0" id="name" class="form-control underline-input" placeholder="Cantidad días Perdidos" ng-model="accidentalness.diasPerdidos.text" ng-change="hideAlert()" ng-disabled="accidentalness.diasPerdidos.disabled">
+					  		</div>
+					  	</div>
+			            <div class="form-group">
+			              	<label for="userRole" class="col-sm-3 control-label">Siniestralidad</label>
+			              	<div class="col-md-8">
+				             	<input type="number" min="0" id="name" class="form-control underline-input" placeholder="Siniestralidad" ng-model="accidentalness.siniestralidad.text" ng-change="hideAlert()" ng-disabled="accidentalness.siniestralidad.disabled">
+				            </div>
+			            </div>
+			            <div class="form-group">
+			              	<label for="userRole" class="col-sm-3 control-label">Accidentabilidad</label>
+			              	<div class="col-md-8">
+				             	<input type="number" min="0" id="name" class="form-control underline-input" placeholder="Accidentabilidad" ng-model="accidentalness.accidentabilidad.text" ng-change="hideAlert()" ng-disabled="accidentalness.accidentabilidad.disabled">
+				            </div>
+			            </div>
+			            <div class="form-group">
+			              	<label for="userRole" class="col-sm-3 control-label">Frecuencia</label>
+			              	<div class="col-md-8">
+				             	<input type="text" min="0" id="name" class="form-control underline-input" placeholder="Frecuencia" ng-model="accidentalness.frecuencia.text" ng-change="hideAlert()" readonly>
+				            </div>
+			            </div>
+			            <div class="form-group">
+			              	<label for="userRole" class="col-sm-3 control-label">Gravedad</label>
+			              	<div class="col-md-8">
+				             	<input type="text" min="0" id="name" class="form-control underline-input" placeholder="Gravedad" ng-model="accidentalness.gravedad.text" ng-change="hideAlert()" readonly>
+				            </div>
+			            </div>
+          			</form>
+        		</div>
+      		</div>
+    	</div>
+	    <div class="modal-footer">
+	      	<button class="btn btn-danger btn-rounded-10 {{elements.buttons.removeUser.border}} mb-10" type="button" ng-click="removeGeneric(accidentalness.id)" >{{elements.buttons.removeUser.text}}</button>
+      		<button class="btn btn-warning btn-rounded-10 {{elements.buttons.editUser.border}} mb-10" type="button" ng-click="editGeneric(accidentalness.id)" >{{elements.buttons.editUser.text}}</button>
+      		<button class="btn btn-cancelRecit btn-rounded-10 mb-10" type="button" ng-click="cancel()">Cerrar</button>
+	    </div>
+  	</script>
+
+  	<script type="text/ng-template" id="newAccidentalness.html">
+    	<div class="modal-header text-gray">
+      	<h3 class="text-center">Nueva Accidentabilidad y siniestralidad mensual</h3>
+    	</div>
+    	<div class="modal-body text-gray">
+      		<div class="alert alert-{{elements.alert.color}}" ng-show="elements.alert.show"> <h4 class="text-md"><strong>{{elements.alert.title}}</strong></h4> {{elements.alert.text}} </div>
+      		<div class="row">
+	        	<div class="col-md-11">
+	          		<form name="form" class="form-validation form-horizontal" role="form" novalidate>
+	          			<div class="form-group">
+			              	<label class="col-sm-3 control-label">Empresa</label>
+			              	<div class="col-md-8">
+			                	<ui-select class="gray-ps-3 br-15 b-0" ng-model="companies.selected" close-on-select="true" ng-change="getConstructions(companies.selected)" title="Empresas">
+									<ui-select-match placeholder="Empresa"><span ng-bind="$select.selected.name  | capitalize:true"></span></ui-select-match>
+									<ui-select-choices repeat="company in companies.list | propsFilter: {name: $select.search}">
+										<div ng-bind-html="company.name | highlight: $select.search | capitalize:true"></div>
+									</ui-select-choices>
+								</ui-select>
+			              	</div>
+			            </div>
+			            <div class="form-group">
+			              	<label class="col-sm-3 control-label">Obra</label>
+			              	<div class="col-md-8">
+			                	<ui-select class="gray-ps-3 br-15 b-0" ng-model="constructions.selected" close-on-select="true" title="Obras" required>
+									<ui-select-match placeholder="Obra"><span ng-bind="$select.selected.name  | capitalize:true"></span></ui-select-match>
+									<ui-select-choices repeat="con in constructions.list | propsFilter: {name: $select.search}">
+										<div ng-bind-html="con.name | highlight: $select.search | capitalize:true"></div>
+									</ui-select-choices>
+								</ui-select>
+			              	</div>
+			            </div>
+			            <div class="form-group">
+			              	<label class="col-sm-3 control-label">Fecha</label>
+			              	<div class="col-md-8">
+			                	<p class="input-group">
+									<input type="text" class="form-control" uib-datepicker-popup="MM/yyyy" ng-model="accidentalness.fecha.text" is-open="modal.datepicker.opened" datepicker-options="{minMode: 'month', showButtonBar: false}" readonly />
+									<span class="input-group-btn" required>
+										<button type="button" class="btn btn-default" ng-click="openDatePicker($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+									</span>
+								</p>
+			              	</div>
+			            </div>
+			            <div class="form-group">
+			              	<label class="col-sm-3 control-label">Promedio trabajadores</label>
+			              	<div class="col-md-8">
+			                	<input type="number" min="0" id="name" class="form-control underline-input" placeholder="Promedio trabajadores" ng-model="accidentalness.trabajadores.text" ng-change="hideAlert()" required>
+			              	</div>
+			            </div>
+			            <div class="form-group">
+					  		<label for="inputPassword3" class="col-sm-3 control-label">H/H</label>
+					  		<div class="col-sm-8">
+					  			<input type="number" min="0" id="name" class="form-control underline-input" placeholder="H/H" ng-model="accidentalness.hh.text" ng-change="hideAlert()" required>
+					  		</div>
+					  	</div>
+			            <div class="form-group">
+					  		<label for="inputPassword3" class="col-sm-3 control-label">Cantidad de accidentes</label>
+					  		<div class="col-sm-8">
+					  			<input type="number" min="0" id="name" class="form-control underline-input" placeholder="Cantidad de accidentes" ng-model="accidentalness.accidentes.text" ng-change="hideAlert()" required>
+					  		</div>
+					  	</div>
+					  	<div class="form-group">
+					  		<label for="inputPassword3" class="col-sm-3 control-label">Cantidad días Perdidos</label>
+					  		<div class="col-sm-8">
+					  			<input type="number" min="0" id="name" class="form-control underline-input" placeholder="Cantidad días Perdidos" ng-model="accidentalness.diasPerdidos.text" ng-change="hideAlert()" required>
+					  		</div>
+					  	</div>
+			            <div class="form-group">
+			              	<label for="userRole" class="col-sm-3 control-label">Siniestralidad</label>
+			              	<div class="col-md-8">
+				             	<input type="number" min="0" id="name" class="form-control underline-input" placeholder="Siniestralidad" ng-model="accidentalness.siniestralidad.text" ng-change="hideAlert()" required>
+				            </div>
+			            </div>
+			            <div class="form-group">
+			              	<label for="userRole" class="col-sm-3 control-label">Accidentabilidad</label>
+			              	<div class="col-md-8">
+				             	<input type="number" min="0" id="name" class="form-control underline-input" placeholder="Accidentabilidad" ng-model="accidentalness.accidentabilidad.text" ng-change="hideAlert()" required>
+				            </div>
+			            </div>
+			        </form>
+	        	</div>
+      		</div>
+    	</div>
+    	<div class="modal-footer">
+      		<button class="btn btn-success br-20 pl-20 pr-20" type="submit" ng-click="saveAccidentalness()">Guardar</button>
+	    	<button class="btn btn-default br-20 pl-20 pr-20" type="button" ng-click="cancel()" >Cerrar</button>
+    	</div>
+  	</script>
+
+  	<script type="text/ng-template" id="newAccidentalnessMasive.html">
+
+		<div class="overlay br-30" ng-show="modal.overlay.show">
+			<div style="position:absolute;top: 50%;left:50%;transform: translate(-50%, -50%);">
+				<div>
+					<p><strong>Subiendo el archivo...</strong></p>
+					<p class="text-center">
+					<img src="images/loader.gif" alt="loader" class="size-45x45">
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="modal-header text-gray">
+			<h3 class="text-center">Carga masiva (csv)</h3>
+		</div>
+
+		<div class="modal-body text-gray">
+		<div class="alert alert-{{modal.alert.color}}" ng-show="modal.alert.show"> <h4 class="text-md"><strong>{{modal.alert.title}}</strong></h4> {{modal.alert.text}} </div>
+			<div class="row">
+				<div class="col-md-12">
+					<form name="form" novalidate>
+						<input name="csvFile" type="file" class="form-control rounded" file-model="modal.csvFile" accept=".xls,.xlsx,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" ng-model="modal.csvFile" valid-file required>
+					</form>
+				</div>
+			</div>
+			<hr>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-success br-20 pl-20 pr-20" type="submit" ng-click="save()" ng-disabled="modal.btns.chargeSave.disabled || form.$invalid ">Cargar/Guardar</button>
+			<button class="btn btn-default br-20 pl-20 pr-20" type="button" ng-click="cancel()" >Cerrar</button>
+		</div>
+	</script>
+</div>
