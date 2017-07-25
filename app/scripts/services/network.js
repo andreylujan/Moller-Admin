@@ -391,43 +391,6 @@ angular.module('efindingAdminApp')
 	});
 })
 
-
-// Comapnies
-.factory('Companies', function($resource) {
-
-	return $resource(API_URL + '/companies/:idCompany', {
-		idCompany: '@idCompany'
-	}, {
-		query: {
-			method: 'GET',
-			headers: {
-				Accept: 'application/vnd.api+json'
-			},
-			params: '@include'
-		},
-		save: {
-			method: 'POST',
-			headers: {
-				Accept: 'application/vnd.api+json',
-				'Content-Type': 'application/vnd.api+json'
-			}
-		},
-		delete: {
-			method: 'DELETE',
-			headers: {
-				Accept: 'application/vnd.api+json'
-			}
-		},
-		update: {
-			method: 'PUT',
-			headers: {
-				Accept: 'application/vnd.api+json',
-				'Content-Type': 'application/vnd.api+json'
-			},
-		}
-	});
-})
-
 /// Constructions
 .factory('Constructions', function($resource) {
 
@@ -488,6 +451,9 @@ angular.module('efindingAdminApp')
 			headers: {
 				'Content-Type': 'application/vnd.api+json',
 				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				all: 'true'
 			}
 		},
 		detail: {
@@ -645,6 +611,46 @@ angular.module('efindingAdminApp')
 .factory('DashboardInspections', function($resource) {
 
 	return $resource(API_URL + '/pitagora/dashboards/inspections', {
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: '@include',
+				fieldsReports: '@fieldsReports',
+			}
+		}
+	});
+
+})
+
+/// DASHBOARDAccidentalness
+.factory('DashboardAccidentalness', function($resource) {
+
+	return $resource(API_URL + '/pitagora/dashboards/accident_rates', {
+	}, {
+		query: {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/vnd.api+json',
+				Accept: 'application/vnd.api+json'
+			},
+			params: {
+				include: '@include',
+				fieldsReports: '@fieldsReports',
+			}
+		}
+	});
+
+})
+
+/// DASHBOARDChecklist
+.factory('DashboardChecklist', function($resource) {
+
+	return $resource(API_URL + '/pitagora/dashboards/checklists', {
 	}, {
 		query: {
 			method: 'GET',
@@ -909,6 +915,38 @@ angular.module('efindingAdminApp')
 			var downloadLink = angular.element(elem);
 			downloadLink.attr('href', API_URL + '/constructions/construction_personnel.csv?access_token=' + $auth.getToken());
 			downloadLink.attr('download', fileName + '.csv');
+		}
+	};
+
+})
+
+.factory('ExcelAccidentalness', function($auth) {
+	return {
+		getFile: function(elem, fileName) {
+			var downloadLink = angular.element(elem);
+			downloadLink.attr('href', API_URL + '/accident_rates/csv?access_token=' + $auth.getToken());
+			downloadLink.attr('download', fileName + '.csv');
+		}
+	};
+
+})
+
+// CSV
+.service('CsvAccidentalness', function($resource, $http, $log) {
+	var fd = new FormData();
+	return {
+		upload: function(form) {
+
+			for (var i = 0; i < form.length; i++) {
+				fd.append(form[i].field, form[i].value);
+			}
+
+			return $http.post(API_URL + '/accident_rates/csv', fd, {
+				transformRequest: angular.identity,
+				headers: {
+					'Content-Type': undefined
+				}
+			});
 		}
 	};
 

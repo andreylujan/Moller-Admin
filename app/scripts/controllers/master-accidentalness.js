@@ -10,7 +10,7 @@
 angular.module('efindingAdminApp')
 
 .controller('MastersAccidentalnessCtrl', function($scope, $log, $timeout, $state, $uibModal, NgTableParams,
-												 $filter, Utils, Accidents) {
+												 $filter, Utils, Accidents, ExcelAccidentalness) {
 
 	$scope.page = {
 		title: 'Accidentabilidad y siniestralidad mensual'
@@ -19,7 +19,7 @@ angular.module('efindingAdminApp')
 
 	var auxiliar = {};
 
-	$scope.getAccidentalness = function(e) {
+	$scope.getAccidentalness = function() {
 
  		Accidents.query({
  		}, function(success) {
@@ -89,17 +89,13 @@ angular.module('efindingAdminApp')
 		}, function() {});
 	};
 
-	/*$scope.getExcel = function(e) {
-		if (!e.success) {
-			$log.error(e.detail);
-			return;
-		}
-		ExcelConstruction.getFile('#downloadExcel', 'construction_personel');
+	$scope.getExcel = function(e) {
+		ExcelAccidentalness.getFile('#downloadExcel', 'accident_rates');
 		$timeout(function() {
 		}, 3000);
-	};*/
+	};
 
-	/*$scope.openModalNewGeneric = function() {
+	$scope.openModalNewGeneric = function() {
 		var modalInstance = $uibModal.open({
 			animation: true,
 			backdrop: false,
@@ -110,9 +106,9 @@ angular.module('efindingAdminApp')
 		});
 
 		modalInstance.result.then(function() {
-			$scope.getConstructions();
+			$scope.getAccidentalness();
 		}, function() {});
-	};*/
+	};
 
 	$scope.openModalNewAccidentalness = function() {
 
@@ -635,7 +631,8 @@ angular.module('efindingAdminApp')
 
 })
 
-.controller('newAccidentalnessMasiveinstance', function($scope, Utils, $log, $uibModalInstance, $uibModal, CsvContructions) {
+.controller('newAccidentalnessMasiveinstance', function($scope, Utils, $log, $uibModalInstance, $uibModal, 
+														CsvAccidentalness) {
 	$scope.modal = {
 		csvFile: null,
 		btns: {
@@ -667,7 +664,7 @@ angular.module('efindingAdminApp')
 
 	};
 
-	/*var uploadCsv = function() {
+	var uploadCsv = function() {
 		var form = [{
 			field: 'csv',
 			value: $scope.modal.csvFile
@@ -675,7 +672,7 @@ angular.module('efindingAdminApp')
 
 		$scope.modal.overlay.show = true;
 
-		CsvContructions.upload(form)
+		CsvAccidentalness.upload(form)
 			.success(function(success) {
 				$scope.modal.overlay.show = false;
 				$uibModalInstance.close();
@@ -689,13 +686,13 @@ angular.module('efindingAdminApp')
 				$scope.modal.alert.color = 'danger';
 			});
 
-	};*/
+	};
 
-	/*var openModalSummary = function(data) {
+	var openModalSummary = function(data) {
 		var modalInstance = $uibModal.open({
 			animation: true,
 			templateUrl: 'summary.html',
-			controller: 'SummaryLoadModalInstance',
+			controller: 'SummaryAccidentalnessInstance',
 			resolve: {
 				data: function() {
 					return data;
@@ -706,7 +703,7 @@ angular.module('efindingAdminApp')
 		modalInstance.result.then(function() {}, function() {
 			// $scope.getUsers();
 		});
-	};*/
+	};
 
 	$scope.cancel = function() {
 		$uibModalInstance.dismiss('cancel');
@@ -716,5 +713,42 @@ angular.module('efindingAdminApp')
 		$uibModalInstance.close();
 	};
 
+
+})
+
+.controller('SummaryAccidentalnessInstance', function($scope, $log, $uibModalInstance, data) {
+
+	$scope.modal = {
+		countErrors: 0,
+		countSuccesses: 0,
+		countCreated: 0,
+		countChanged: 0,
+		errors: [],
+		successes: []
+	};
+	var i = 0;
+
+	for (i = 0; i < data.data.length; i++) {
+
+		if (!data.data[i].meta.success) {
+			$scope.modal.countErrors++;
+		} else if (data.data[i].meta.created) {
+			$scope.modal.countCreated++;
+		} else if (data.data[i].meta.changed) {
+			$scope.modal.countChanged++;
+		}
+
+		if (data.data[i].meta.errors) {
+			$scope.modal.errors.push({
+				rowNumber: data.data[i].meta.row_number,
+				field: Object.keys(data.data[i].meta.errors)[0]
+			});
+		}
+
+	}
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');
+	};
 
 });

@@ -25,8 +25,8 @@
 							<div class="col-md-1">
 								<button class="btn btn-default" ng-click="openModalNewAccidentalness()">Nueva</button>
 							</div>
-							<!--div class="col-md-1">
-								<a id="downloadExcel" ng-click="getExcel({success:true,detail:'OK'})" uib-tooltip="Descargar Excel">
+							<div class="col-md-1" ng-click="getExcel()">
+								<a id="downloadExcel" uib-tooltip="Descargar Excel">
 									<img src="https://s3-sa-east-1.amazonaws.com/efinding/icons/abajo.png">
 								</a>
 							</div>
@@ -34,7 +34,7 @@
 								<a id="downloadExcel" ng-click="openModalNewGeneric()" uib-tooltip="Carga Masiva">
 									<img src="https://s3-sa-east-1.amazonaws.com/efinding/icons/arriba.png">
 								</a>
-							</div-->
+							</div>
 						</div>
 						<table ng-table="tableParams" show-filter="true" class="table table-custom">
 							<tr ng-repeat="object in $data">
@@ -257,5 +257,45 @@
 			<button class="btn btn-success br-20 pl-20 pr-20" type="submit" ng-click="save()" ng-disabled="modal.btns.chargeSave.disabled || form.$invalid ">Cargar/Guardar</button>
 			<button class="btn btn-default br-20 pl-20 pr-20" type="button" ng-click="cancel()" >Cerrar</button>
 		</div>
+	</script>
+
+	<script type="text/ng-template" id="summary.html">
+
+		<div class="modal-header text-gray">
+			<h3 class="text-center">Resumen</h3>
+		</div>
+
+		<div class="modal-body">
+
+			<ul>
+
+				<li>
+					<ng-pluralize count="modal.countCreated" when="{'0': 'No se ingresaron Accidentabilidad/Siniestralidad nuevos','one': '{} equipo se ingresó','other': '{} se ingresaron'}"></ng-pluralize>
+				</li>
+				<li>
+					<ng-pluralize count="modal.countChanged" when="{'0': 'No se actualizó ningún Accidentabilidad/Siniestralidad','one': '{} Accidentabilidad/Siniestralidad se actualizó','other': '{} se actualizaron'}"></ng-pluralize>
+				</li>
+				<li>
+					<ng-pluralize count="modal.countErrors" when="{'0': 'Ningún Accidentabilidad/Siniestralidad produjo error','one': '{} Accidentabilidad/Siniestralidad NO se ingresó','other': '{} NO se ingresaron'}"></ng-pluralize>
+				</li>
+			</ul>
+
+			<div ng-show="modal.errors.length">
+
+				<h4 class="text-center mb-20">Errores</h4>
+				<ul ng-repeat="error in modal.errors">
+					<li>
+						<p>Error en la fila {{error.rowNumber}}</p>
+						<p>Revise el campo <strong>{{error.field}}</strong></p>
+					</li>
+				</ul>
+			</div>
+
+		</div>
+
+		<div class="modal-footer">
+			<button class="btn btn-default btn-rounded-10 mb-10" type="button" ng-click="cancel()">Cerrar</button>
+		</div>
+
 	</script>
 </div>

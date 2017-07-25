@@ -44,52 +44,16 @@
 	            	<div class="row">
 	            		<section class="tile tile-simple">
 				          	<div class="tile-body text-center">
-				            	<h1 class="m-0" style="color: orange; font-size: 500%;"><b>25%</b></h1>
+				            	<h1 class="m-0" style="color: orange; font-size: 500%;"><b>{{dashboard.promedioCumplimiento}}%</b></h1>
 					            <span class="text" style="font-size: 150%;"><b>Cumplimiento Global</b></span>
 				          	</div>
 				          	<div class="col-md-12">
 						        <section class="tile tile-simple">
 						          <div class="tile-body p-0">
 						            <div class="list-group no-radius no-border">
-						              <a class="list-group-item">
-						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
-				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
-						              </a>
-						              <a class="list-group-item">
-						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
-				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
-						              </a>
-						              <a class="list-group-item">
-						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
-				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
-						              </a>
-						              <a class="list-group-item">
-						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
-				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
-						              </a>
-						              <a class="list-group-item">
-						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
-				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
-						              </a>
-						              <a class="list-group-item">
-						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
-				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
-						              </a>
-						              <a class="list-group-item">
-						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
-				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
-						              </a>
-						              <a class="list-group-item">
-						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
-				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
-						              </a>
-						              <a class="list-group-item">
-						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
-				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
-						              </a>
-						              <a class="list-group-item">
-						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Obra Obra</b></div>
-				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
+						              <a class="list-group-item" ng-repeat="obra in dashboard.cumplimientoObras">
+						                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>{{ obra.obra }}</b></div>
+				            			<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">{{obra.cumplimiento}}</b></div>
 						              </a>
 						            </div>
 						          </div>

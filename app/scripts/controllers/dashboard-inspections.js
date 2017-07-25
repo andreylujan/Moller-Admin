@@ -44,6 +44,13 @@
  		cantHallazgosGlobalesAltoTotal: 0,
  		cantHallazgosGlobalesMedioTotal: 0,
  		cantHallazgosGlobalesBajoTotal: 0,
+ 		cumplimientoGlobal: 0,
+ 		cumplimientoInterno: 0,
+ 		CumplimientoContratistas: 0,
+ 		causasDirectas: [],
+ 		causasBasicas:  [],
+ 		causasDirectasTotal: 0,
+ 		causasBasicasTotal: 0
  	};
 
 
@@ -130,19 +137,10 @@
 							    	}
 							    ]
 	    					);
-		    	
-    		}
-		}, function(error) {
-			$log.error(error);
-			if (error.status === 401) {
-				Utils.refreshToken($scope.getDashboardInfo);
 
 
-			}
-		});
-	};
 
- 	$scope.cumplimientoHallazgosDonut = Utils.setChartConfig(
+		    	$scope.cumplimientoHallazgosDonut = Utils.setChartConfig(
  								'pie', 
  								200, 
  								{
@@ -162,22 +160,31 @@
 								        name: 'Riesgo',
 								        colorByPoint: true,
 								        innerSize: '80%',
-								        data: [{
-								            name: 'Bajo',
-								            y: 20
-								        }, {
-								            name: 'Medio',
-								            y: 20,
-								        }, {
-								            name: 'Alto',
-								            y: 60
-								        }]
+								        data: success.data.attributes.cumplimiento_hallazgos
 							    	}
 							    ]
 	    					);
 
+		    	$scope.dashboard.cumplimientoGlobal			= success.data.attributes.porcentaje_cumplimiento.global;
+		    	$scope.dashboard.cumplimientoInterno		= success.data.attributes.porcentaje_cumplimiento.interno;
+ 				$scope.dashboard.CumplimientoContratistas 	= success.data.attributes.porcentaje_cumplimiento.contratistas;
 
- 	$scope.indiceHallazgos = Utils.setChartConfig(
+ 				var indiceHallazgos = {
+ 					categories: [],
+ 					indices_por_obra: [], 	//NARANJO
+ 					indices_totales: [] 	//VERDE
+ 				};
+
+ 				angular.forEach(success.data.attributes.indice_de_hallazgos, function(value)
+ 				{
+ 					indiceHallazgos.categories.push(value.mes);
+ 					indiceHallazgos.indices_totales.push(value.indices_totales[0].index);
+ 					indiceHallazgos.indices_por_obra.push(_.reduce(value.indices_por_obra, function(memo, num){ return memo + num.index; }, 0) / value.indices_por_obra.length);
+ 					
+ 				});
+ 				
+
+ 				$scope.indiceHallazgos = Utils.setChartConfig(
  								'column', 
  								null, 
  								{
@@ -204,16 +211,16 @@
  								}, 
 	    						{}, 
 	    					 	{
-	        						categories: ['ABR', 'MAY', 'JUN']
+	        						categories: indiceHallazgos.categories
 	    						}, 
 	    						[{
 							        type: 'column',
 							        name: 'Índice global de hallazgos - Pitagora',
-							        data: [1.50, 1, 1.20]
+							        data: indiceHallazgos.indices_totales
 							    }, {
 							        type: 'spline',
-							        name: 'Índice de acctidentes obras seleccionadas',
-							        data: [2.33, 1.27, 1.94],
+							        name: 'Índice de accidentes obras seleccionadas',
+							        data: indiceHallazgos.indices_por_obra,
 							        marker: {
 							            lineWidth: 2,
 							            lineColor: Highcharts.getOptions().colors[3],
@@ -224,8 +231,23 @@
 							    }]
 	    					);
 
+ 				$scope.dashboard.causasDirectas = success.data.attributes.causas_directas; 
+ 				$scope.dashboard.causasBasicas  = success.data.attributes.causas_basicas; 
 
- 	$scope.causasDirectas = Utils.setChartConfig(
+ 				$scope.dashboard.causasDirectasTotal = _.reduce(success.data.attributes.causas_directas, function(memo, num){ return memo + num.num_reports; }, 0); 
+ 				$scope.dashboard.causasBasicasTotal  = _.reduce(success.data.attributes.causas_basicas, function(memo, num){ return memo + num.num_reports; }, 0); 
+		    	
+    		}
+		}, function(error) {
+			$log.error(error);
+			if (error.status === 401) {
+				Utils.refreshToken($scope.getDashboardInfo);
+			}
+		});
+	};
+
+
+ 	/*$scope.causasDirectas = Utils.setChartConfig(
  								'pie', 
  								250, 
  								{
@@ -293,9 +315,7 @@
 								        }]
 							    	}
 							    ]
-	    					);
-
-
+	    					);*/
 
  	$scope.open = function($event) {
       $event.preventDefault();

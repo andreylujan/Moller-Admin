@@ -72,7 +72,7 @@
               		<div class="col-md-3 solid">
 		        		<section class="tile tile-simple">
 				          	<div class="tile-body text-center">
-				           		<h1 class="m-0" style="color: orange; font-size: 500%;"><b>75%</b></h1>
+				           		<h1 class="m-0" style="color: orange; font-size: 500%;"><b>{{dashboard.cumplimientoGlobal}}</b></h1>
 					        	<span class="text" style="font-size: 150%;"><b>Cumplimiento</b></span>
 				          	</div>
 				        </section>
@@ -82,11 +82,11 @@
 							<div class="tile-widget">
 					          	<div class="tile-body text-center solid">
 					            	<div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Cumplimiento interno</b></div>
-				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">55%</b></div>
+				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">{{dashboard.cumplimientoInterno}}</b></div>
 					          	</div>
 					          	<div class="tile-body text-center solid">
 					            	<div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Cumplimiento contratistas</b></div>
-				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
+				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">{{dashboard.CumplimientoContratistas}}</b></div>
 					          	</div>
 							</div>
 						</section>
@@ -130,12 +130,12 @@
           		</div>
           		<div class="tile-body">
             		<div class="row">
-              			<div class="col-md-6">
+              			<!--div class="col-md-6">
               				<highchart config="causasDirectas"></highchart>
-              			</div>
-              			<div class="col-md-6">
+              			</div-->
+              			<div class="col-md-12">
               				<div class="tile-body text-center">
-				           		<h1 class="m-0" style="color: orange; font-size: 500%;"><b>25</b></h1>
+				           		<h1 class="m-0" style="color: orange; font-size: 500%;"><b>{{dashboard.causasDirectasTotal}}</b></h1>
 					        	<span class="text" style="font-size: 150%;"><b>Directas</b></span>
 				          	</div>
               			</div>
@@ -143,27 +143,13 @@
 					        <section class="tile tile-simple">
 					          <div class="tile-body p-0">
 					            <div class="list-group no-radius no-border">
-					              <a class="list-group-item">
-					                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Demasiada actividad fisica</b></div>
-				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">10</b></div>
-					              </a>
-					              <a class="list-group-item">
-					                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Uso incorrecto de herramientas</b></div>
-				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">15</b></div>
-					              </a>
-					              <a class="list-group-item">
-					                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Falta de conocimiento de peligros</b></div>
-				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">10</b></div>
-					              </a>
-					              <a class="list-group-item">
-					                <div style="text-align: center">
-				                		<b style="color:green;">
-				                			Ver Todas
-				                		</b>
+					              <a class="list-group-item" ng-repeat="causaDirecta in dashboard.causasDirectas">
+					                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%">		<b>{{causaDirecta.causa_directa}}</b>
 					                </div>
+				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%">		<b style="color: orange;">{{causaDirecta.num_reports}}</b>
+				            		</div>
 					              </a>
 					            </div>
-
 					          </div>
 					        </section>
               			</div>
@@ -179,12 +165,12 @@
           		</div>
           		<div class="tile-body">
             		<div class="row">
-              			<div class="col-md-6">
+              			<!--div class="col-md-6">
               				<highchart config="causasBasicas"></highchart>
-              			</div>
-              			<div class="col-md-6">
+              			</div-->
+              			<div class="col-md-12">
               				<div class="tile-body text-center">
-				           		<h1 class="m-0" style="color: orange; font-size: 500%;"><b>25</b></h1>
+				           		<h1 class="m-0" style="color: orange; font-size: 500%;"><b>{{dashboard.causasBasicasTotal}}</b></h1>
 					        	<span class="text" style="font-size: 150%;"><b>Básicas</b></span>
 				          	</div>
               			</div>
@@ -192,27 +178,13 @@
 					        <section class="tile tile-simple">
 					          <div class="tile-body p-0">
 					            <div class="list-group no-radius no-border">
-					              <a class="list-group-item">
-					                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Capacidad respiratoria débil</b></div>
-				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">10</b></div>
-					              </a>
-					              <a class="list-group-item">
-					                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Lesión o enfermedad anterior</b></div>
-				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">15</b></div>
-					              </a>
-					              <a class="list-group-item">
-					                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Desconcentración / distracción</b></div>
-				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">10</b></div>
-					              </a>
-					              <a class="list-group-item">
-					                <div style="text-align: center">
-				                		<b style="color:green;">
-				                			Ver Todas
-				                		</b>
+					              <a class="list-group-item" ng-repeat="causaBasica in dashboard.causasBasicas">
+					                <div style="display:inline-block;width:80%; text-align: left; font-size: 150%">		<b>{{causaBasica.causas_basica}}</b>
 					                </div>
+				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%">		<b style="color: orange;">{{causaBasica.num_reports}}</b>
+				            		</div>
 					              </a>
 					            </div>
-
 					          </div>
 					        </section>
               			</div>

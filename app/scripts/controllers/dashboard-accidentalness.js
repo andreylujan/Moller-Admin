@@ -8,7 +8,8 @@
  * Controller of the efindingAdminApp
  */
  angular.module('efindingAdminApp')
- .controller('AccidentalnessDashboardCtrl', function($scope, $filter, $log, $moment, Utils, NgTableParams, Dashboard, Companies, Constructions, Users, NgMap) {
+ .controller('AccidentalnessDashboardCtrl', function($scope, $filter, $log, $moment, Utils, NgTableParams, 
+ 													DashboardAccidentalness, Companies, Constructions) {
  
  	$scope.page = {
  		title: 'Accidentabilidad',
@@ -36,6 +37,212 @@
  			}
  		}
  	};
+
+ 	
+ 	$scope.getDashboardInfo = function() {
+ 		DashboardAccidentalness.query({
+ 		}, function(success) {
+		    if (success.data) {
+		    	
+		    	$scope.accidentabilidadGlobal = Utils.setChartConfig(
+ 								'spline', 
+ 								null, 
+ 								{
+	        						spline : {
+					                	dataLabels : {
+					                    	enabled : true,
+					                    	color: 'orange',
+					                    	style: {"fontSize": "15px", "fontWeight": "bold", "textOutline": "1px" },
+					                    	formatter : function() {
+					                        	return this.y + '%';
+					                    	}
+					                	},
+					                	showInLegend: false
+					            	}
+	    						}, 
+	    						{
+						        	labels: {
+							            formatter: function () {
+							                return this.value + '°';
+							            }
+							        }
+						    	}, 
+	    						{
+							        categories: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return num.mes; })
+							    }, 
+	    						[{
+							        name: 'Tasa de accidentibilidad',
+							        marker: {
+							            symbol: 'circle',
+							            radius: 7
+							        },
+							        line: {
+							        	radius: 2
+							        },
+							        data: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return parseFloat(num.tasa_accidentabilidad.toFixed(2)); })
+							    }]
+	    					);
+
+
+
+
+		    	$scope.siniestralidadGlobal = Utils.setChartConfig(
+ 								'spline', 
+ 								null, 
+ 								{
+	        						spline : {
+					                	dataLabels : {
+					                    	enabled : true,
+					                    	color: 'orange',
+					                    	style: {"fontSize": "15px", "fontWeight": "bold", "textOutline": "1px" },
+					                    	formatter : function() {
+					                        	return this.y + '%';
+					                    	}
+					                	},
+					                	showInLegend: false
+					            	}
+	    						}, 
+	    						{
+						        	labels: {
+							            formatter: function () {
+							                return this.value + '°';
+							            }
+							        }
+						    	}, 
+	    						{
+							        categories: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return num.mes; })
+							    }, 
+	    						[{
+							        name: 'Tasa de siniestralidad',
+							        marker: {
+							            symbol: 'circle',
+							            radius: 7
+							        },
+							        line: {
+							        	radius: 2
+							        },
+							        data: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return parseFloat(num.tasa_siniestralidad.toFixed(2)); })
+							    }]
+	    					);
+
+
+
+ 		$scope.tasaAccidentabilidad = Utils.setChartConfig(
+ 								'spline', 
+ 								null, 
+ 								{
+ 									spline : {
+ 										color: 'green',
+					                	dataLabels : {
+					                    	enabled : true,
+					                    	color: 'black',
+					                    	style: {"fontSize": "15px", "fontWeight": "bold", "textOutline": "1px" },
+					                    	formatter : function() {
+					                        	return this.y + '%';
+					                    	}
+					                	}
+					            	},
+					            	line: {
+					            		color: 'orange'
+					            	}
+ 								}, 
+	    						{}, 
+	    						{
+	    							categories: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return num.mes; })
+	    						}, 
+	    						[{
+							    	type: 'spline',
+							        name: 'Todas las obras',
+							        marker: {
+							            symbol: 'circle',
+							            radius: 7
+							        },
+							        line: {
+							        	radius: 2
+							        },
+							        data: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return parseFloat(num.tasa_accidentabilidad_acumulada.toFixed(2)); })
+							    },
+							    {
+							        type: 'line',
+							        data: success.data.attributes.meta_accidentabilidad,
+							        name: 'Meta',
+							        marker: {
+							            enabled: false
+							        },
+							        states: {
+							            hover: {
+							                lineWidth: 1
+							            }
+							        },
+							        enableMouseTracking: false
+							    }
+							    ]
+	    					);
+ 	
+
+ 		$scope.tasaSiniestralidad = Utils.setChartConfig(
+ 								'spline', 
+ 								null, 
+ 								{
+ 									spline : {
+ 										color: 'green',
+					                	dataLabels : {
+					                    	enabled : true,
+					                    	color: 'black',
+					                    	style: {"fontSize": "15px", "fontWeight": "bold", "textOutline": "1px" },
+					                    	formatter : function() {
+					                        	return this.y + '%';
+					                    	}
+					                	}
+					            	},
+					            	line: {
+					            		color: 'orange'
+					            	}
+ 								}, 
+	    						{}, 
+	    						{
+	    							categories: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return num.mes; })
+	    						}, 
+	    						[{
+							    	type: 'spline',
+							        name: 'Todas las obras',
+							        marker: {
+							            symbol: 'circle',
+							            radius: 7
+							        },
+							        line: {
+							        	radius: 2
+							        },
+							        data: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return parseFloat(num.tasa_siniestralidad_acumulada.toFixed(2)); })
+							    },
+							    {
+							        type: 'line',
+							        data: success.data.attributes.meta_siniestralidad,
+							        name: 'Meta',
+							        marker: {
+							            enabled: false
+							        },
+							        states: {
+							            hover: {
+							                lineWidth: 1
+							            }
+							        },
+							        enableMouseTracking: false
+							    }
+							    ]
+	    					);
+    		}
+		}, function(error) {
+			$log.error(error);
+			if (error.status === 401) {
+				Utils.refreshToken($scope.getDashboardInfo);
+
+
+			}
+		});
+	};
+
+
 
 
  	$scope.open = function($event) {
@@ -122,250 +329,8 @@
  	$scope.$watch('page.filters.constructions.loaded', function() {
 		if ($scope.page.filters.constructions.loaded) {
 			$scope.$watch('page.filters.date.value', function() {
-				$log.error('YO DEBO LLAMAR AL SERVICIO');
+				$scope.getDashboardInfo();
 			});
 		}
 	});
-
-
- 	///INICIO CHARTS
-
- 	$scope.accidentabilidadGlobal = Utils.setChartConfig(
- 								'spline', 
- 								null, 
- 								{
-	        						spline : {
-					                	dataLabels : {
-					                    	enabled : true,
-					                    	color: 'orange',
-					                    	style: {"fontSize": "15px", "fontWeight": "bold", "textOutline": "1px" },
-					                    	formatter : function() {
-					                        	return this.y + '%';
-					                    	}
-					                	},
-					                	showInLegend: false
-					            	}
-	    						}, 
-	    						{
-						        	labels: {
-							            formatter: function () {
-							                return this.value + '°';
-							            }
-							        }
-						    	}, 
-	    						{
-							        categories: [
-							            'Jan',
-							            'Feb',
-							            'Mar',
-							            'Apr',
-							            'May',
-							            'Jun',
-							            'Jul',
-							            'Aug',
-							            'Sep',
-							            'Oct',
-							            'Nov',
-							            'Dec'
-							        ]
-							    }, 
-	    						[{
-							        name: 'Tokyo',
-							        marker: {
-							            symbol: 'circle',
-							            radius: 7
-							        },
-							        line: {
-							        	radius: 2
-							        },
-							        data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 23.3, 18.3, 13.9, 9.6]
-							    }]
-	    					);
-
-
-
- 	$scope.siniestralidadGlobal = Utils.setChartConfig(
- 								'spline', 
- 								null, 
- 								{
-	        						spline : {
-					                	dataLabels : {
-					                    	enabled : true,
-					                    	color: 'orange',
-					                    	style: {"fontSize": "15px", "fontWeight": "bold", "textOutline": "1px" },
-					                    	formatter : function() {
-					                        	return this.y + '%';
-					                    	}
-					                	},
-					                	showInLegend: false
-					            	}
-	    						}, 
-	    						{
-						        	labels: {
-							            formatter: function () {
-							                return this.value + '°';
-							            }
-							        }
-						    	}, 
-	    						{
-							        categories: [
-							            'Jan',
-							            'Feb',
-							            'Mar',
-							            'Apr',
-							            'May',
-							            'Jun',
-							            'Jul',
-							            'Aug',
-							            'Sep',
-							            'Oct',
-							            'Nov',
-							            'Dec'
-							        ]
-							    }, 
-	    						[{
-							        name: 'Tokyo',
-							        marker: {
-							            symbol: 'circle',
-							            radius: 7
-							        },
-							        line: {
-							        	radius: 2
-							        },
-							        data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 23.3, 18.3, 13.9, 9.6]
-							    }]
-	    					);
-
-
-
- 	$scope.tasaAccidentabilidad = Utils.setChartConfig(
- 								'spline', 
- 								null, 
- 								{
- 									spline : {
- 										color: 'green',
-					                	dataLabels : {
-					                    	enabled : true,
-					                    	color: 'black',
-					                    	style: {"fontSize": "15px", "fontWeight": "bold", "textOutline": "1px" },
-					                    	formatter : function() {
-					                        	return this.y + '%';
-					                    	}
-					                	}
-					            	},
-					            	line: {
-					            		color: 'orange'
-					            	}
- 								}, 
-	    						{}, 
-	    						{
-	    							categories: [
-							            'Jan',
-							            'Feb',
-							            'Mar',
-							            'Apr',
-							            'May',
-							            'Jun',
-							            'Jul',
-							            'Aug',
-							            'Sep',
-							            'Oct',
-							            'Nov',
-							            'Dec'
-							        ]
-	    						}, 
-	    						[{
-							    	type: 'spline',
-							        name: 'Todas las obras',
-							        marker: {
-							            symbol: 'circle',
-							            radius: 7
-							        },
-							        line: {
-							        	radius: 2
-							        },
-							        data: [0, 1, 2, 2, 2, 4, 5, 7, 7, 7, 10, 10]
-							    },
-							    {
-							        type: 'line',
-							        data: [[0, 1], [11, 5]],
-							        name: 'Meta',
-							        marker: {
-							            enabled: false
-							        },
-							        states: {
-							            hover: {
-							                lineWidth: 1
-							            }
-							        },
-							        enableMouseTracking: false
-							    }
-							    ]
-	    					);
- 	
-
- 	$scope.tasaSiniestralidad = Utils.setChartConfig(
- 								'spline', 
- 								null, 
- 								{
- 									spline : {
- 										color: 'green',
-					                	dataLabels : {
-					                    	enabled : true,
-					                    	color: 'black',
-					                    	style: {"fontSize": "15px", "fontWeight": "bold", "textOutline": "1px" },
-					                    	formatter : function() {
-					                        	return this.y + '%';
-					                    	}
-					                	}
-					            	},
-					            	line: {
-					            		color: 'orange'
-					            	}
- 								}, 
-	    						{}, 
-	    						{
-	    							categories: [
-							            'Jan',
-							            'Feb',
-							            'Mar',
-							            'Apr',
-							            'May',
-							            'Jun',
-							            'Jul',
-							            'Aug',
-							            'Sep',
-							            'Oct',
-							            'Nov',
-							            'Dec'
-							        ]
-	    						}, 
-	    						[{
-							    	type: 'spline',
-							        name: 'Todas las obras',
-							        marker: {
-							            symbol: 'circle',
-							            radius: 7
-							        },
-							        line: {
-							        	radius: 2
-							        },
-							        data: [0, 1, 2, 2, 2, 4, 5, 7, 7, 7, 10, 10]
-							    },
-							    {
-							        type: 'line',
-							        data: [[0, 1], [11, 5]],
-							        name: 'Meta',
-							        marker: {
-							            enabled: false
-							        },
-							        states: {
-							            hover: {
-							                lineWidth: 1
-							            }
-							        },
-							        enableMouseTracking: false
-							    }
-							    ]
-	    					);
 });
