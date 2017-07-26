@@ -113,9 +113,6 @@ angular.module('efindingAdminApp')
 			user.type = success.data.type;
 			user.is_superuser = success.data.attributes.is_superuser;
 			user.role_type = success.data.attributes.role_type;
-
-			$log.error(user.role_type);
-
 			for (var i = 0; i < success.included.length; i++) {
 				if (success.included[i].type === 'organizations') 
 				{
