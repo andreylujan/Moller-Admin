@@ -54,6 +54,7 @@ angular.module('efindingAdminApp')
 							Utils.setInStorage('fullName', data.data.fullName);
 							Utils.setInStorage('image', data.data.image);
 							Utils.setInStorage('is_superuser', data.data.is_superuser);
+							Utils.setInStorage('role_type', data.data.role_type);
 
 							getMenu();
 							getColumns();
@@ -111,7 +112,7 @@ angular.module('efindingAdminApp')
 			user.image = success.data.attributes.image;
 			user.type = success.data.type;
 			user.is_superuser = success.data.attributes.is_superuser;
-
+			user.role_type = success.data.attributes.role_type;
 			for (var i = 0; i < success.included.length; i++) {
 				if (success.included[i].type === 'organizations') 
 				{

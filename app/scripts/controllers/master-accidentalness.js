@@ -370,7 +370,7 @@ angular.module('efindingAdminApp')
 					Utils.refreshToken($scope.saveAccidentalness);
 				}
 				$scope.elements.alert.title = 'Error al Guardar';
-				$scope.elements.alert.text = '';
+				$scope.elements.alert.text = error.errors[0].detail;
 				$scope.elements.alert.color = 'danger';
 				$scope.elements.alert.show = true;
 				return;
