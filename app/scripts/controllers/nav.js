@@ -11,6 +11,8 @@ angular.module('efindingAdminApp')
 
 .controller('NavCtrl', function($scope, $log, $state, MenuSections, Utils, $q, TableColumns) {
 
+	$scope.largo = window.innerHeight-50;
+	
 	$scope.page = {
 		menu: [],
 		menuLoaded: false

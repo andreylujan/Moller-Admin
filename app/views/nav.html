@@ -1,15 +1,7 @@
 <div id="sidebar-wrap" ng-controller="NavCtrl">
   <uib-accordion close-others="oneAtTime" ng-if="page.menuLoaded">
-    <uib-accordion-group is-open="status.isFirstOpen" nav-collapse>
-
-      <!--uib-accordion-heading>
-        <div class="info-account">
-          Menú <i class="fa" ng-class="{'fa-angle-up': status.isFirstOpen, 'fa-angle-down': !status.isFirstOpen}"></i>
-        </div>
-      </uib-accordion-heading-->
-
+    <uib-accordion-group is-open="status.isFirstOpen" nav-collapse slimscroll="{height: largo}" style="background-color: #188938 !important;">
       <ul id="navigation"  ripple>
-
         <li ui-sref-active="active" ng-repeat="section in page.menu" ng-class="{'open':$state.includes('{{section.path}}')}" >
           <a ui-sref="{{section.path}}"><fa name="{{section.icon}}"></fa> <span>{{section.name}}</span></a>
           <ul>
@@ -29,6 +21,6 @@
         </li>
       </ul>
     </uib-accordion-group>
-
   </uib-accordion> 
 </div>
+

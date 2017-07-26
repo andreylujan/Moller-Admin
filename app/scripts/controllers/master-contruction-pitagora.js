@@ -27,7 +27,6 @@ angular.module('efindingAdminApp')
 				data = [];
 				for (var i = 0; i < success.data.length; i++) {
 					data.push({
-						// AQUI VAN LOS CAMPOS DEL JSON
 						name: success.data[i].attributes.name,
 						code: success.data[i].attributes.code,
 						fullname: success.data[i].attributes.code + ' - ' + success.data[i].attributes.name,
@@ -37,13 +36,13 @@ angular.module('efindingAdminApp')
 				}
 
 				$scope.tableParams = new NgTableParams({
-					page: 1, // show first page
-					count: 50, // count per page
+					page: 1,
+					count: 50,
 					sorting: {
-						name: 'asc' // initial sorting
+						name: 'asc'
 					}
 				}, {
-					total: data.length, // length of data
+					total: data.length,
 					dataset: data
 				});
 
@@ -176,11 +175,6 @@ angular.module('efindingAdminApp')
 					});
 				}
 
-				/*$scope.admObra = data;
-				$scope.experts = data;
-				$scope.inspectors = data;
-				$scope.supervisors = data;*/
-
 				$scope.admObra 		= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: 13});
 				$scope.experts 		= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: 12});
 				$scope.inspectors 	= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: 16});
@@ -295,13 +289,6 @@ angular.module('efindingAdminApp')
 			$scope.elements.alert.show = true;
 			return;
 		}
-		if (!Validators.validateRequiredField($scope.construction.selectedInspector)) {
-			$scope.elements.alert.title = 'Faltan datos por rellenar';
-			$scope.elements.alert.text = 'Inspector';
-			$scope.elements.alert.color = 'danger';
-			$scope.elements.alert.show = true;
-			return;
-		}
 
 		if ($scope.construction.contractors.length == 0) {
 			$scope.elements.alert.title = 'Faltan datos por rellenar';
@@ -309,6 +296,10 @@ angular.module('efindingAdminApp')
 			$scope.elements.alert.color = 'danger';
 			$scope.elements.alert.show = true;
 			return;
+		}
+
+		if (!Validators.validateRequiredField($scope.construction.selectedInspector)) {
+			$scope.construction.selectedInspector = {id: null};
 		}
 
 		$scope.elements.alert.show = false;
@@ -361,9 +352,11 @@ angular.module('efindingAdminApp')
 								}
 							} 
 						}};
+		$log.error(aux);
 
 		Constructions.save(aux, 
 			function(success) {
+				$log.error(success);
 				if (success.data) {
 					$uibModalInstance.close({
 						action: 'save',

@@ -312,7 +312,7 @@ angular.module('efindingAdminApp')
 					Utils.refreshToken($scope.saveCompany);
 				}
 				$scope.modal.alert.title = 'Error al Guardar';
-				$scope.modal.alert.text = '';
+				$scope.modal.alert.text = error.errors[0].detail;
 				$scope.modal.alert.color = 'danger';
 				$scope.modal.alert.show = true;
 				return;
