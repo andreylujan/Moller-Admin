@@ -1,16 +1,11 @@
 <div class="page">
-
-	<!-- page header -->
 	<div class="pageheader">
-
 		<h2>{{page.title}} <span></span></h2>
-
 		<div class="page-bar">
-
 			<ul class="page-breadcrumb">
 				<li>
-          <a ui-sref="efinding.dashboard.generic"> {{main.title}}</a>
-        </li>
+          			<a ui-sref="efinding.dashboard.generic"> {{main.title}}</a>
+        		</li>
 				<li>
 					<a href="javascript:;">Inspecciones</a>
 				</li>
@@ -18,27 +13,13 @@
 					<a>{{page.title}}</a>
 				</li>
 			</ul>
-
 		</div>
-
 	</div>
-	<!-- /page header -->
-
-	<!-- page content -->
 	<div class="pagecontent">
-
-		<!-- row -->
 		<div class="row">
-
-			<!-- col -->
 			<div class="col-md-12">
-
-
-				<!-- tile -->
 				<section class="tile" fullscreen="isFullscreen06">
-					<!-- tile body -->
 					<div class="tile-body">
-
 						<div class="row">
 							<div class="col-md-2">
 								<input type="image" src="https://s3-sa-east-1.amazonaws.com/efinding/icons/abajo.png" ng-click="openModalDownloadPdfsByMonth()" uib-tooltip="Descargar Excel"></input>
@@ -50,7 +31,7 @@
 									<th ng-repeat="column in columns" class="text-center sortable">{{column.title}}</th>
 									<th class="text-center"> PDF </th>
 									<th class="text-center"> Firma </th>
-									<th class="text-center" ng-show="role_id==15"> Eliminar </th>
+									<th class="text-center" ng-show="is_superuser"> Eliminar </th>
 								</tr>
 								<tr>
 									<th ng-repeat="column in columns" class="text-center sortable" >
@@ -98,7 +79,7 @@
 									</th>
 									<th class="text-center" ></th>
 									<th class="text-center" ></th>
-									<th class="text-center" ng-show="role_id==15"></th>
+									<th class="text-center" ng-show="is_superuser"></th>
 								</tr>
 							</thead>
 
@@ -118,7 +99,7 @@
 										<a ng-click="FirmaInspeccionInstance(inspection.id)" ng-if="inspection.state == 'final_signature_pending'">Pendiente de firma final</a>
 										<label ng-if="inspection.state == 'finished'">Teminado</label>
 									</td>
-									<td ng-show="role_id==15">
+									<td ng-show="is_superuser">
 										<img ng-click="openModalRemoveInspection(inspection.id)" ng-src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/delete.png" style="width:18px;" tooltip="Borrar inspección">
 									</td>
 								</tr>
@@ -130,15 +111,10 @@
 							</div>
 						</div>
 					</div>
-					<!-- /tile body -->
 				</section>
-				<!-- /tile -->
 			</div>
-			<!-- /col -->
 		</div>
-		<!-- /row -->
 	</div>
-	<!-- /page content -->
 
 	<script type="text/ng-template" id="firmarInspeccion.html">
 		<div class="modal-content">
@@ -174,85 +150,11 @@
             </div>
         </div>
 	</script>
-
-<script type="text/ng-template" id="modalDownloadPdfs.html">
-	<div class="modal-header text-center">
-		<h3>Descargar PDF's</h3>
-		<h4>Seleccione los filtros para buscar los PDF's de reportes y descargar</h4>
-	</div>
-
-	<div class="modal-body">
-		<div class="row">
-			<div class="col-md-12">
-				<div class="alert alert-{{modal.alert.color}}" ng-show="modal.alert.show"> <h4 class="text-md"><strong>{{modal.alert.title}}</strong></h4> {{modal.alert.text}} </div>
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-md-12">
-				<style>
-					.multiselect-parent,.dropdown-toggle,.dropdown-menu-form  {
-						width: 100%;
-					}
-				</style>
-
-				<form class="form-horizontal" role="form">
-					<div class="form-group">
-						<label class="col-sm-3 control-label">Creados entre</label>
-						<div class="col-sm-8">
-							<input style="cursor:pointer" id="daterangeDashGoals2" date-range-picker class="form-control date-picker" type="text" ng-model="modal.dateRange.date" ng-change="removeMessage()" options="modal.dateRange.options" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-3 control-label">Cliente</label>
-						<div class="col-sm-8">
-							<select class="form-control" ng-options="client.name for client in modal.clients.list track by client.id" ng-model="modal.clients.selected" ng-change="removeMessage()"></select>
-							<!-- <div ng-dropdown-multiselect="" options="modal.clients.list" selected-model="modal.clients.selected" extra-settings="modal.dropdownMultiselect.settings" translation-texts="modal.dropdownMultiselect.texts" events="" ng-dropdown-multiselect-disabled=""></div> -->
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-3 control-label">Ejecutores</label>
-						<div class="col-sm-8">
-							<!-- <select class="form-control" ng-options="executer.fullName for executer in creatorsUnique track by executer.id" ng-model="executerSelected"></select> -->
-							<div ng-dropdown-multiselect="" options="modal.executers.list" selected-model="modal.executers.selected" extra-settings="modal.dropdownMultiselect.settings" translation-texts="modal.dropdownMultiselect.texts" events="" ng-dropdown-multiselect-disabled=""></div>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-3 control-label">Clase equipo</label>
-						<div class="col-sm-8">
-							<select class="form-control" ng-options="equipmentClass.name for equipmentClass in modal.classes.list track by equipmentClass.id" ng-model="modal.classes.selected" ng-change="removeMessage()"></select>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-3 control-label">Territorios</label>
-						<div class="col-sm-8">
-							<div ng-dropdown-multiselect="" options="modal.territories.list" selected-model="modal.territories.selected" extra-settings="modal.dropdownMultiselect.settings" translation-texts="modal.dropdownMultiselect.texts" events="" ng-dropdown-multiselect-disabled=""></div>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="col-sm-3 control-label">Tipo de Actividad</label>
-						<div class="col-sm-8">
-							<select class="form-control" ng-options="activityType.name for activityType in activityTypesUnique track by activityType.id" ng-model="activityTypeSelected" ng-change="removeMessage()"></select>
-						</div>
-					</div>
-					
-				</form>
-			</div>
-		</div>
-	</div>
-
-	<div class="modal-footer">
-		<a class="btn bg-blue-ps btn-rounded-10 mb-10" id="zipBtn" ng-href="" ng-click="downloadZip()" ng-disabled="zipBtnDisabled"><i class="fa fa-cloud-download" uib-tooltip="Descargar PDF's"></i></a>
-		<button class="btn btn-cancelRecit btn-rounded-10 mb-10" type="button" ng-click="cancel()">Cerrar</button>
-	</div>
-
-</script>
-
-<script type="text/ng-template" id="modalDownloadPdfsByMonth.html">
+	
+	<script type="text/ng-template" id="modalDownloadPdfsByMonth.html">
 		<div class="modal-header text-center">
 			<h3>Descargar Excel de reportes</h3>
 		</div>
-
 		<div class="modal-body">
 			<div class="row">
 				<div class="col-md-12">
@@ -277,67 +179,24 @@
 					</form>
 				</div>
 			</div>
-
 		</div>
-
 		<div class="modal-footer">
 			<a class="btn bg-cyan-1-generic btn-rounded-10 mb-10" id="downloadReportsByMonth" ng-href="" ng-click="downloadReports()" ng-disabled="modal.buttons.download.disabled"><i class="fa fa-cloud-download" uib-tooltip="Descargar PDF's"></i> {{modal.buttons.download.text}}</a>
 			<button class="btn btn-cancelRecit btn-rounded-10 mb-10" type="button" ng-click="cancel()">Cerrar</button>
 		</div>
+	</script>
 
-</script>
-
-<script type="text/ng-template" id="modalDownloadPdfsByMonth.html">
-	<div class="modal-header text-center">
-		<h3>Descargar Excel de reportes</h3>
-	</div>
-
-	<div class="modal-body">
-		<div class="row">
-			<div class="col-md-12">
-				<div class="alert alert-{{modal.alert.color}}" ng-show="modal.alert.show"> <h4 class="text-md"><strong>{{modal.alert.title}}</strong></h4> {{modal.alert.text}} </div>
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-md-12">
-				<form class="form-horizontal" role="form">
-					<div class="form-group">
-						<label class="col-sm-5 control-label">Descargar reportes del mes</label>
-						<div class="col-sm-6">
-							<p class="input-group">
-								<input type="text" class="form-control" uib-datepicker-popup="MM/yyyy" ng-model="modal.month.date" is-open="modal.datepicker.opened" datepicker-options="{minMode: 'month', showButtonBar: false}" />
-								<span class="input-group-btn">
-									<button type="button" class="btn btn-default" ng-click="openDatePicker($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-								</span>
-							</p>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-
-	</div>
-
-	<div class="modal-footer">
-		<a class="btn mb-10" id="downloadReportsByMonth" ng-href="" ng-click="downloadReports()" ng-disabled="modal.buttons.download.disabled"><img src="https://s3-sa-east-1.amazonaws.com/efinding/icons/abajo.png"></a>
-		<button class="btn btn-cancelRecit btn-rounded-10 mb-10" type="button" ng-click="cancel()">Cerrar</button>
-	</div>
-
-</script>
-
-<script type="text/ng-template" id="removeInspectionModal.html" class="">
-  <div class="modal-body text-gray">
-    <div class="row">
-      <div class="col-md-12">
-        <h4 class="text-center">¿Seguro desea eliminar la inspección <strong>{{modal.inspection.title}}</strong>? </h4>
-      </div>
-    </div>
-  </div>
-  <div class="modal-footer">
-  	<button class="btn btn-danger" ng-click="removeInspection({success: true,detail: 'OK'})">Si, eliminar</button>
-  	<button class="btn btn-default" ng-click="cancel()">Cancelar</button>
-  </div>
-</script>
-
+	<script type="text/ng-template" id="removeInspectionModal.html" class="">
+  		<div class="modal-body text-gray">
+    		<div class="row">
+      			<div class="col-md-12">
+        			<h4 class="text-center">¿Seguro desea eliminar la inspección <strong>{{modal.inspection.title}}</strong>? </h4>
+      			</div>
+    		</div>
+  		</div>
+  		<div class="modal-footer">
+  			<button class="btn btn-danger" ng-click="removeInspection({success: true,detail: 'OK'})">Si, eliminar</button>
+  			<button class="btn btn-default" ng-click="cancel()">Cancelar</button>
+  		</div>
+	</script>
 </div>

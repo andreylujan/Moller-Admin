@@ -9,7 +9,7 @@
  */
  angular.module('efindingAdminApp')
  .controller('ChecklistPublicDashboardCtrl', function($scope, $auth, $filter, $state, $log, 
- 	$timeout, $moment, Utils) {
+ 													$timeout, $moment, Utils, ChecklistActions) {
  	
  	//traer el token
  	var token = $state.params.token;
@@ -18,14 +18,20 @@
  	Utils.setInStorage('refresh_t', refresh_token);
  	$auth.setToken(token);
 
-	var currentDate = new Date();
- 	var firstMonthDay = new Date();
- 	firstMonthDay.setDate(1);
-
-
- 	$scope.page = {
+	$scope.page = {
  		title: 'Lista de Chequeo',
  		filters: {
+ 			date: {
+ 				dateOptions: 
+ 				{
+ 					formatYear: 'yy',
+				    startingDay: 1,
+				    'class': 'datepicker'
+ 				},
+ 				format: 'dd-MM-yyyy',
+ 				value: new Date(),
+ 				opened: false
+ 			},
  			companies: {
  				list: [],
  				selected: null
@@ -35,67 +41,62 @@
  				selected: null,
  				disabled: false
  			},
- 			status: {
+ 			checklist: {
  				list: [],
  				selected: null,
- 				disabled: false
- 			},
- 			supervisor: {
- 				list: [],
- 				selected: null,
- 				disabled: false
- 			},
- 			month: {
- 				value: new Date(),
- 				isOpen: false
- 			},
- 			dateRange: {
- 				options: {
- 					locale: {
- 						format: 'DD/MM/YYYY',
- 						applyLabel: 'Buscar',
- 						cancelLabel: 'Cerrar',
- 						fromLabel: 'Desde',
- 						toLabel: 'Hasta',
- 						customRangeLabel: 'Personalizado',
- 						daysOfWeek: ['Dom', 'Lun', 'Mar', 'Mier', 'Jue', 'Vie', 'Sab'],
- 						monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
- 						firstDay: 1
- 					},
- 					autoApply: true,
- 					maxDate: $moment().add(1, 'months').date(1).subtract(1, 'days'),
- 				},
- 				date: {
- 					startDate: firstMonthDay,
- 					endDate: currentDate
- 				}
+ 				disabled: false,
+ 				loaded: false
  			}
- 		},
- 		buttons: {
- 			getExcel: {
- 				disabled: false
- 			}
- 		},
- 		loader: {
- 			show: false
- 		},
- 		charts: {
-			actividadVsRiesgo: {
-				loaded: false,
-				table: {
-					headers: [],
-					row1: [],
-					row2: [],
-					row3: []
-				},
-				chartConfig: Utils.setChartConfig('column', 400, {}, {}, {}, [])
-			}
-		},
-		markers: {
-			resolved: [],
-			unchecked: []
-		}
+ 		}
  	};
+
+
+ 	$scope.getChecklist = function() {
+
+ 		$scope.page.filters.checklist.selected = [];
+ 		$scope.page.filters.checklist.list = [];
+ 		ChecklistActions.query({}, 
+ 			function(success) {
+	 			if (success.data) {
+
+	 				$scope.page.filters.checklist.list.push({
+	 					id: '',
+	 					name: 'Todas las listas'
+	 				});
+
+	 				for (var i = 0; i < success.data.length; i++) {
+	 					$scope.page.filters.checklist.list.push({
+	 						id: parseInt(success.data[i].id),
+	 						name: $filter('capitalize')(success.data[i].attributes.name, true),
+	 					});
+	 				}
+
+	 				$scope.page.filters.checklist.selected = $scope.page.filters.checklist.list[0];
+	 				$scope.page.filters.checklist.disabled = false;
+	 				$scope.page.filters.checklist.loaded = true;
+
+	 			} 
+	 			else 
+	 			{
+	 				$log.error(success);
+	 				$scope.page.filters.checklist.disabled = true;
+	 			}
+	 		}, function(error) {
+	 			$log.error(error);
+	 			$scope.page.filters.checklist.disabled = true
+	 			if (error.status === 401) {
+	 				Utils.refreshToken($scope.getChecklist);
+	 			}
+ 			});
+ 	};
+ 	$scope.getChecklist();
+
+
+ 	$scope.$watch('page.filters.checklist.loaded', function() {
+		if ($scope.page.filters.checklist.loaded) {
+			$log.error('YO DEBO LLAMAR AL SERVICIO');
+		}
+	});
 
 
  	///INICIO CHARTS

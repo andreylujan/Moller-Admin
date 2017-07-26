@@ -22,6 +22,7 @@ angular.module('efindingAdminApp')
 	};
 
 	$scope.role_id = Utils.getInStorage('role_id');
+	$scope.is_superuser = Utils.getInStorage('is_superuser');
 
 	$scope.pagination = {
 		pages: {

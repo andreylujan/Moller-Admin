@@ -8,13 +8,9 @@
  * Controller of the efindingAdminApp
  */
  angular.module('efindingAdminApp')
- .controller('AccidentalnessDashboardCtrl', function($scope, $filter, $log, $moment, Utils, NgTableParams, Dashboard, Companies, Constructions, Users, NgMap) {
- 	
- 	var currentDate = new Date();
- 	var firstMonthDay = new Date();
- 	firstMonthDay.setDate(1);
-
-
+ .controller('AccidentalnessDashboardCtrl', function($scope, $filter, $log, $moment, Utils, NgTableParams, 
+ 													DashboardAccidentalness, Companies, Constructions) {
+ 
  	$scope.page = {
  		title: 'Accidentabilidad',
  		filters: {
@@ -28,13 +24,27 @@
  				format: 'dd-MM-yyyy',
  				value: new Date(),
  				opened: false
+ 			},
+ 			companies: {
+ 				list: [],
+ 				selected: null
+ 			},
+ 			constructions: {
+ 				list: [],
+ 				selected: null,
+ 				disabled: false,
+ 				loaded: false
  			}
  		}
  	};
 
- 	///INICIO CHARTS
-
- 	$scope.accidentabilidadGlobal = Utils.setChartConfig(
+ 	
+ 	$scope.getDashboardInfo = function() {
+ 		DashboardAccidentalness.query({
+ 		}, function(success) {
+		    if (success.data) {
+		    	
+		    	$scope.accidentabilidadGlobal = Utils.setChartConfig(
  								'spline', 
  								null, 
  								{
@@ -58,23 +68,10 @@
 							        }
 						    	}, 
 	    						{
-							        categories: [
-							            'Jan',
-							            'Feb',
-							            'Mar',
-							            'Apr',
-							            'May',
-							            'Jun',
-							            'Jul',
-							            'Aug',
-							            'Sep',
-							            'Oct',
-							            'Nov',
-							            'Dec'
-							        ]
+							        categories: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return num.mes; })
 							    }, 
 	    						[{
-							        name: 'Tokyo',
+							        name: 'Tasa de accidentibilidad',
 							        marker: {
 							            symbol: 'circle',
 							            radius: 7
@@ -82,13 +79,14 @@
 							        line: {
 							        	radius: 2
 							        },
-							        data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 23.3, 18.3, 13.9, 9.6]
+							        data: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return parseFloat(num.tasa_accidentabilidad.toFixed(2)); })
 							    }]
 	    					);
 
 
 
- 	$scope.siniestralidadGlobal = Utils.setChartConfig(
+
+		    	$scope.siniestralidadGlobal = Utils.setChartConfig(
  								'spline', 
  								null, 
  								{
@@ -112,23 +110,10 @@
 							        }
 						    	}, 
 	    						{
-							        categories: [
-							            'Jan',
-							            'Feb',
-							            'Mar',
-							            'Apr',
-							            'May',
-							            'Jun',
-							            'Jul',
-							            'Aug',
-							            'Sep',
-							            'Oct',
-							            'Nov',
-							            'Dec'
-							        ]
+							        categories: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return num.mes; })
 							    }, 
 	    						[{
-							        name: 'Tokyo',
+							        name: 'Tasa de siniestralidad',
 							        marker: {
 							            symbol: 'circle',
 							            radius: 7
@@ -136,13 +121,13 @@
 							        line: {
 							        	radius: 2
 							        },
-							        data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 23.3, 18.3, 13.9, 9.6]
+							        data: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return parseFloat(num.tasa_siniestralidad.toFixed(2)); })
 							    }]
 	    					);
 
 
 
- 	$scope.tasaAccidentabilidad = Utils.setChartConfig(
+ 		$scope.tasaAccidentabilidad = Utils.setChartConfig(
  								'spline', 
  								null, 
  								{
@@ -163,20 +148,7 @@
  								}, 
 	    						{}, 
 	    						{
-	    							categories: [
-							            'Jan',
-							            'Feb',
-							            'Mar',
-							            'Apr',
-							            'May',
-							            'Jun',
-							            'Jul',
-							            'Aug',
-							            'Sep',
-							            'Oct',
-							            'Nov',
-							            'Dec'
-							        ]
+	    							categories: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return num.mes; })
 	    						}, 
 	    						[{
 							    	type: 'spline',
@@ -188,11 +160,11 @@
 							        line: {
 							        	radius: 2
 							        },
-							        data: [0, 1, 2, 2, 2, 4, 5, 7, 7, 7, 10, 10]
+							        data: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return parseFloat(num.tasa_accidentabilidad_acumulada.toFixed(2)); })
 							    },
 							    {
 							        type: 'line',
-							        data: [[0, 1], [11, 5]],
+							        data: success.data.attributes.meta_accidentabilidad,
 							        name: 'Meta',
 							        marker: {
 							            enabled: false
@@ -208,7 +180,7 @@
 	    					);
  	
 
- 	$scope.tasaSiniestralidad = Utils.setChartConfig(
+ 		$scope.tasaSiniestralidad = Utils.setChartConfig(
  								'spline', 
  								null, 
  								{
@@ -229,20 +201,7 @@
  								}, 
 	    						{}, 
 	    						{
-	    							categories: [
-							            'Jan',
-							            'Feb',
-							            'Mar',
-							            'Apr',
-							            'May',
-							            'Jun',
-							            'Jul',
-							            'Aug',
-							            'Sep',
-							            'Oct',
-							            'Nov',
-							            'Dec'
-							        ]
+	    							categories: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return num.mes; })
 	    						}, 
 	    						[{
 							    	type: 'spline',
@@ -254,11 +213,11 @@
 							        line: {
 							        	radius: 2
 							        },
-							        data: [0, 1, 2, 2, 2, 4, 5, 7, 7, 7, 10, 10]
+							        data: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return parseFloat(num.tasa_siniestralidad_acumulada.toFixed(2)); })
 							    },
 							    {
 							        type: 'line',
-							        data: [[0, 1], [11, 5]],
+							        data: success.data.attributes.meta_siniestralidad,
 							        name: 'Meta',
 							        marker: {
 							            enabled: false
@@ -272,4 +231,106 @@
 							    }
 							    ]
 	    					);
+    		}
+		}, function(error) {
+			$log.error(error);
+			if (error.status === 401) {
+				Utils.refreshToken($scope.getDashboardInfo);
+
+
+			}
+		});
+	};
+
+
+
+
+ 	$scope.open = function($event) {
+      $event.preventDefault();
+      $event.stopPropagation();
+      $scope.page.filters.date.opened = true;
+    };
+
+    var getCompanies = function() {
+ 		$scope.page.filters.companies.list = [];
+
+ 		Companies.query({}, function(success) {
+ 			if (success.data) {
+ 				$scope.page.filters.companies.list.push({
+ 					id: '',
+ 					name: 'Todas las Empresas',
+ 					companiesIds: []
+ 				});
+
+ 				angular.forEach(success.data, function(value, key) {
+ 					$scope.page.filters.companies.list.push({
+ 						id: parseInt(value.id),
+ 						name: value.attributes.name,
+ 						dealersIds: value.attributes.dealer_ids
+ 					});
+ 				});
+
+ 				$scope.page.filters.companies.selected = $scope.page.filters.companies.list[0];
+ 				$scope.getConstructions($scope.page.filters.companies.selected);
+ 				$scope.page.filters.constructions.disabled = true;
+
+ 			} else {
+ 				$log.error(success);
+ 			}
+ 		}, function(error) {
+ 			$log.error(error);
+ 			if (error.status === 401) {
+ 				Utils.refreshToken(getCompanies);
+ 			}
+ 		});
+ 	};
+
+ 	$scope.getConstructions = function(companySelected) {
+
+ 		$scope.page.filters.constructions.selected = [];
+ 		$scope.page.filters.constructions.list = [];
+ 		Constructions.query({
+ 			'filter[company_id]': companySelected.id
+ 		}, function(success) {
+ 			if (success.data) {
+
+ 				$scope.page.filters.constructions.list.push({
+ 					id: '',
+ 					name: 'Todas las obras'
+ 				});
+
+ 				for (var i = 0; i < success.data.length; i++) {
+ 					$scope.page.filters.constructions.list.push({
+ 						id: parseInt(success.data[i].id),
+ 						name: $filter('capitalize')(success.data[i].attributes.name, true),
+ 						type: 'dealers'
+ 					});
+ 				}
+
+ 				$scope.page.filters.constructions.selected = $scope.page.filters.constructions.list[0];
+ 				$scope.page.filters.constructions.disabled = false;
+ 				$scope.page.filters.constructions.loaded = true;
+
+ 			} else {
+ 				$scope.page.filters.constructions.disabled = true;
+ 				$log.error(success);
+ 			}
+ 		}, function(error) {
+ 			$scope.page.filters.constructions.disabled = true;
+ 			$log.error(error);
+ 			if (error.status === 401) {
+ 				Utils.refreshToken($scope.getConstructions);
+ 			}
+ 		});
+ 	};
+ 	getCompanies();
+
+
+ 	$scope.$watch('page.filters.constructions.loaded', function() {
+		if ($scope.page.filters.constructions.loaded) {
+			$scope.$watch('page.filters.date.value', function() {
+				$scope.getDashboardInfo();
+			});
+		}
+	});
 });
