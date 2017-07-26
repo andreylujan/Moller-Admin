@@ -92,7 +92,7 @@
             <div class="form-group">
               	<label class="col-sm-3 control-label">Administrador de obra</label>
               	<div class="col-md-8">
-                	<ui-select class="bg-white b-solid br-15" ng-model="construction.selectedAdministrador" close-on-select="true">
+                	<ui-select class="bg-white b-solid br-15" ng-model="construction.selectedAdministrador" close-on-select="true" ng-disabled="expertsD">
 		  				<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.fullName}}</ui-select-match>
 		  				<ui-select-choices repeat="adm in admObra track by adm.fullName | propsFilter: {fullName: $select.search}" refresh-delay="200">
 		  					<div ng-bind-html="adm.fullName"></div>
@@ -103,7 +103,7 @@
             <div class="form-group">
 		  		<label for="inputPassword3" class="col-sm-3 control-label">APR Jefe</label>
 		  		<div class="col-sm-8">
-		  			<ui-select class="bg-white b-solid br-15" ng-model="construction.selectedSupervisor" close-on-select="true">
+		  			<ui-select class="bg-white b-solid br-15" ng-model="construction.selectedSupervisor" close-on-select="true" ng-disabled="expertsD">
 		  				<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.fullName}}</ui-select-match>
 		  				<ui-select-choices repeat="supervisor in supervisors track by supervisor.id | propsFilter: {fullName: $select.search}" refresh-delay="200">
 		  					<div ng-bind-html="supervisor.fullName"></div>
@@ -114,7 +114,7 @@
             <div class="form-group">
 		  		<label for="inputPassword3" class="col-sm-3 control-label">Jefe de terreno</label>
 		  		<div class="col-sm-8">
-		  			<ui-select class="bg-white b-solid br-15" ng-model="construction.selectedExpert" close-on-select="true">
+		  			<ui-select class="bg-white b-solid br-15" ng-model="construction.selectedExpert" close-on-select="true" ng-disabled="expertsD" >
 		  				<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.fullName}}</ui-select-match>
 		  				<ui-select-choices repeat="expert in experts track by expert.id | propsFilter: {fullName: $select.search}" refresh-delay="200">
 		  					<div ng-bind-html="expert.fullName"></div>
@@ -125,7 +125,7 @@
 		  	<div class="form-group">
 		  		<label for="inputPassword3" class="col-sm-3 control-label">Inspector</label>
 		  		<div class="col-sm-8">
-		  			<ui-select class="bg-white b-solid br-15" ng-model="construction.selectedInspector" close-on-select="true">
+		  			<ui-select class="bg-white b-solid br-15" ng-model="construction.selectedInspector" close-on-select="true" ng-disabled="expertsD" >
 		  				<ui-select-match placeholder="Buscar..." class="unstyled-placeholder">{{$select.selected.fullName}}</ui-select-match>
 		  				<ui-select-choices repeat="inspector in inspectors track by inspector.id | propsFilter: {fullName: $select.search}" refresh-delay="200">
 		  					<div ng-bind-html="inspector.fullName"></div>
@@ -136,7 +136,7 @@
             <div class="form-group">
               	<label for="userRole" class="col-sm-3 control-label">Contratistas</label>
               	<div class="col-md-8">
-	             	<ui-select class="b-solid br-15" multiple ng-model="construction.contractors" close-on-select="false">
+	             	<ui-select class="b-solid br-15" multiple ng-model="construction.contractors" close-on-select="false" ng-disabled="expertsD" >
 				    	<ui-select-match placeholder="Buscar...">{{$item.name}}</ui-select-match>
 				    	<ui-select-choices repeat="contractor in contractors track by contractor.id | propsFilter: {name: $select.search}">
 				      	{{contractor.name}}

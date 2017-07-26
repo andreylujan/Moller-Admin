@@ -410,6 +410,9 @@ angular.module('efindingAdminApp')
 		jTerreno: {}
 	};
 
+	$scope.expertsD	= true;
+
+
 	$scope.experts		= [];
 	$scope.contractors 	= [];
 	$scope.inspectors 	= [];
@@ -628,6 +631,7 @@ angular.module('efindingAdminApp')
 		{
 			$scope.elements.buttons.editUser.text = 'Guardar';
 			$scope.elements.buttons.editUser.border = '';
+			$scope.expertsD	= false;
 		} 
 		else 
 		{

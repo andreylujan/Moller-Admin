@@ -82,37 +82,37 @@
 			            <div class="form-group">
 			              	<label class="col-sm-3 control-label">Promedio trabajadores</label>
 			              	<div class="col-md-8">
-			                	<input type="number" min="0" id="name" class="form-control underline-input" placeholder="Promedio trabajadores" ng-model="accidentalness.trabajadores.text" ng-change="hideAlert()" ng-disabled="accidentalness.trabajadores.disabled">
+			                	<input type="number" min="0" id="name" class="form-control underline-input" placeholder="Promedio trabajadores" ng-model="accidentalness.trabajadores.text" ng-change="hideAlert()" ng-disabled="accidentalness.trabajadores.disabled" required>
 			              	</div>
 			            </div>
 			            <div class="form-group">
 					  		<label for="inputPassword3" class="col-sm-3 control-label">H/H</label>
 					  		<div class="col-sm-8">
-					  			<input type="number" min="0" id="name" class="form-control underline-input" placeholder="H/H" ng-model="accidentalness.hh.text" ng-change="hideAlert()" ng-disabled="accidentalness.hh.disabled">
+					  			<input type="number" min="0" id="name" class="form-control underline-input" placeholder="H/H" ng-model="accidentalness.hh.text" ng-change="hideAlert()" ng-disabled="accidentalness.hh.disabled" required>
 					  		</div>
 					  	</div>
 			            <div class="form-group">
 					  		<label for="inputPassword3" class="col-sm-3 control-label">Cantidad de accidentes</label>
 					  		<div class="col-sm-8">
-					  			<input type="number" min="0" id="name" class="form-control underline-input" placeholder="Cantidad de accidentes" ng-model="accidentalness.accidentes.text" ng-change="hideAlert()" ng-disabled="accidentalness.accidentes.disabled">
+					  			<input type="number" min="0" id="name" class="form-control underline-input" placeholder="Cantidad de accidentes" ng-model="accidentalness.accidentes.text" ng-change="hideAlert()" ng-disabled="accidentalness.accidentes.disabled" required>
 					  		</div>
 					  	</div>
 					  	<div class="form-group">
 					  		<label for="inputPassword3" class="col-sm-3 control-label">Cantidad días Perdidos</label>
 					  		<div class="col-sm-8">
-					  			<input type="number" min="0" id="name" class="form-control underline-input" placeholder="Cantidad días Perdidos" ng-model="accidentalness.diasPerdidos.text" ng-change="hideAlert()" ng-disabled="accidentalness.diasPerdidos.disabled">
+					  			<input type="number" min="0" id="name" class="form-control underline-input" placeholder="Cantidad días Perdidos" ng-model="accidentalness.diasPerdidos.text" ng-change="hideAlert()" ng-disabled="accidentalness.diasPerdidos.disabled" required>
 					  		</div>
 					  	</div>
 			            <div class="form-group">
 			              	<label for="userRole" class="col-sm-3 control-label">Siniestralidad</label>
 			              	<div class="col-md-8">
-				             	<input type="number" min="0" id="name" class="form-control underline-input" placeholder="Siniestralidad" ng-model="accidentalness.siniestralidad.text" ng-change="hideAlert()" ng-disabled="accidentalness.siniestralidad.disabled">
+				             	<input type="number" min="0" id="name" class="form-control underline-input" placeholder="Siniestralidad" ng-model="accidentalness.siniestralidad.text" ng-change="hideAlert()" ng-disabled="accidentalness.siniestralidad.disabled" required>
 				            </div>
 			            </div>
 			            <div class="form-group">
 			              	<label for="userRole" class="col-sm-3 control-label">Accidentabilidad</label>
 			              	<div class="col-md-8">
-				             	<input type="number" min="0" id="name" class="form-control underline-input" placeholder="Accidentabilidad" ng-model="accidentalness.accidentabilidad.text" ng-change="hideAlert()" ng-disabled="accidentalness.accidentabilidad.disabled">
+				             	<input type="number" min="0" id="name" class="form-control underline-input" placeholder="Accidentabilidad" ng-model="accidentalness.accidentabilidad.text" ng-change="hideAlert()" ng-disabled="accidentalness.accidentabilidad.disabled" required>
 				            </div>
 			            </div>
 			            <div class="form-group">
@@ -133,7 +133,7 @@
     	</div>
 	    <div class="modal-footer">
 	      	<button class="btn btn-danger btn-rounded-10 {{elements.buttons.removeUser.border}} mb-10" type="button" ng-click="removeGeneric(accidentalness.id)" >{{elements.buttons.removeUser.text}}</button>
-      		<button class="btn btn-warning btn-rounded-10 {{elements.buttons.editUser.border}} mb-10" type="button" ng-click="editGeneric(accidentalness.id)" >{{elements.buttons.editUser.text}}</button>
+      		<button class="btn btn-warning btn-rounded-10 {{elements.buttons.editUser.border}} mb-10" type="button" ng-click="editGeneric(accidentalness.id)" ng-disabled="form.$invalid" >{{elements.buttons.editUser.text}}</button>
       		<button class="btn btn-cancelRecit btn-rounded-10 mb-10" type="button" ng-click="cancel()">Cerrar</button>
 	    </div>
   	</script>
@@ -173,7 +173,7 @@
 			              	<label class="col-sm-3 control-label">Fecha</label>
 			              	<div class="col-md-8">
 			                	<p class="input-group">
-									<input type="text" class="form-control" uib-datepicker-popup="MM/yyyy" ng-model="accidentalness.fecha.text" is-open="modal.datepicker.opened" datepicker-options="{minMode: 'month', showButtonBar: false}" readonly />
+									<input type="text" required class="form-control" uib-datepicker-popup="MM/yyyy" ng-model="accidentalness.fecha.text" is-open="modal.datepicker.opened" datepicker-options="{minMode: 'month', showButtonBar: false}" readonly />
 									<span class="input-group-btn" required>
 										<button type="button" class="btn btn-default" ng-click="openDatePicker($event)"><i class="glyphicon glyphicon-calendar"></i></button>
 									</span>
@@ -221,7 +221,7 @@
       		</div>
     	</div>
     	<div class="modal-footer">
-      		<button class="btn btn-success br-20 pl-20 pr-20" type="submit" ng-click="saveAccidentalness()">Guardar</button>
+      		<button class="btn btn-success br-20 pl-20 pr-20" ng-disabled="form.$invalid" type="submit" ng-click="saveAccidentalness()">Guardar</button>
 	    	<button class="btn btn-default br-20 pl-20 pr-20" type="button" ng-click="cancel()" >Cerrar</button>
     	</div>
   	</script>

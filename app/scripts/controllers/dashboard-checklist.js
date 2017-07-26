@@ -164,7 +164,7 @@
  			 		
  			 	});
 
- 			 	$log.error($scope.dashboard.cumplimientoObras);
+ 			 	//$log.error($scope.dashboard.cumplimientoObras);
     		}
 		}, function(error) {
 			$log.error(error);
