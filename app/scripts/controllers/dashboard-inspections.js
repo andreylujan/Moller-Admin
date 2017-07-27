@@ -157,7 +157,7 @@
 	    						{}, 
 	    						[
 	    							{
-								        name: 'Riesgo',
+								        name: 'Estado',
 								        colorByPoint: true,
 								        innerSize: '80%',
 								        data: success.data.attributes.cumplimiento_hallazgos
