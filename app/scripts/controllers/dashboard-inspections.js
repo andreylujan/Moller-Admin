@@ -27,7 +27,13 @@
  			date: {
  				value: new Date(),
  				opened: false
- 			}
+ 			},
+ 			constructions2: {
+ 				list: [],
+ 				selected: [],
+ 				disabled: false,
+ 				loaded: false
+ 			},
  		}
  	};
 
@@ -43,7 +49,8 @@
  		causasDirectas: [],
  		causasBasicas:  [],
  		causasDirectasTotal: 0,
- 		causasBasicasTotal: 0
+ 		causasBasicasTotal: 0,
+ 		indiceHallazgos: []
  	};
 
 
@@ -195,9 +202,10 @@
  					indiceHallazgos.categories.push(value.mes);
  					indiceHallazgos.indices_totales.push(value.indices_totales[0].index);
  					indiceHallazgos.indices_por_obra.push(parseFloat((_.reduce(value.indices_por_obra, function(memo, num){ return memo + num.index; }, 0) / value.indices_por_obra.length).toFixed(2)));
- 					//$log.error();
  					
  				});
+
+ 				$scope.dashboard.indiceHallazgos = success.data.attributes.indice_de_hallazgos;
  				
 
  				$scope.indiceHallazgos = Utils.setChartConfig(
@@ -262,6 +270,102 @@
 		});
 	};
 
+
+	$scope.changeConstructions = function()
+	{
+		var listaCons = [];
+
+		angular.forEach($scope.page.filters.constructions2.selected, function(value, key)
+		{
+			listaCons.push(value.name);
+		});
+
+		var indiceHallazgos = {
+			categories: [],
+			indices_por_obra: [], 	//NARANJO
+			indices_totales: [] 	//VERDE
+		};
+
+		if (listaCons.length == 0) 
+		{
+			angular.forEach($scope.dashboard.indiceHallazgos, function(value)
+			{
+				indiceHallazgos.categories.push(value.mes);
+				indiceHallazgos.indices_totales.push(value.indices_totales[0].index);
+				indiceHallazgos.indices_por_obra.push(parseFloat((_.reduce(value.indices_por_obra, function(memo, num){ return memo + num.index; }, 0) / value.indices_por_obra.length).toFixed(2)));
+				
+			});
+		}
+		else
+		{
+			angular.forEach($scope.dashboard.indiceHallazgos, function(value)
+			{
+				angular.forEach(value.indices_por_obra, function(valor)
+				{
+					valor.active = false;
+					if (_.find(listaCons, function(num){ return num == valor.name; }) != undefined) 
+					{
+						valor.active = true;
+					}
+				});
+
+				indiceHallazgos.categories.push(value.mes);
+				indiceHallazgos.indices_totales.push(value.indices_totales[0].index);
+				indiceHallazgos.indices_por_obra.push(parseFloat((_.reduce(_.where(value.indices_por_obra, {active: true}), function(memo, num){ return memo + num.index; }, 0) / _.where(value.indices_por_obra, {active: true}).length).toFixed(2)));	
+		});
+		}
+
+
+		$scope.indiceHallazgos = Utils.setChartConfig(
+				'column', 
+				null, 
+				{
+					spline : {
+                	dataLabels : {
+                    	enabled : true,
+                    	color: 'orange',
+                    	style: {"fontSize": "15px", "fontWeight": "bold", "textOutline": "1px" },
+                    	formatter : function() {
+                        	return this.y + '%';
+                    	}
+                	}
+            	},
+            	column : {
+                	dataLabels : {
+                    	enabled : true,
+                    	color: 'green',
+                    	style: {"fontSize": "15px", "fontWeight": "bold", "textOutline": "1px" },
+                    	formatter : function() {
+                        	return this.y + '%';
+                    	}
+                	}
+            	}
+				}, 
+			{}, 
+		 	{
+				categories: indiceHallazgos.categories
+			}, 
+			[{
+		        type: 'column',
+		        name: 'Índice global de hallazgos - Pitagora',
+		        data: indiceHallazgos.indices_totales,
+		        color: 'green'
+		    }, {
+		        type: 'spline',
+		        name: 'Índice de accidentes obras seleccionadas',
+		        data: indiceHallazgos.indices_por_obra,
+		        color: 'orange',
+		        marker: {
+		            lineWidth: 2,
+		            lineColor: Highcharts.getOptions().colors[3],
+		            fillColor: 'orange',
+		            symbol: 'circle',
+		            radius: 7
+		        }
+		    }]
+		);
+	};
+
     var getCompanies = function() {
  		$scope.page.filters.companies.list = [];
 
@@ -316,11 +420,20 @@
  						name: $filter('capitalize')(success.data[i].attributes.name, true),
  						type: 'dealers'
  					});
+
+ 					$scope.page.filters.constructions2.list.push({
+ 						id: parseInt(success.data[i].id),
+ 						name: success.data[i].attributes.name,
+ 					});
  				}
 
  				$scope.page.filters.constructions.selected = $scope.page.filters.constructions.list[0];
  				$scope.page.filters.constructions.disabled = false;
  				$scope.page.filters.constructions.loaded = true;
+
+ 				$scope.page.filters.constructions2.selected = $scope.page.filters.constructions2.list[0];
+ 				$scope.page.filters.constructions2.disabled = false;
+ 				$scope.page.filters.constructions2.loaded = true;
 
  				if (companySelected.id != '') 
  				{

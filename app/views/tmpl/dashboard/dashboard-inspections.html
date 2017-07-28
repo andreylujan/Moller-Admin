@@ -108,18 +108,18 @@
           	</div>
           	<div class="tile-body">
             	<div class="row">
-              		<!--div class="col-md-12 solid">
+              		<div class="col-md-12 solid">
               			<section class="tile tile-simple">
 				          	<div class="tile-body text-center">
-				          		<ui-select class="blue-ps-1 br-15 b-0" ng-model="page.filters.constructions.selected" close-on-select="true" ng-change="getDashboardInfo()" ng-disabled="page.filters.constructions.disabled" title="Obras">
-									<ui-select-match placeholder="Obra"><span ng-bind="$select.selected.name | capitalize:true"></span></ui-select-match>
-									<ui-select-choices repeat="construction in page.filters.constructions.list | propsFilter: {name: $select.search}">
-										<div ng-bind-html="construction.name | highlight: $select.search | capitalize:true"></div>
-									</ui-select-choices>
+				          		<ui-select class="b-solid br-15" ng-model="page.filters.constructions2.selected" multiple close-on-select="true" ng-change="changeConstructions();" ng-disabled="page.filters.constructions2.disabled" title="Obras">
+									<ui-select-match placeholder="Buscar...">{{$item.name}}</ui-select-match>
+									<ui-select-choices repeat="construction in page.filters.constructions2.list | propsFilter: {name: $select.search}">
+							      	{{construction.name}}
+							    	</ui-select-choices>
 								</ui-select>
 				          	</div>
 				        </section> 
-              		</div-->
+              		</div>
 		        	<div class="col-md-12">
 		        		<highchart config="indiceHallazgos"></highchart>
 		        	</div>
@@ -135,9 +135,6 @@
           		</div>
           		<div class="tile-body">
             		<div class="row">
-              			<!--div class="col-md-6">
-              				<highchart config="causasDirectas"></highchart>
-              			</div-->
               			<div class="col-md-12">
               				<div class="tile-body text-center">
 				           		<h1 class="m-0" style="color: orange; font-size: 500%;"><b>{{dashboard.causasDirectasTotal}}</b></h1>
@@ -170,9 +167,6 @@
           		</div>
           		<div class="tile-body">
             		<div class="row">
-              			<!--div class="col-md-6">
-              				<highchart config="causasBasicas"></highchart>
-              			</div-->
               			<div class="col-md-12">
               				<div class="tile-body text-center">
 				           		<h1 class="m-0" style="color: orange; font-size: 500%;"><b>{{dashboard.causasBasicasTotal}}</b></h1>
