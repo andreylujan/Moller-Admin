@@ -122,12 +122,6 @@ angular.module('efindingAdminApp')
 	};
 
 	this.setChartConfig = function(type, height, plotOptions, yAxisData, xAxisData, series) {
-		// if (!type) {
-		// 	type = 'column';
-		// }
-		/*if (!height) {
-			height = 250;
-		}*/
 		return {
 			options: {
 				title: {

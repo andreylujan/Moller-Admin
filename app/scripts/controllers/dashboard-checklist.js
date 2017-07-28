@@ -15,13 +15,6 @@
  		title: 'Lista de Chequeo',
  		filters: {
  			date: {
- 				dateOptions: 
- 				{
- 					formatYear: 'yy',
-				    startingDay: 1,
-				    'class': 'datepicker'
- 				},
- 				format: 'dd-MM-yyyy',
  				value: new Date(),
  				opened: false
  			},
@@ -48,8 +41,27 @@
  		cumplimientoObras: []
  	};
 
+ 	$scope.reset = function()
+ 	{
+ 		$scope.dashboard.cumplimientoObras = [];
+ 		$scope.getDashboardInfo();
+ 	}
+
  	$scope.getDashboardInfo = function() {
+
+		$scope.dashboard.cumplimientoObras		= [];
+
+ 		var companyIdSelected 		= $scope.page.filters.companies.selected ? $scope.page.filters.companies.selected.id : '';
+ 		var constructionIdSelected 	= $scope.page.filters.constructions.selected ? $scope.page.filters.constructions.selected.id : '';
+ 		var checklistIdSelected 	= $scope.page.filters.checklist.selected ? $scope.page.filters.checklist.selected.id : '';
+
+ 		var date = (new Date($scope.page.filters.date.value).getMonth()+1) + '/' + new Date($scope.page.filters.date.value).getFullYear();
+
  		DashboardChecklist.query({
+ 			'filter[company_id]': companyIdSelected,
+ 			'filter[construction_id]': constructionIdSelected,
+ 			'filter[checklist_id]': checklistIdSelected,
+ 			'filter[period]': date
  		}, function(success) {
 		    if (success.data) 
 		    {
@@ -84,6 +96,7 @@
 							        marker: {
 							            symbol: 'circle'
 							        },
+							        color: 'green',
 							        data: _.map(success.data.attributes.cumplimiento_por_periodo, function(num, key){ return parseFloat(num.cumplimiento.replace('%','')); })
 							    }]
 	    					);
@@ -153,18 +166,18 @@
 							    ]
 	    					);
 
- 				//SACAR PROMEDIO
- 			 	//_.reduce(success.data.attributes.cumplimiento_por_obra, function(memo, num){ return memo + parseFloat(num.cumplimiento.replace('&','')); }, 0) / success.data.attributes.cumplimiento_por_obra.length
-
- 			 	$scope.dashboard.promedioCumplimiento = (_.reduce(success.data.attributes.cumplimiento_por_obra, function(memo, num){ return memo + parseFloat(num.cumplimiento.replace('&','')); }, 0) / success.data.attributes.cumplimiento_por_obra.length).toFixed(2);
+ 				var promedio = (_.reduce(success.data.attributes.cumplimiento_por_obra, function(memo, num){ return memo + parseFloat(num.cumplimiento.replace('&','')); }, 0) / success.data.attributes.cumplimiento_por_obra.length).toFixed(2);
+ 				if (promedio == 'NaN') 
+ 				{
+ 					promedio = 0;
+ 				}
+ 			 	$scope.dashboard.promedioCumplimiento = promedio;
 
  			 	angular.forEach(success.data.attributes.cumplimiento_por_obra, function(value, key)
  			 	{
  			 		$scope.dashboard.cumplimientoObras.push({obra: value.obra, cumplimiento: value.cumplimiento});
  			 		
  			 	});
-
- 			 	$log.error($scope.dashboard.cumplimientoObras);
     		}
 		}, function(error) {
 			$log.error(error);
@@ -240,6 +253,11 @@
  				$scope.page.filters.constructions.selected = $scope.page.filters.constructions.list[0];
  				$scope.page.filters.constructions.disabled = false;
 
+ 				if (companySelected.id != '') 
+ 				{
+ 					$scope.getDashboardInfo();
+ 				}
+
  			} else {
  				$scope.page.filters.constructions.disabled = true;
  				$log.error(success);
@@ -291,8 +309,20 @@
 	 			}
  			});
  	};
+ 	
  	getCompanies();
+ 	
  	$scope.getChecklist();
+
+ 	$scope.openDatePicker = function($event) {
+		$event.preventDefault();
+		$event.stopPropagation();
+		$scope.page.filters.date.opened = !$scope.page.filters.date.opened;
+	};
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');
+	};
 
 
 

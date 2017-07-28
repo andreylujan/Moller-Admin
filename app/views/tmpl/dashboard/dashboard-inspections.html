@@ -4,11 +4,16 @@
 		<div class="row">
 			<div class="col-md-4">
 				<div class="gray-ps-1 br-15 b-0">
-					<input type="text" class="bg-gray-ps-1 br-15 text-sm form-control b-0n date-picker" uib-datepicker-popup="{{page.filters.date.format}}" ng-model="page.filters.date.value" is-open="page.filters.date.opened" min-date="minDate" datepicker-options="page.filters.date.dateOptions" ng-required="true" ng-click="open($event)" close-text="Cerrar" clear-text="Limpiar" current-text="Hoy" readonly />
+					 <p class="input-group">
+						<input type="text" class="form-control" uib-datepicker-popup="MM/yyyy" ng-model="page.filters.date.value" is-open="page.filters.date.opened" datepicker-options="{minMode: 'month', showButtonBar: false}" close-text="Cerrar" clear-text="Limpiar" current-text="Hoy" readonly />
+						<span class="input-group-btn" required>
+							<button type="button" class="btn btn-default" ng-click="openDatePicker($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+						</span>
+					</p>
 				</div>
 			</div>
 			<div class="col-md-4">
-				<ui-select class="gray-ps-3 br-15 b-0" ng-model="page.filters.companies.selected" close-on-select="true" ng-change="getConstructions(page.filters.companies.selected);getDashboardInfo()" title="Empresas">
+				<ui-select class="gray-ps-3 br-15 b-0" ng-model="page.filters.companies.selected" close-on-select="true" ng-change="getConstructions(page.filters.companies.selected);" title="Empresas">
 					<ui-select-match placeholder="Empresa"><span ng-bind="$select.selected.name  | capitalize:true"></span></ui-select-match>
 					<ui-select-choices repeat="company in page.filters.companies.list | propsFilter: {name: $select.search}">
 						<div ng-bind-html="company.name | highlight: $select.search | capitalize:true"></div>
@@ -62,7 +67,7 @@
 	<div class="row">
 		<section class="tile">
           	<div class="tile-header dvd dvd-btm">
-            	<h1 class="custom-font"><strong>Cumplimiento de hallazgos</strong> (Globales)</h1>
+            	<h1 class="custom-font"><strong>Estado Cumplimiento de Hallazgos</strong></h1>
           	</div>
           	<div class="tile-body">
             	<div class="row">
@@ -73,7 +78,7 @@
 		        		<section class="tile tile-simple">
 				          	<div class="tile-body text-center">
 				           		<h1 class="m-0" style="color: orange; font-size: 500%;"><b>{{dashboard.cumplimientoGlobal}}</b></h1>
-					        	<span class="text" style="font-size: 150%;"><b>Cumplimiento</b></span>
+					        	<span class="text" style="font-size: 150%;"><b>% de Resueltos</b></span>
 				          	</div>
 				        </section>
 			       	</div>
@@ -81,11 +86,11 @@
 		        		<section class="tile" >
 							<div class="tile-widget">
 					          	<div class="tile-body text-center solid">
-					            	<div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Cumplimiento interno</b></div>
+					            	<div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Hallazgos Pitágora</b></div>
 				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">{{dashboard.cumplimientoInterno}}</b></div>
 					          	</div>
 					          	<div class="tile-body text-center solid">
-					            	<div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Cumplimiento contratistas</b></div>
+					            	<div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Hallazgos contratistas</b></div>
 				            		<div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">{{dashboard.CumplimientoContratistas}}</b></div>
 					          	</div>
 							</div>
@@ -103,7 +108,7 @@
           	</div>
           	<div class="tile-body">
             	<div class="row">
-              		<div class="col-md-12 solid">
+              		<!--div class="col-md-12 solid">
               			<section class="tile tile-simple">
 				          	<div class="tile-body text-center">
 				          		<ui-select class="blue-ps-1 br-15 b-0" ng-model="page.filters.constructions.selected" close-on-select="true" ng-change="getDashboardInfo()" ng-disabled="page.filters.constructions.disabled" title="Obras">
@@ -114,7 +119,7 @@
 								</ui-select>
 				          	</div>
 				        </section> 
-              		</div>
+              		</div-->
 		        	<div class="col-md-12">
 		        		<highchart config="indiceHallazgos"></highchart>
 		        	</div>

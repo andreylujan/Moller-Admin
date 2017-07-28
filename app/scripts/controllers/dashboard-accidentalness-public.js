@@ -9,7 +9,7 @@
  */
  angular.module('efindingAdminApp')
  .controller('AccidentalnessPublicDashboardCtrl', function($scope, $auth, $filter, $state, $log, 
- 	$timeout, $moment, Utils) {
+ 	$timeout, $moment, Utils, DashboardAccidentalness) {
  	
  	//traer el token
  	var token = $state.params.token;
@@ -18,88 +18,22 @@
  	Utils.setInStorage('refresh_t', refresh_token);
  	$auth.setToken(token);
 
-	var currentDate = new Date();
- 	var firstMonthDay = new Date();
- 	firstMonthDay.setDate(1);
-
-
- 	$scope.page = {
- 		title: 'Accidentabilidad',
- 		filters: {
- 			companies: {
- 				list: [],
- 				selected: null
- 			},
- 			constructions: {
- 				list: [],
- 				selected: null,
- 				disabled: false
- 			},
- 			status: {
- 				list: [],
- 				selected: null,
- 				disabled: false
- 			},
- 			supervisor: {
- 				list: [],
- 				selected: null,
- 				disabled: false
- 			},
- 			month: {
- 				value: new Date(),
- 				isOpen: false
- 			},
- 			dateRange: {
- 				options: {
- 					locale: {
- 						format: 'DD/MM/YYYY',
- 						applyLabel: 'Buscar',
- 						cancelLabel: 'Cerrar',
- 						fromLabel: 'Desde',
- 						toLabel: 'Hasta',
- 						customRangeLabel: 'Personalizado',
- 						daysOfWeek: ['Dom', 'Lun', 'Mar', 'Mier', 'Jue', 'Vie', 'Sab'],
- 						monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
- 						firstDay: 1
- 					},
- 					autoApply: true,
- 					maxDate: $moment().add(1, 'months').date(1).subtract(1, 'days'),
- 				},
- 				date: {
- 					startDate: firstMonthDay,
- 					endDate: currentDate
- 				}
- 			}
- 		},
- 		buttons: {
- 			getExcel: {
- 				disabled: false
- 			}
- 		},
- 		loader: {
- 			show: false
- 		},
- 		charts: {
-			actividadVsRiesgo: {
-				loaded: false,
-				table: {
-					headers: [],
-					row1: [],
-					row2: [],
-					row3: []
-				},
-				chartConfig: Utils.setChartConfig('column', 400, {}, {}, {}, [])
-			}
-		},
-		markers: {
-			resolved: [],
-			unchecked: []
-		}
+	$scope.page = {
+ 		title: 'Accidentabilidad'
  	};
 
- 	///INICIO CHARTS
+ 	
+ 	$scope.getDashboardInfo = function() {
+ 		DashboardAccidentalness.query({
+ 		}, function(success) {
+		    if (success.data) {
 
- 	$scope.accidentabilidadGlobal = Utils.setChartConfig(
+		    	$scope.accidentabilidadGlobal = {};
+		    	$scope.siniestralidadGlobal = {};
+		    	$scope.tasaAccidentabilidad = {};
+		    	$scope.tasaSiniestralidad = {};
+		    	
+		    	$scope.accidentabilidadGlobal = Utils.setChartConfig(
  								'spline', 
  								null, 
  								{
@@ -123,23 +57,10 @@
 							        }
 						    	}, 
 	    						{
-							        categories: [
-							            'Jan',
-							            'Feb',
-							            'Mar',
-							            'Apr',
-							            'May',
-							            'Jun',
-							            'Jul',
-							            'Aug',
-							            'Sep',
-							            'Oct',
-							            'Nov',
-							            'Dec'
-							        ]
+							        categories: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return num.mes; })
 							    }, 
 	    						[{
-							        name: 'Tokyo',
+							        name: 'Tasa de accidentibilidad',
 							        marker: {
 							            symbol: 'circle',
 							            radius: 7
@@ -147,13 +68,15 @@
 							        line: {
 							        	radius: 2
 							        },
-							        data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 23.3, 18.3, 13.9, 9.6]
+							        color: 'green',
+							        data: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return parseFloat(num.tasa_accidentabilidad.toFixed(2)); })
 							    }]
 	    					);
 
 
 
- 	$scope.siniestralidadGlobal = Utils.setChartConfig(
+
+		    	$scope.siniestralidadGlobal = Utils.setChartConfig(
  								'spline', 
  								null, 
  								{
@@ -177,23 +100,10 @@
 							        }
 						    	}, 
 	    						{
-							        categories: [
-							            'Jan',
-							            'Feb',
-							            'Mar',
-							            'Apr',
-							            'May',
-							            'Jun',
-							            'Jul',
-							            'Aug',
-							            'Sep',
-							            'Oct',
-							            'Nov',
-							            'Dec'
-							        ]
+							        categories: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return num.mes; })
 							    }, 
 	    						[{
-							        name: 'Tokyo',
+							        name: 'Tasa de siniestralidad',
 							        marker: {
 							            symbol: 'circle',
 							            radius: 7
@@ -201,13 +111,14 @@
 							        line: {
 							        	radius: 2
 							        },
-							        data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 23.3, 18.3, 13.9, 9.6]
+							        color: 'green',
+							        data: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return parseFloat(num.tasa_siniestralidad.toFixed(2)); })
 							    }]
 	    					);
 
 
 
- 	$scope.tasaAccidentabilidad = Utils.setChartConfig(
+ 		$scope.tasaAccidentabilidad = Utils.setChartConfig(
  								'spline', 
  								null, 
  								{
@@ -228,20 +139,7 @@
  								}, 
 	    						{}, 
 	    						{
-	    							categories: [
-							            'Jan',
-							            'Feb',
-							            'Mar',
-							            'Apr',
-							            'May',
-							            'Jun',
-							            'Jul',
-							            'Aug',
-							            'Sep',
-							            'Oct',
-							            'Nov',
-							            'Dec'
-							        ]
+	    							categories: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return num.mes; })
 	    						}, 
 	    						[{
 							    	type: 'spline',
@@ -253,11 +151,11 @@
 							        line: {
 							        	radius: 2
 							        },
-							        data: [0, 1, 2, 2, 2, 4, 5, 7, 7, 7, 10, 10]
+							        data: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return parseFloat(num.tasa_accidentabilidad_acumulada.toFixed(2)); })
 							    },
 							    {
 							        type: 'line',
-							        data: [[0, 1], [11, 5]],
+							        data: success.data.attributes.meta_accidentabilidad,
 							        name: 'Meta',
 							        marker: {
 							            enabled: false
@@ -273,7 +171,7 @@
 	    					);
  	
 
- 	$scope.tasaSiniestralidad = Utils.setChartConfig(
+ 		$scope.tasaSiniestralidad = Utils.setChartConfig(
  								'spline', 
  								null, 
  								{
@@ -294,20 +192,7 @@
  								}, 
 	    						{}, 
 	    						{
-	    							categories: [
-							            'Jan',
-							            'Feb',
-							            'Mar',
-							            'Apr',
-							            'May',
-							            'Jun',
-							            'Jul',
-							            'Aug',
-							            'Sep',
-							            'Oct',
-							            'Nov',
-							            'Dec'
-							        ]
+	    							categories: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return num.mes; })
 	    						}, 
 	    						[{
 							    	type: 'spline',
@@ -319,11 +204,11 @@
 							        line: {
 							        	radius: 2
 							        },
-							        data: [0, 1, 2, 2, 2, 4, 5, 7, 7, 7, 10, 10]
+							        data: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return parseFloat(num.tasa_siniestralidad_acumulada.toFixed(2)); })
 							    },
 							    {
 							        type: 'line',
-							        data: [[0, 1], [11, 5]],
+							        data: success.data.attributes.meta_siniestralidad,
 							        name: 'Meta',
 							        marker: {
 							            enabled: false
@@ -337,4 +222,17 @@
 							    }
 							    ]
 	    					);
+    		}
+		}, function(error) {
+			$log.error(error);
+			if (error.status === 401) {
+				Utils.refreshToken($scope.getDashboardInfo);
+
+
+			}
+		});
+	};
+
+	$scope.getDashboardInfo();
+
 });

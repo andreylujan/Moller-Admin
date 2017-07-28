@@ -4,11 +4,16 @@
 		<div class="row">
 			<div class="col-md-4">
 				<div class="gray-ps-1 br-15 b-0">
-					<input type="text" class="bg-gray-ps-1 br-15 text-sm form-control b-0n date-picker" uib-datepicker-popup="{{page.filters.date.format}}" ng-model="page.filters.date.value" is-open="page.filters.date.opened" min-date="minDate" datepicker-options="page.filters.date.dateOptions" ng-required="true" ng-click="open($event)" close-text="Cerrar" clear-text="Limpiar" current-text="Hoy" readonly />
+					<p class="input-group">
+						<input type="text" class="form-control" uib-datepicker-popup="MM/yyyy" ng-model="page.filters.date.value" is-open="page.filters.date.opened" datepicker-options="{minMode: 'month', showButtonBar: false}" close-text="Cerrar" clear-text="Limpiar" current-text="Hoy" readonly />
+						<span class="input-group-btn" required>
+							<button type="button" class="btn btn-default" ng-click="openDatePicker($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+						</span>
+					</p>
 				</div>
 			</div>
 			<div class="col-md-4">
-				<ui-select class="gray-ps-3 br-15 b-0" ng-model="page.filters.companies.selected" close-on-select="true" ng-change="getConstructions(page.filters.companies.selected);getDashboardInfo()" title="Empresas">
+				<ui-select class="gray-ps-3 br-15 b-0" ng-model="page.filters.companies.selected" close-on-select="true" ng-change="getConstructions(page.filters.companies.selected)" title="Empresas">
 					<ui-select-match placeholder="Empresa"><span ng-bind="$select.selected.name  | capitalize:true"></span></ui-select-match>
 					<ui-select-choices repeat="company in page.filters.companies.list | propsFilter: {name: $select.search}">
 						<div ng-bind-html="company.name | highlight: $select.search | capitalize:true"></div>
