@@ -262,77 +262,6 @@
 		});
 	};
 
-
- 	/*$scope.causasDirectas = Utils.setChartConfig(
- 								'pie', 
- 								250, 
- 								{
-						            pie: {
-						                allowPointSelect: true,
-						                cursor: 'pointer',
-						                dataLabels: {
-						                    enabled: false
-						                },
-						                showInLegend: true
-						            }
-						        }, 
-	    						{}, 
-	    						{}, 
-	    						[
-	    							{
-								        name: 'Riesgo',
-								        colorByPoint: true,
-								        innerSize: '80%',
-								        data: [{
-								            name: 'Bajo',
-								            y: 20
-								        }, {
-								            name: 'Medio',
-								            y: 20,
-								        }, {
-								            name: 'Alto',
-								            y: 60
-								        }]
-							    	}
-							    ]
-	    					);
-
-
-
- 	$scope.causasBasicas = Utils.setChartConfig(
- 								'pie', 
- 								250, 
- 								{
-						            pie: {
-						                allowPointSelect: true,
-						                cursor: 'pointer',
-						                dataLabels: {
-						                    enabled: false
-						                },
-						                showInLegend: true
-						            }
-						        }, 
-	    						{}, 
-	    						{}, 
-	    						[
-	    							{
-								        name: 'Riesgo',
-								        colorByPoint: true,
-								        innerSize: '80%',
-								        data: [{
-								            name: 'Bajo',
-								            y: 20
-								        }, {
-								            name: 'Medio',
-								            y: 20,
-								        }, {
-								            name: 'Alto',
-								            y: 60
-								        }]
-							    	}
-							    ]
-	    					);*/
-
     var getCompanies = function() {
  		$scope.page.filters.companies.list = [];
 
@@ -371,6 +300,7 @@
 
  		$scope.page.filters.constructions.selected = [];
  		$scope.page.filters.constructions.list = [];
+
  		Constructions.query({
  			'filter[company_id]': companySelected.id
  		}, function(success) {
