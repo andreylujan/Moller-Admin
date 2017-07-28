@@ -268,55 +268,6 @@ angular.module('efindingAdminApp')
 			Utils.gotoAnyPartOfPage('pageHeader');
 			return;
 		}
-		if (!Validators.validateRequiredField($scope.accidentalness.trabajadores.text)) {
-			$scope.elements.alert.title = 'Faltan datos por rellenar';
-			$scope.elements.alert.text = 'Promedio trabajadores';
-			$scope.elements.alert.color = 'danger';
-			$scope.elements.alert.show = true;
-			Utils.gotoAnyPartOfPage('pageHeader');
-			return;
-		}
-		if (!Validators.validateRequiredField($scope.accidentalness.hh.text)) {
-			$scope.elements.alert.title = 'Faltan datos por rellenar';
-			$scope.elements.alert.text = 'H/H';
-			$scope.elements.alert.color = 'danger';
-			$scope.elements.alert.show = true;
-			Utils.gotoAnyPartOfPage('pageHeader');
-			return;
-		}
-		if (!Validators.validateRequiredField($scope.accidentalness.accidentes.text)) {
-			$scope.elements.alert.title = 'Faltan datos por rellenar';
-			$scope.elements.alert.text = 'Cantidad de Accidentes';
-			$scope.elements.alert.color = 'danger';
-			$scope.elements.alert.show = true;
-			Utils.gotoAnyPartOfPage('pageHeader');
-			return;
-		}
-		if (!Validators.validateRequiredField($scope.accidentalness.diasPerdidos.text)) {
-			$scope.elements.alert.title = 'Faltan datos por rellenar';
-			$scope.elements.alert.text = 'Cantidad días Perdidos';
-			$scope.elements.alert.color = 'danger';
-			$scope.elements.alert.show = true;
-			Utils.gotoAnyPartOfPage('pageHeader');
-			return;
-		}
-		if (!Validators.validateRequiredField($scope.accidentalness.siniestralidad.text)) {
-			$scope.elements.alert.title = 'Faltan datos por rellenar';
-			$scope.elements.alert.text = 'Siniestralidad';
-			$scope.elements.alert.color = 'danger';
-			$scope.elements.alert.show = true;
-			Utils.gotoAnyPartOfPage('pageHeader');
-			return;
-		}
-		if (!Validators.validateRequiredField($scope.accidentalness.accidentabilidad.text)) {
-			$scope.elements.alert.title = 'Faltan datos por rellenar';
-			$scope.elements.alert.text = 'Accidentabilidad';
-			$scope.elements.alert.color = 'danger';
-			$scope.elements.alert.show = true;
-			Utils.gotoAnyPartOfPage('pageHeader');
-			return;
-		}
-
 
 		var month 	= $scope.accidentalness.fecha.text.getMonth() + 1;
 		var year 	= $scope.accidentalness.fecha.text.getFullYear();
@@ -345,6 +296,7 @@ angular.module('efindingAdminApp')
 							} 
 						} 
 					}};
+		$log.error(aux.data);
 
 		Accidents.save(aux, 
 			function(success) {

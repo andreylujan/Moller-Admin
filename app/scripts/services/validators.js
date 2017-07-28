@@ -33,6 +33,15 @@ angular.module('efindingAdminApp')
 		return valid;
 	};
 
+	this.validateRequiredFieldNum = function(field) {
+		valid = false;
+		if (field!='') {
+			valid = true;
+		}
+
+		return valid;
+	};
+
 	this.validateStringLength = function(field, length) {
 		valid = false;
 

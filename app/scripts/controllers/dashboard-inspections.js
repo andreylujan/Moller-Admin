@@ -194,7 +194,8 @@
  				{
  					indiceHallazgos.categories.push(value.mes);
  					indiceHallazgos.indices_totales.push(value.indices_totales[0].index);
- 					indiceHallazgos.indices_por_obra.push(_.reduce(value.indices_por_obra, function(memo, num){ return memo + num.index; }, 0) / value.indices_por_obra.length);
+ 					indiceHallazgos.indices_por_obra.push(parseFloat((_.reduce(value.indices_por_obra, function(memo, num){ return memo + num.index; }, 0) / value.indices_por_obra.length).toFixed(2)));
+ 					//$log.error();
  					
  				});
  				
