@@ -95,8 +95,8 @@ angular
 .config(['$authProvider',
 	function($authProvider) {
 		// Parametros de configuración
-		//$authProvider.loginUrl = 'http://50.16.161.152/efinding/oauth/token'; 	//Produccion
-		$authProvider.loginUrl = 'http://50.16.161.152/pitagora/oauth/token'; 	//Pitagora
+		$authProvider.loginUrl = 'http://50.16.161.152/efinding/oauth/token'; 	//Produccion
+		//$authProvider.loginUrl = 'http://50.16.161.152/pitagora/oauth/token'; 	//Pitagora
 		//$authProvider.loginUrl = 'http://localhost:3000/oauth/token'; 					//Local
 		$authProvider.tokenName = 'access_token';
 	}
