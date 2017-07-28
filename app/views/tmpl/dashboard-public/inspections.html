@@ -1,6 +1,8 @@
 <div class="page page-dashboard">
   <div class="pageheader">
     <h2><b>{{page.title}}</b></h2>
+  </div>
+
   <div class="row">
     <section class="tile">
             <div class="tile-header dvd dvd-btm">
@@ -16,7 +18,7 @@
                     <div class="col-md-12 solid">
                   <section class="tile tile-simple">
                     <div class="tile-body text-center">
-                      <h1 class="m-0" style="color: green; font-size: 500%;"><b>64</b></h1>
+                      <h1 class="m-0" style="color: green; font-size: 500%;"><b>{{dashboard.cantHallazgosGlobales}}</b></h1>
                       <span class="text" style="font-size: 150%;"><b>Hallazgos encontrados</b></span>
                     </div>
                   </section>
@@ -37,7 +39,7 @@
   <div class="row">
     <section class="tile">
             <div class="tile-header dvd dvd-btm">
-              <h1 class="custom-font"><strong>Cumplimiento de hallazgos</strong> (Globales)</h1>
+              <h1 class="custom-font"><strong>Estado Cumplimiento de Hallazgos</strong></h1>
             </div>
             <div class="tile-body">
               <div class="row">
@@ -47,8 +49,8 @@
                   <div class="col-md-3 solid">
                 <section class="tile tile-simple">
                     <div class="tile-body text-center">
-                      <h1 class="m-0" style="color: orange; font-size: 500%;"><b>75%</b></h1>
-                    <span class="text" style="font-size: 150%;"><b>Cumplimiento</b></span>
+                      <h1 class="m-0" style="color: orange; font-size: 500%;"><b>{{dashboard.cumplimientoGlobal}}</b></h1>
+                    <span class="text" style="font-size: 150%;"><b>% de Resueltos</b></span>
                     </div>
                 </section>
               </div>
@@ -56,12 +58,12 @@
                 <section class="tile" >
               <div class="tile-widget">
                       <div class="tile-body text-center solid">
-                        <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Cumplimiento interno</b></div>
-                        <div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">55%</b></div>
+                        <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Hallazgos Pitágora</b></div>
+                        <div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">{{dashboard.cumplimientoInterno}}</b></div>
                       </div>
                       <div class="tile-body text-center solid">
-                        <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Cumplimiento contratistas</b></div>
-                        <div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">20%</b></div>
+                        <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Hallazgos contratistas</b></div>
+                        <div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">{{dashboard.CumplimientoContratistas}}</b></div>
                       </div>
               </div>
             </section>
@@ -73,31 +75,30 @@
 
   <div class="row">
     <section class="tile">
-      <div class="tile-header dvd dvd-btm">
-        <h1 class="custom-font"><strong>Indice de hallazgos por mes para obras seleccionadas</strong></h1>
-      </div>
-      <div class="tile-body">
-        <div class="row">
-            <div class="col-md-12 solid">
-              <section class="tile tile-simple">
-              <div class="tile-body text-center">
-                <ui-select multiple class="blue-ps-1 br-15 b-0" ng-model="page.filters.constructions.selected" close-on-select="true" ng-change="getStores({success:true,detail:'OK'},page.filters.zone.selected,page.filters.constructions.selected);getDashboardInfo({success:true,detail:'OK'})" ng-disabled="page.filters.constructions.disabled" title="Dealers">
-            <ui-select-match placeholder="Obra"><span ng-bind="$select.selected.name | capitalize:true"></span></ui-select-match>
-            <ui-select-choices repeat="construction in page.filters.constructions.list | propsFilter: {name: $select.search}">
-              <div ng-bind-html="construction.name | highlight: $select.search | capitalize:true"></div>
-            </ui-select-choices>
-          </ui-select>
-              </div>
-          </section> 
+            <div class="tile-header dvd dvd-btm">
+              <h1 class="custom-font"><strong>Indice de hallazgos por mes para obras seleccionadas</strong></h1>
             </div>
-        <div class="col-md-12">
-          <highchart config="indiceHallazgos"></highchart>
-        </div>
-        </div>
-      </div>
-    </section>
+            <div class="tile-body">
+              <div class="row">
+                  <!--div class="col-md-12 solid">
+                    <section class="tile tile-simple">
+                    <div class="tile-body text-center">
+                      <ui-select class="blue-ps-1 br-15 b-0" ng-model="page.filters.constructions.selected" close-on-select="true" ng-change="getDashboardInfo()" ng-disabled="page.filters.constructions.disabled" title="Obras">
+                  <ui-select-match placeholder="Obra"><span ng-bind="$select.selected.name | capitalize:true"></span></ui-select-match>
+                  <ui-select-choices repeat="construction in page.filters.constructions.list | propsFilter: {name: $select.search}">
+                    <div ng-bind-html="construction.name | highlight: $select.search | capitalize:true"></div>
+                  </ui-select-choices>
+                </ui-select>
+                    </div>
+                </section> 
+                  </div-->
+              <div class="col-md-12">
+                <highchart config="indiceHallazgos"></highchart>
+              </div>
+              </div>
+            </div>
+        </section>
   </div>
-
   <div class="row">
     <div class="col-md-6">
       <section class="tile">
@@ -106,12 +107,12 @@
               </div>
               <div class="tile-body">
                 <div class="row">
-                    <div class="col-md-6">
+                    <!--div class="col-md-6">
                       <highchart config="causasDirectas"></highchart>
-                    </div>
-                    <div class="col-md-6">
+                    </div-->
+                    <div class="col-md-12">
                       <div class="tile-body text-center">
-                      <h1 class="m-0" style="color: orange; font-size: 500%;"><b>25</b></h1>
+                      <h1 class="m-0" style="color: orange; font-size: 500%;"><b>{{dashboard.causasDirectasTotal}}</b></h1>
                     <span class="text" style="font-size: 150%;"><b>Directas</b></span>
                     </div>
                     </div>
@@ -119,27 +120,13 @@
                   <section class="tile tile-simple">
                     <div class="tile-body p-0">
                       <div class="list-group no-radius no-border">
-                        <a class="list-group-item">
-                          <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Demasiada actividad fisica</b></div>
-                        <div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">10</b></div>
-                        </a>
-                        <a class="list-group-item">
-                          <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Uso incorrecto de herramientas</b></div>
-                        <div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">15</b></div>
-                        </a>
-                        <a class="list-group-item">
-                          <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Falta de conocimiento de peligros</b></div>
-                        <div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">10</b></div>
-                        </a>
-                        <a class="list-group-item">
-                          <div style="text-align: center">
-                            <b style="color:green;">
-                              Ver Todas
-                            </b>
+                        <a class="list-group-item" ng-repeat="causaDirecta in dashboard.causasDirectas">
+                          <div style="display:inline-block;width:80%; text-align: left; font-size: 150%">   <b>{{causaDirecta.causa_directa}}</b>
                           </div>
+                        <div style="display:inline-block;width:19%; text-align: left; font-size: 150%">   <b style="color: orange;">{{causaDirecta.num_reports}}</b>
+                        </div>
                         </a>
                       </div>
-
                     </div>
                   </section>
                     </div>
@@ -155,12 +142,12 @@
               </div>
               <div class="tile-body">
                 <div class="row">
-                    <div class="col-md-6">
+                    <!--div class="col-md-6">
                       <highchart config="causasBasicas"></highchart>
-                    </div>
-                    <div class="col-md-6">
+                    </div-->
+                    <div class="col-md-12">
                       <div class="tile-body text-center">
-                      <h1 class="m-0" style="color: orange; font-size: 500%;"><b>25</b></h1>
+                      <h1 class="m-0" style="color: orange; font-size: 500%;"><b>{{dashboard.causasBasicasTotal}}</b></h1>
                     <span class="text" style="font-size: 150%;"><b>Básicas</b></span>
                     </div>
                     </div>
@@ -168,27 +155,13 @@
                   <section class="tile tile-simple">
                     <div class="tile-body p-0">
                       <div class="list-group no-radius no-border">
-                        <a class="list-group-item">
-                          <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Capacidad respiratoria débil</b></div>
-                        <div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">10</b></div>
-                        </a>
-                        <a class="list-group-item">
-                          <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Lesión o enfermedad anterior</b></div>
-                        <div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">15</b></div>
-                        </a>
-                        <a class="list-group-item">
-                          <div style="display:inline-block;width:80%; text-align: left; font-size: 150%"><b>Desconcentración / distracción</b></div>
-                        <div style="display:inline-block;width:19%; text-align: left; font-size: 150%"><b style="color: orange;">10</b></div>
-                        </a>
-                        <a class="list-group-item">
-                          <div style="text-align: center">
-                            <b style="color:green;">
-                              Ver Todas
-                            </b>
+                        <a class="list-group-item" ng-repeat="causaBasica in dashboard.causasBasicas">
+                          <div style="display:inline-block;width:80%; text-align: left; font-size: 150%">   <b>{{causaBasica.causas_basica}}</b>
                           </div>
+                        <div style="display:inline-block;width:19%; text-align: left; font-size: 150%">   <b style="color: orange;">{{causaBasica.num_reports}}</b>
+                        </div>
                         </a>
                       </div>
-
                     </div>
                   </section>
                     </div>

@@ -15,13 +15,6 @@
  		title: 'Accidentabilidad',
  		filters: {
  			date: {
- 				dateOptions: 
- 				{
- 					formatYear: 'yy',
-				    startingDay: 1,
-				    'class': 'datepicker'
- 				},
- 				format: 'dd-MM-yyyy',
  				value: new Date(),
  				opened: false
  			},
@@ -40,9 +33,24 @@
 
  	
  	$scope.getDashboardInfo = function() {
+
+ 		var companyIdSelected = $scope.page.filters.companies.selected ? $scope.page.filters.companies.selected.id : '';
+ 		var constructionIdSelected = $scope.page.filters.constructions.selected ? $scope.page.filters.constructions.selected.id : '';
+
+ 		var date = (new Date($scope.page.filters.date.value).getMonth()+1) + '/' + new Date($scope.page.filters.date.value).getFullYear();
+
+
  		DashboardAccidentalness.query({
+ 			'filter[company_id]': companyIdSelected,
+ 			'filter[construction_id]': constructionIdSelected,
+ 			'filter[period]': date
  		}, function(success) {
 		    if (success.data) {
+
+		    	$scope.accidentabilidadGlobal = {};
+		    	$scope.siniestralidadGlobal = {};
+		    	$scope.tasaAccidentabilidad = {};
+		    	$scope.tasaSiniestralidad = {};
 		    	
 		    	$scope.accidentabilidadGlobal = Utils.setChartConfig(
  								'spline', 
@@ -79,6 +87,7 @@
 							        line: {
 							        	radius: 2
 							        },
+							        color: 'green',
 							        data: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return parseFloat(num.tasa_accidentabilidad.toFixed(2)); })
 							    }]
 	    					);
@@ -121,6 +130,7 @@
 							        line: {
 							        	radius: 2
 							        },
+							        color: 'green',
 							        data: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return parseFloat(num.tasa_siniestralidad.toFixed(2)); })
 							    }]
 	    					);
@@ -311,6 +321,11 @@
  				$scope.page.filters.constructions.disabled = false;
  				$scope.page.filters.constructions.loaded = true;
 
+ 				if (companySelected.id != '') 
+ 				{
+ 					$scope.getDashboardInfo();
+ 				}
+
  			} else {
  				$scope.page.filters.constructions.disabled = true;
  				$log.error(success);
@@ -323,7 +338,18 @@
  			}
  		});
  	};
+
  	getCompanies();
+
+ 	$scope.openDatePicker = function($event) {
+		$event.preventDefault();
+		$event.stopPropagation();
+		$scope.page.filters.date.opened = !$scope.page.filters.date.opened;
+	};
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss('cancel');
+	};
 
 
  	$scope.$watch('page.filters.constructions.loaded', function() {

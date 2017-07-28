@@ -9,18 +9,13 @@
  */
  angular.module('efindingAdminApp')
  .controller('InspectionsPublicDashboardCtrl', function($scope, $auth, $filter, $state, $log, 
- 	$timeout, $moment, Utils, $q) {
+ 	$timeout, $moment, Utils, $q, DashboardInspections) {
  	
  	var token = $state.params.token;
  	var refresh_token = $state.params.refresh;
  	
  	Utils.setInStorage('refresh_t', refresh_token);
  	$auth.setToken(token);
-
- 	var currentDate = new Date();
- 	var firstMonthDay = new Date();
- 	firstMonthDay.setDate(1);
-
 
  	$scope.page = {
  		title: 'Inspecciones',
@@ -32,74 +27,73 @@
  			constructions: {
  				list: [],
  				selected: null,
- 				disabled: false
+ 				disabled: false,
+ 				loaded: false
  			},
- 			status: {
- 				list: [],
- 				selected: null,
- 				disabled: false
- 			},
- 			supervisor: {
- 				list: [],
- 				selected: null,
- 				disabled: false
- 			},
- 			month: {
+ 			date: {
  				value: new Date(),
- 				isOpen: false
- 			},
- 			dateRange: {
- 				options: {
- 					locale: {
- 						format: 'DD/MM/YYYY',
- 						applyLabel: 'Buscar',
- 						cancelLabel: 'Cerrar',
- 						fromLabel: 'Desde',
- 						toLabel: 'Hasta',
- 						customRangeLabel: 'Personalizado',
- 						daysOfWeek: ['Dom', 'Lun', 'Mar', 'Mier', 'Jue', 'Vie', 'Sab'],
- 						monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
- 						firstDay: 1
- 					},
- 					autoApply: true,
- 					maxDate: $moment().add(1, 'months').date(1).subtract(1, 'days'),
- 				},
- 				date: {
- 					startDate: firstMonthDay,
- 					endDate: currentDate
- 				}
+ 				opened: false
  			}
- 		},
- 		buttons: {
- 			getExcel: {
- 				disabled: false
- 			}
- 		},
- 		loader: {
- 			show: false
- 		},
- 		charts: {
-			actividadVsRiesgo: {
-				loaded: false,
-				table: {
-					headers: [],
-					row1: [],
-					row2: [],
-					row3: []
-				},
-				chartConfig: Utils.setChartConfig('column', 400, {}, {}, {}, [])
-			}
-		},
-		markers: {
-			resolved: [],
-			unchecked: []
-		}
+ 		}
+ 	};
+
+ 	$scope.dashboard = 
+ 	{
+ 		cantHallazgosGlobales: 0,
+ 		cantHallazgosGlobalesAltoTotal: 0,
+ 		cantHallazgosGlobalesMedioTotal: 0,
+ 		cantHallazgosGlobalesBajoTotal: 0,
+ 		cumplimientoGlobal: 0,
+ 		cumplimientoInterno: 0,
+ 		CumplimientoContratistas: 0,
+ 		causasDirectas: [],
+ 		causasBasicas:  [],
+ 		causasDirectasTotal: 0,
+ 		causasBasicasTotal: 0
  	};
 
 
- 	///COMIENZAN LOS CHARTS
+	$scope.getDashboardInfo = function() {
 
- 	$scope.cantidadHallazgos = Utils.setChartConfig(
+ 		DashboardInspections.query({
+ 		}, function(success) {
+		    if (success.data) {
+		    	$scope.dashboard.cantHallazgosGlobales				= 0;
+		    	$scope.dashboard.cantHallazgosGlobalesAltoTotal		= 0;
+		    	$scope.dashboard.cantHallazgosGlobalesMedioTotal	= 0;
+		    	$scope.dashboard.cantHallazgosGlobalesBajoTotal		= 0;
+		    	$scope.dashboard.cumplimientoGlobal					= 0;
+		    	$scope.dashboard.cumplimientoInterno				= 0;
+		    	$scope.dashboard.CumplimientoContratistas			= 0;
+		    	$scope.dashboard.causasDirectas						= [];
+		    	$scope.dashboard.causasBasicas						= [];
+		    	$scope.dashboard.causasDirectasTotal				= 0;
+		    	$scope.dashboard.causasBasicasTotal					= 0;
+
+
+		    	angular.forEach(success.data.attributes.reportes_por_grupo.grados_riesgo, function(grados)
+		    	{
+		    		angular.forEach(grados.data, function(data)
+		    		{	
+		    			if (grados.name == 'Alto') 
+		    			{
+		    				$scope.dashboard.cantHallazgosGlobalesAltoTotal = $scope.dashboard.cantHallazgosGlobalesAltoTotal + data; 
+		    			}
+		    			if (grados.name == 'Medio') 
+		    			{
+		    				$scope.dashboard.cantHallazgosGlobalesMedioTotal = $scope.dashboard.cantHallazgosGlobalesMedioTotal + data; 
+		    			}
+		    		 	if (grados.name == 'Bajo') 
+		    			{
+		    				$scope.dashboard.cantHallazgosGlobalesBajoTotal = $scope.dashboard.cantHallazgosGlobalesBajoTotal + data; 
+		    			}
+
+		    			$scope.dashboard.cantHallazgosGlobales = $scope.dashboard.cantHallazgosGlobales + data;
+		    		});
+		    	});
+
+		    	//GRAFICO 1
+		    	$scope.cantidadHallazgos = Utils.setChartConfig(
  								'column', 
  								null, 
  								{
@@ -112,41 +106,18 @@
 	    						{
 						        	min: 0,
 						        	title: {
-						            	text: 'Rainfall (mm)'
+						            	text: 'Hallazgos'
 						        	}
 						    	}, 
 	    						{
-							        categories: [
-							            'Jan',
-							            'Feb',
-							            'Mar',
-							            'Apr',
-							            'May',
-							            'Jun',
-							            'Jul',
-							            'Aug',
-							            'Sep',
-							            'Oct',
-							            'Nov',
-							            'Dec'
-							        ],
+							        categories: success.data.attributes.reportes_por_grupo.grupos_actividad,
 							        crosshair: true
 							    }, 
-	    						[   
-	    							{
-							        	name: 'Bajo',
-							        	data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
-							    	}, {
-							        	name: 'Medio',
-							        	data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5, 105.0, 104.3, 91.2, 83.5, 106.6, 92.3]
-							    	}, {     
-						    			name: 'Alto',
-						        		data: [48.9, 38.8, 39.3, 41.4, 47.0, 48.3, 59.0, 59.6, 52.4, 65.2, 59.3, 51.2]
-						    		}
-    							]
+							    success.data.attributes.reportes_por_grupo.grados_riesgo
 	    					);
 
- 	$scope.cantidadHallazgosDonut = Utils.setChartConfig(
+		    	//Grafico 2
+		    	$scope.cantidadHallazgosDonut = Utils.setChartConfig(
  								'pie', 
  								200, 
  								{
@@ -168,20 +139,21 @@
 								        innerSize: '80%',
 								        data: [{
 								            name: 'Bajo',
-								            y: 20
+								            y: $scope.dashboard.cantHallazgosGlobalesBajoTotal
 								        }, {
 								            name: 'Medio',
-								            y: 20,
+								            y: $scope.dashboard.cantHallazgosGlobalesMedioTotal,
 								        }, {
 								            name: 'Alto',
-								            y: 60
+								            y: $scope.dashboard.cantHallazgosGlobalesAltoTotal
 								        }]
 							    	}
 							    ]
 	    					);
 
 
- 	$scope.cumplimientoHallazgosDonut = Utils.setChartConfig(
+
+		    	$scope.cumplimientoHallazgosDonut = Utils.setChartConfig(
  								'pie', 
  								200, 
  								{
@@ -198,25 +170,34 @@
 	    						{}, 
 	    						[
 	    							{
-								        name: 'Riesgo',
+								        name: 'Estado',
 								        colorByPoint: true,
 								        innerSize: '80%',
-								        data: [{
-								            name: 'Bajo',
-								            y: 20
-								        }, {
-								            name: 'Medio',
-								            y: 20,
-								        }, {
-								            name: 'Alto',
-								            y: 60
-								        }]
+								        data: success.data.attributes.cumplimiento_hallazgos
 							    	}
 							    ]
 	    					);
 
+		    	$scope.dashboard.cumplimientoGlobal			= success.data.attributes.porcentaje_cumplimiento.global;
+		    	$scope.dashboard.cumplimientoInterno		= success.data.attributes.porcentaje_cumplimiento.interno;
+ 				$scope.dashboard.CumplimientoContratistas 	= success.data.attributes.porcentaje_cumplimiento.contratistas;
 
- 	$scope.indiceHallazgos = Utils.setChartConfig(
+ 				var indiceHallazgos = {
+ 					categories: [],
+ 					indices_por_obra: [], 	//NARANJO
+ 					indices_totales: [] 	//VERDE
+ 				};
+
+ 				angular.forEach(success.data.attributes.indice_de_hallazgos, function(value)
+ 				{
+ 					indiceHallazgos.categories.push(value.mes);
+ 					indiceHallazgos.indices_totales.push(value.indices_totales[0].index);
+ 					indiceHallazgos.indices_por_obra.push(_.reduce(value.indices_por_obra, function(memo, num){ return memo + num.index; }, 0) / value.indices_por_obra.length);
+ 					
+ 				});
+ 				
+
+ 				$scope.indiceHallazgos = Utils.setChartConfig(
  								'column', 
  								null, 
  								{
@@ -243,16 +224,16 @@
  								}, 
 	    						{}, 
 	    					 	{
-	        						categories: ['ABR', 'MAY', 'JUN']
+	        						categories: indiceHallazgos.categories
 	    						}, 
 	    						[{
 							        type: 'column',
 							        name: 'Índice global de hallazgos - Pitagora',
-							        data: [1.50, 1, 1.20]
+							        data: indiceHallazgos.indices_totales
 							    }, {
 							        type: 'spline',
-							        name: 'Índice de acctidentes obras seleccionadas',
-							        data: [2.33, 1.27, 1.94],
+							        name: 'Índice de accidentes obras seleccionadas',
+							        data: indiceHallazgos.indices_por_obra,
 							        marker: {
 							            lineWidth: 2,
 							            lineColor: Highcharts.getOptions().colors[3],
@@ -263,74 +244,20 @@
 							    }]
 	    					);
 
+ 				$scope.dashboard.causasDirectas = success.data.attributes.causas_directas; 
+ 				$scope.dashboard.causasBasicas  = success.data.attributes.causas_basicas; 
 
- 	$scope.causasDirectas = Utils.setChartConfig(
- 								'pie', 
- 								250, 
- 								{
-						            pie: {
-						                allowPointSelect: true,
-						                cursor: 'pointer',
-						                dataLabels: {
-						                    enabled: false
-						                },
-						                showInLegend: true
-						            }
-						        }, 
-	    						{}, 
-	    						{}, 
-	    						[
-	    							{
-								        name: 'Riesgo',
-								        colorByPoint: true,
-								        innerSize: '80%',
-								        data: [{
-								            name: 'Bajo',
-								            y: 20
-								        }, {
-								            name: 'Medio',
-								            y: 20,
-								        }, {
-								            name: 'Alto',
-								            y: 60
-								        }]
-							    	}
-							    ]
-	    					);
+ 				$scope.dashboard.causasDirectasTotal = _.reduce(success.data.attributes.causas_directas, function(memo, num){ return memo + num.num_reports; }, 0); 
+ 				$scope.dashboard.causasBasicasTotal  = _.reduce(success.data.attributes.causas_basicas, function(memo, num){ return memo + num.num_reports; }, 0); 
+		    	
+    		}
+		}, function(error) {
+			$log.error(error);
+			if (error.status === 401) {
+				Utils.refreshToken($scope.getDashboardInfo);
+			}
+		});
+	};
 
-
-
- 	$scope.causasBasicas = Utils.setChartConfig(
- 								'pie', 
- 								250, 
- 								{
-						            pie: {
-						                allowPointSelect: true,
-						                cursor: 'pointer',
-						                dataLabels: {
-						                    enabled: false
-						                },
-						                showInLegend: true
-						            }
-						        }, 
-	    						{}, 
-	    						{}, 
-	    						[
-	    							{
-								        name: 'Riesgo',
-								        colorByPoint: true,
-								        innerSize: '80%',
-								        data: [{
-								            name: 'Bajo',
-								            y: 20
-								        }, {
-								            name: 'Medio',
-								            y: 20,
-								        }, {
-								            name: 'Alto',
-								            y: 60
-								        }]
-							    	}
-							    ]
-	    					);
+	$scope.getDashboardInfo();
 });
