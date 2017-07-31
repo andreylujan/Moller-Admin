@@ -89,18 +89,22 @@
 										<p data-ng-bind-html="trustAsHtml(inspection[column.field_a])"></p>
 									</td>
 									<td >
-										<input ng-if="inspection['pdfUploaded']" class="text-center" type="image" src="https://s3-sa-east-1.amazonaws.com/efinding/icons/PDF.png" uib-tooltip="Descargar PDF" tooltip-placement="bottom" style="width: 15px" data-pdf="{{inspection.pdf}}" ng-click="downloadPdf($event)"/>
-										<input ng-if="!inspection['pdfUploaded']" class="text-center" type="image" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/denied2.png" uib-tooltip="PDF no disponible" tooltip-placement="bottom" style="width: 20px;" data-pdf="{{inspection.pdf}}" />
+										<input ng-if="inspection['pdfUploaded']" class="text-center" type="image" src="https://s3-sa-east-1.amazonaws.com/efinding/icons/PDF.png" uib-tooltip="Descargar PDF" tooltip-placement="bottom" style="width: 20px;" data-pdf="{{inspection.pdf}}" ng-click="downloadPdf($event)"/>
+
+										<i ng-if="!inspection['pdfUploaded']" class="fa fa-ban text-center" style="color: #ACAEAF; font-size: 2.0em" uib-tooltip="PDF no disponible" tooltip-placement="bottom"></i>
+
+										<!--input ng-if="!inspection['pdfUploaded']" class="text-center" type="image" src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/denied2.png" uib-tooltip="PDF no disponible" tooltip-placement="bottom" style="width: 23px; " data-pdf="{{inspection.pdf}}" /-->
+
 									</td>
-									<td ng-show="role_type== 'administrator'">
+									<td ng-show="role_type== 'administrator'" class="text-center">
 										<label ng-if="inspection.state == 'reports_pending'">Pendiente de envío</label>
 										<a ng-click="FirmaInspeccionInstance(inspection.id)" ng-if="inspection.state == 'first_signature_pending'">Pendiente de firma</a>
 										<label ng-if="inspection.state == 'first_signature_done'">Firmado</label>
 										<a ng-click="FirmaInspeccionInstance(inspection.id)" ng-if="inspection.state == 'final_signature_pending'">Pendiente de firma final</a>
 										<label ng-if="inspection.state == 'finished'">Teminado</label>
 									</td>
-									<td ng-show="is_superuser">
-										<img ng-click="openModalRemoveInspection(inspection.id)" ng-src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/delete.png" style="width:18px;" tooltip="Borrar inspección">
+									<td ng-show="is_superuser" class="text-center">
+										<img ng-click="openModalRemoveInspection(inspection.id)" ng-src="http://dhg7r6mxe01qf.cloudfront.net/icons/admin/delete.png" style="width:20px;" tooltip="Borrar inspección">
 									</td>
 								</tr>
 							</tbody>

@@ -59,11 +59,11 @@ angular
 		});
 
 		$rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
-			
+
 			var isLogin = toState.name === 'login' || toState.name === 'signup' 
 			|| toState.name === 'forgotpass' || toState.name === 'publicDashboard'
-			|| toState.name === 'publicInspectionsDashboard' || toState.name === 'pub'
-			|| toState.name === 'accidentalnessDashboard';
+			|| toState.name === 'publicInspectionsDashboard' || toState.name === 'publicChecklistDashboard'
+			|| toState.name === 'publicAccidentalnessDashboard';
 
 			if (isLogin) {
 				return;
