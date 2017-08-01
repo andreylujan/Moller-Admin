@@ -106,18 +106,19 @@ angular.module('efindingAdminApp')
 
 			$scope.columns[i].columnFilters.push($scope.filter['filter[' + value.sort_name + ']']);
 		});
-		$scope.filter.include = _.findWhere(_.findWhere(included, { name: 'Inspecciones'}).items, { path: 'efinding.inspecciones.list'}).included;
-		$scope.filter['sort'] = '';
-		$scope.filter['page[number]'] = $scope.pagination.pages.current;
-		$scope.filter['page[size]'] = $scope.pagination.pages.size;
 	}
+	$scope.filter.include = _.findWhere(_.findWhere(included, { name: 'Inspecciones'}).items, { path: 'efinding.inspecciones.list'}).included;
+	$scope.filter['sort'] = '';
+	$scope.filter['page[number]'] = $scope.pagination.pages.current;
+	$scope.filter['page[size]'] = $scope.pagination.pages.size;
 
 	$scope.$watch('filter', function(newFilters) {
 		if (filterTimeout) {
 			$timeout.cancel(filterTimeout);
 		}
 
-		filterTimeout = $timeout(function() {
+		filterTimeout = $timeout(function() 
+		{
 			$scope.getInspections({
 				success: true,
 				detail: 'OK'
@@ -135,7 +136,21 @@ angular.module('efindingAdminApp')
 		data = [];
 		var test = [];
 		var filtersToSearch = {};
+		
 		for (var attr in filters) {
+			if (attr.indexOf('filter') !== -1) {
+				if (filters[attr].filter != '') 
+				{
+					$scope.pagination.pages.current = 1;
+					$scope.filter['page[number]'] = 1;
+				}
+			} 
+		}
+
+		var flag = false;
+
+		for (var attr in filters) 
+		{
 			if (attr.indexOf('filter') !== -1) {
 				var aux = filters[attr].filterName;
 				if (filters[attr].type == 'text') 
@@ -167,9 +182,6 @@ angular.module('efindingAdminApp')
 		{
 			reportsIncluded = success.included;
 			$scope.pagination.pages.total = success.meta.page_count;
-
-			//$log.error(success.data);
-
 			for (i = 0; i < success.data.length; i++) {
 				test.push({});
 
@@ -314,8 +326,6 @@ angular.module('efindingAdminApp')
 								//Valida que exista el objeto text
 								if (flag[aux[1]].hasOwnProperty('text')) 
 								{
-									//$log.error('2')
-									//$log.error(flag[aux[1]]);
 									test[test.length - 1][$scope.columns[j].field_a] = flag[aux[1]].text;
 									test[test.length - 1][$scope.columns[j].name] = flag[aux[1]].text;
 								}
@@ -417,9 +427,6 @@ angular.module('efindingAdminApp')
 		if ($scope.pagination.pages.current <= $scope.pagination.pages.total - 1) {
 			$scope.pagination.pages.current++;
 			$scope.filter['page[number]'] = $scope.pagination.pages.current;
-			$scope.getInspections({
-				success: true
-			}, $scope.pagination.pages.current, $scope.filter);
 		}
 	};
 
@@ -427,9 +434,6 @@ angular.module('efindingAdminApp')
 		if ($scope.pagination.pages.current > 1) {
 			$scope.pagination.pages.current--;
 			$scope.filter['page[number]'] = $scope.pagination.pages.current;
-			$scope.getInspections({
-				success: true
-			}, $scope.pagination.pages.current, $scope.filter);
 		}
 	};
 
@@ -479,7 +483,6 @@ angular.module('efindingAdminApp')
 		modalInstance.result.then(function() {
 			$state.reload();
 		}, function() {
-			// getPromotions();
 		});
 	};
 

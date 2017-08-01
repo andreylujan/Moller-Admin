@@ -59,11 +59,11 @@ angular
 		});
 
 		$rootScope.$on('$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
-			
+
 			var isLogin = toState.name === 'login' || toState.name === 'signup' 
 			|| toState.name === 'forgotpass' || toState.name === 'publicDashboard'
-			|| toState.name === 'publicInspectionsDashboard' || toState.name === 'pub'
-			|| toState.name === 'accidentalnessDashboard';
+			|| toState.name === 'publicInspectionsDashboard' || toState.name === 'publicChecklistDashboard'
+			|| toState.name === 'publicAccidentalnessDashboard';
 
 			if (isLogin) {
 				return;
@@ -95,8 +95,8 @@ angular
 .config(['$authProvider',
 	function($authProvider) {
 		// Parametros de configuración
-		//$authProvider.loginUrl = 'http://50.16.161.152/efinding/oauth/token'; 	//Produccion
-		$authProvider.loginUrl = 'http://50.16.161.152/pitagora/oauth/token'; 	//Pitagora
+		$authProvider.loginUrl = 'http://50.16.161.152/efinding/oauth/token'; 	//Produccion
+		//$authProvider.loginUrl = 'http://50.16.161.152/pitagora/oauth/token'; 	//Pitagora
 		//$authProvider.loginUrl = 'http://localhost:3000/oauth/token'; 					//Local
 		$authProvider.tokenName = 'access_token';
 	}
