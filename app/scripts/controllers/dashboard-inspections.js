@@ -233,7 +233,11 @@
 					                	}
 					            	}
  								}, 
-	    						{}, 
+	    						{
+	    							title: {
+						            	text: 'Porcentaje'
+						        	}
+	    						}, 
 	    					 	{
 	        						categories: indiceHallazgos.categories
 	    						}, 

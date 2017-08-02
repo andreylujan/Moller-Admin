@@ -54,7 +54,10 @@
 							            formatter: function () {
 							                return this.value + '°';
 							            }
-							        }
+							        },
+							        title: {
+						            	text: 'Porcentaje'
+						        	}
 						    	}, 
 	    						{
 							        categories: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return num.mes; })
@@ -97,7 +100,10 @@
 							            formatter: function () {
 							                return this.value + '°';
 							            }
-							        }
+							        },
+							        title: {
+						            	text: 'Porcentaje'
+						        	}
 						    	}, 
 	    						{
 							        categories: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return num.mes; })
@@ -137,7 +143,11 @@
 					            		color: 'orange'
 					            	}
  								}, 
-	    						{}, 
+	    						{
+							        title: {
+						            	text: 'Porcentaje'
+						        	}
+	    						}, 
 	    						{
 	    							categories: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return num.mes; })
 	    						}, 
@@ -190,7 +200,11 @@
 					            		color: 'orange'
 					            	}
  								}, 
-	    						{}, 
+	    						{
+							        title: {
+						            	text: 'Porcentaje'
+						        	}
+	    						}, 
 	    						{
 	    							categories: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return num.mes; })
 	    						}, 
