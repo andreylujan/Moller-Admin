@@ -86,7 +86,10 @@
 							            formatter: function () {
 							                return this.value + '°';
 							            }
-							        }
+							        },
+							        title: {
+						            	text: 'Porcentaje'
+						        	}
 						    	}, 
 	    						{
 							        categories: _.map(success.data.attributes.cumplimiento_por_periodo, function(num, key){ return num.date; })
@@ -131,7 +134,10 @@
 						            }
 	    						}, 
 	    						{
-						        	min: 0
+						        	min: 0,
+							        title: {
+						            	text: 'Porcentaje'
+						        	}
 						    	}, 
 	    						{
 	    							 categories: _.map(success.data.attributes.obras_bajo_meta, function(num, key){ return num.obra; })

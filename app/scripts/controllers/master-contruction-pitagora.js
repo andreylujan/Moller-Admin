@@ -374,7 +374,7 @@ angular.module('efindingAdminApp')
 					Utils.refreshToken($scope.saveConstruction);
 				}
 				$scope.elements.alert.title = 'Error al Guardar';
-				$scope.elements.alert.text = '';
+				$scope.elements.alert.text = error.data.errors[0].detail;
 				$scope.elements.alert.color = 'danger';
 				$scope.elements.alert.show = true;
 				return;
@@ -688,6 +688,10 @@ angular.module('efindingAdminApp')
 					if (error.status === 401) {
 						Utils.refreshToken($scope.editGeneric);
 					}
+					$scope.elements.alert.title = 'Error al Guardar';
+					$scope.elements.alert.text = error.data.errors[0].detail;
+					$scope.elements.alert.color = 'danger';
+					$scope.elements.alert.show = true;
 				}
 			);
 		}
