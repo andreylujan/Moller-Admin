@@ -134,7 +134,9 @@ angular.module('efindingAdminApp')
 			text: '',
 			disabled: true
 		},
-		contractors: []
+		contractors: [],
+		inspectors: [],
+		experts: []
 	};
 
 	$scope.experts		= [];
@@ -165,20 +167,14 @@ angular.module('efindingAdminApp')
 				for (var i = 0; i < success.data.length; i++) {
 					data.push({
 						id: success.data[i].id,
-						firstName: success.data[i].attributes.first_name,
-						lastName: success.data[i].attributes.last_name,
-						email: success.data[i].attributes.email,
-						roleName: success.data[i].attributes.role_name,
-						roleId: success.data[i].attributes.role_id,
-						active: success.data[i].attributes.active,
+						role_type: success.data[i].attributes.role_type,
 						fullName: success.data[i].attributes.first_name + ' ' + success.data[i].attributes.last_name
 					});
 				}
-
-				$scope.admObra 		= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: 13});
-				$scope.experts 		= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: 12});
-				$scope.inspectors 	= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: 16});
-				$scope.supervisors 	= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: 14});
+				$scope.admObra 		= _.where(_.reject(data, function(object){ return object.id === ""; }), {role_type: 'administrator'});
+				$scope.experts 		= _.where(_.reject(data, function(object){ return object.id === ""; }), {role_type: 'expert'});
+				$scope.inspectors 	= _.where(_.reject(data, function(object){ return object.id === ""; }), {role_type: 'inspector'});
+				$scope.supervisors 	= _.where(_.reject(data, function(object){ return object.id === ""; }), {role_type: 'supervisor'});
 
 
 			} else {
@@ -282,7 +278,7 @@ angular.module('efindingAdminApp')
 			$scope.elements.alert.show = true;
 			return;
 		}
-		if (!Validators.validateRequiredField($scope.construction.selectedExpert)) {
+		if ($scope.construction.experts.length == 0) {
 			$scope.elements.alert.title = 'Faltan datos por rellenar';
 			$scope.elements.alert.text = 'Jefe de terreno';
 			$scope.elements.alert.color = 'danger';
@@ -298,65 +294,65 @@ angular.module('efindingAdminApp')
 			return;
 		}
 
-		if (!Validators.validateRequiredField($scope.construction.selectedInspector)) {
+		/*if (!Validators.validateRequiredField($scope.construction.selectedInspector)) {
 			$scope.construction.selectedInspector = {id: null};
-		}
+		}*/
 
 		$scope.elements.alert.show = false;
 		var contratistas = []
-		
-		angular.forEach($scope.construction.contractors, function(value){
+		angular.forEach($scope.construction.contractors, function(value)
+		{
 			contratistas.push({ id:value.id, type:"contractors"});
 		});
 
-			var aux = { 
-						data: { 
-							type: 'constructions', 
-							attributes: { 
-								name: $scope.construction.name.text,
-								code: $scope.construction.code,
-							}, 
-							relationships: { 
-								company: { 
-									data: { 
-										type: "companies", 
-										id: $scope.construction.selectedCompany.id
-									} 
-								},
-								administrator: { 
-									data: { 
-										type: "users", 
-										id: $scope.construction.selectedAdministrador.id
-									} 
-								},
-								expert: { 
-									data: { 
-										type: "users", 
-										id: $scope.construction.selectedExpert.id
-									} 
-								},
-								inspector: { 
-									data: { 
-										type: "users", 
-										id: $scope.construction.selectedInspector.id
-									} 
-								},
-								supervisor: { 
-									data: { 
-										type: "users", 
-										id: $scope.construction.selectedSupervisor.id
-									} 
-								},
-								contractors: {
-									data: contratistas
-								}
-							} 
-						}};
-		$log.error(aux);
+
+		var usuarios = []
+		angular.forEach($scope.construction.experts, function(value, key)
+		{
+			usuarios.push({id: value.id, type:"users"});	
+		});
+		angular.forEach($scope.construction.inspectors, function(value, key)
+		{
+			usuarios.push({id: value.id, type:"users"});	
+		});
+
+		var aux = { 
+					data: { 
+						type: 'constructions', 
+						attributes: { 
+							name: $scope.construction.name.text,
+							code: $scope.construction.code,
+						}, 
+						relationships: { 
+							company: { 
+								data: { 
+									type: "companies", 
+									id: $scope.construction.selectedCompany.id
+								} 
+							},
+							administrator: { 
+								data: { 
+									type: "users", 
+									id: $scope.construction.selectedAdministrador.id
+								} 
+							},
+							supervisor: { 
+								data: { 
+									type: "users", 
+									id: $scope.construction.selectedSupervisor.id
+								} 
+							},
+							contractors: {
+								data: contratistas
+							},
+							users: {
+								data: usuarios
+							}
+						} 
+					}};
 
 		Constructions.save(aux, 
 			function(success) {
-				$log.error(success);
 				if (success.data) {
 					$uibModalInstance.close({
 						action: 'save',
@@ -384,10 +380,7 @@ angular.module('efindingAdminApp')
 				return;
 			}
 		);
-
 	};
-
-	
 
 	$scope.cancel = function() {
 		$uibModalInstance.dismiss('cancel');
@@ -404,9 +397,9 @@ angular.module('efindingAdminApp')
 		},
 		contractors: [],
 		administrator: {},
-		expert: {},
+		experts: [],
+		inspectors: [],
 		supervisor: {},
-		inspector: {},
 		jTerreno: {}
 	};
 
@@ -444,14 +437,13 @@ angular.module('efindingAdminApp')
 
  		Constructions.detail({
  			constructionId: idObject,
- 			include: 'administrator,expert,construction_personnel.personnel,construction_personnel.personnel_type,inspector,supervisor,contractors'
+ 			include: 'administrator,construction_personnel.personnel,construction_personnel.personnel_type,supervisor,contractors,users'
  		}, function(success) {
  			if (success.data) {
  				var administrador 	= success.data.relationships.administrator.data,
- 				    experto 		= success.data.relationships.expert.data,
  				  	personal 		= success.data.relationships.construction_personnel.data,
- 				  	inspector 		= success.data.relationships.inspector.data,
- 				  	supervisor 		= success.data.relationships.supervisor.data;
+ 				  	supervisor 		= success.data.relationships.supervisor.data,
+ 				  	users 		    = success.data.relationships.users.data;
 
  				$scope.construction.id = success.data.id;
  				$scope.construction.name.text = success.data.attributes.name;
@@ -461,17 +453,9 @@ angular.module('efindingAdminApp')
 
 				if (_.has(success, "included")) 
 				{
-					if (experto == null) 
-					{
-						experto = {id: null, type:null};
-					}
 					if (administrador == null) 
 					{
 						administrador = {id: null, type:null};
-					}
-					if (inspector == null) 
-					{
-						inspector = {id: null, type:null};
 					}
 					if (supervisor == null) 
 					{
@@ -483,26 +467,22 @@ angular.module('efindingAdminApp')
 						{
 							$scope.construction.administrator = success.included[i];
 						}
-						if (success.included[i].id === experto.id && success.included[i].type === experto.type) 
-						{
-							$scope.construction.expert = success.included[i];
-						}
-						if (success.included[i].id === inspector.id && success.included[i].type === inspector.type) 
-						{
-							$scope.construction.inspector = success.included[i];
-						}
 						if (success.included[i].id === supervisor.id && success.included[i].type === supervisor.type) 
 						{
 							$scope.construction.supervisor = success.included[i];
 						}
 					}
-					contratistas = _.where(success.included, {type: "contractors"});
+					contratistas 	= _.where(success.included, {type: "contractors"});
+					users 			= _.where(success.included, {type: "users"});
 				}
 
 				for (var i = 0; i < contratistas.length; i++) {
 					$scope.construction.contractors.push({id: contratistas[i].id, name:contratistas[i].attributes.name});
 				}
-				
+
+				$scope.construction.inspectors = _.where(_.map(users, function(u){ return {id: u.id, fullName: u.attributes.first_name + ' ' + u.attributes.last_name, role_type: u.attributes.role_type }; }), { role_type: 'inspector'});
+				$scope.construction.experts = _.where(_.map(users, function(u){ return {id: u.id, fullName: u.attributes.first_name + ' ' + u.attributes.last_name, role_type: u.attributes.role_type }; }), { role_type: 'expert'});
+
 				$scope.getUsers();
 				$scope.getContractors();
 
@@ -528,36 +508,15 @@ angular.module('efindingAdminApp')
 				for (var i = 0; i < success.data.length; i++) {
 					data.push({
 						id: success.data[i].id,
-						firstName: success.data[i].attributes.first_name,
-						lastName: success.data[i].attributes.last_name,
-						email: success.data[i].attributes.email,
-						roleName: success.data[i].attributes.role_name,
-						roleId: success.data[i].attributes.role_id,
-						active: success.data[i].attributes.active,
+						role_type: success.data[i].attributes.role_type,
 						fullName: success.data[i].attributes.first_name + ' ' + success.data[i].attributes.last_name
 					});
-
-					if ($scope.construction.expert != undefined) 
-					{
-						if ($scope.construction.expert.id === success.data[i].id) 
-						{
-							$scope.construction.selectedExpert = {fullName: success.data[i].attributes.first_name + ' ' + success.data[i].attributes.last_name, id: success.data[i].id };
-						}
-					}
 
 					if ($scope.construction.administrator != undefined) 
 					{
 						if ($scope.construction.administrator.id === success.data[i].id) 
 						{
 							$scope.construction.selectedAdministrador = {fullName: success.data[i].attributes.first_name + ' ' + success.data[i].attributes.last_name, id: success.data[i].id };
-						}
-					}
-
-					if ($scope.construction.inspector != undefined) 
-					{
-						if ($scope.construction.inspector.id === success.data[i].id) 
-						{
-							$scope.construction.selectedInspector = {fullName: success.data[i].attributes.first_name + ' ' + success.data[i].attributes.last_name, id: success.data[i].id };
 						}
 					}
 
@@ -569,18 +528,10 @@ angular.module('efindingAdminApp')
 						}
 					}
 				}
-
-				/*$scope.admObra = data;
-				$scope.experts = data;
-				$scope.inspectors = data;
-				$scope.supervisors = data;*/
-
-				//Cambiar ids en produccion
-				//Administradores de obra
-				$scope.admObra 		= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: 13});
-				$scope.experts 		= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: 12});
-				$scope.inspectors 	= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: 16});
-				$scope.supervisors 	= _.where(_.reject(data, function(object){ return object.id === ""; }), {roleId: 14});
+				$scope.admObra 		= _.where(_.reject(data, function(object){ return object.id === ""; }), {role_type: 'administrator'});
+				$scope.experts 		= _.where(_.reject(data, function(object){ return object.id === ""; }), {role_type: 'expert'});
+				$scope.inspectors 	= _.where(_.reject(data, function(object){ return object.id === ""; }), {role_type: 'inspector'});
+				$scope.supervisors 	= _.where(_.reject(data, function(object){ return object.id === ""; }), {role_type: 'supervisor'});
 
 
 			} else {
@@ -649,22 +600,15 @@ angular.module('efindingAdminApp')
 				$scope.elements.alert.show = true;
 				return;
 			}
-			if (!Validators.validateRequiredField($scope.construction.selectedExpert)) {
+			if ($scope.construction.experts.length == 0) {
 				$scope.elements.alert.title = 'Faltan datos por rellenar';
 				$scope.elements.alert.text = 'Jefe de terreno';
 				$scope.elements.alert.color = 'danger';
 				$scope.elements.alert.show = true;
 				return;
 			}
-			if (!Validators.validateRequiredField($scope.construction.selectedInspector)) {
-				$scope.elements.alert.title = 'Faltan datos por rellenar';
-				$scope.elements.alert.text = 'Inspector';
-				$scope.elements.alert.color = 'danger';
-				$scope.elements.alert.show = true;
-				return;
-			}
 
-			if (!Validators.validateRequiredField($scope.construction.contractors)) {
+			if ($scope.construction.contractors.length == 0) {
 				$scope.elements.alert.title = 'Faltan datos por rellenar';
 				$scope.elements.alert.text = 'Contratistas';
 				$scope.elements.alert.color = 'danger';
@@ -683,6 +627,16 @@ angular.module('efindingAdminApp')
 				contratistas.push({ id:value.id, type:"contractors"});
 			});
 
+			var usuarios = []
+			angular.forEach($scope.construction.experts, function(value, key)
+			{
+				usuarios.push({id: value.id, type:"users"});	
+			});
+			angular.forEach($scope.construction.inspectors, function(value, key)
+			{
+				usuarios.push({id: value.id, type:"users"});	
+			});
+
 			var aux = { 
 						data: { 
 							type: 'constructions', 
@@ -697,18 +651,6 @@ angular.module('efindingAdminApp')
 										id: $scope.construction.selectedAdministrador.id
 									} 
 								},
-								expert: { 
-									data: { 
-										type: "users", 
-										id: $scope.construction.selectedExpert.id
-									} 
-								},
-								inspector: { 
-									data: { 
-										type: "users", 
-										id: $scope.construction.selectedInspector.id
-									} 
-								},
 								supervisor: { 
 									data: { 
 										type: "users", 
@@ -717,6 +659,9 @@ angular.module('efindingAdminApp')
 								},
 								contractors: {
 									data: contratistas
+								},
+								users: {
+									data: usuarios
 								}
 							} 
 						} , constructionId: idObject };
