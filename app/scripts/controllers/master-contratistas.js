@@ -151,11 +151,13 @@ angular.module('efindingAdminApp')
 		buttons: {
 			editUser: {
 				text: 'Editar',
-				border: 'btn-border'
+				border: 'btn-border',
+				disabled: false
 			},
 			removeUser: {
 				text: 'Eliminar',
-				border: 'btn-border'
+				border: 'btn-border',
+				disabled: false
 			}
 		},
 		title: '',
@@ -175,7 +177,7 @@ angular.module('efindingAdminApp')
  			if (success.data) {
  				$scope.contractor.id 				= success.data.id;
  				$scope.contractor.name.text 		= success.data.attributes.name;
- 				$scope.contractor.name.disabled 	= false;
+ 				$scope.contractor.name.disabled 	= true;
 
  				$scope.elements.title = $scope.contractor.name.text;
 
@@ -200,6 +202,8 @@ angular.module('efindingAdminApp')
 		if ($scope.elements.buttons.editUser.text === 'Editar') {
 			$scope.elements.buttons.editUser.text = 'Guardar';
 			$scope.elements.buttons.editUser.border = '';
+			$scope.contractor.name.disabled 	= false;
+			$scope.elements.buttons.removeUser.disabled 	= true;
 		} else {
 			$scope.elements.buttons.editUser.text = 'Editar';
 			$scope.elements.buttons.editUser.border = 'btn-border';
@@ -244,6 +248,8 @@ angular.module('efindingAdminApp')
 			$scope.elements.alert.title = '¿Seguro que desea eliminar el contratista?';
 			$scope.elements.alert.text = 'Para eliminarlo vuelva a presionar el botón.';
 			$scope.elements.alert.color = 'danger';
+
+			$scope.elements.buttons.editUser.disabled 	= true;
 
 		} else {
 			$scope.elements.buttons.removeUser.text = 'Eliminar';

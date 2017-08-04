@@ -311,11 +311,13 @@ angular.module('efindingAdminApp')
 		buttons: {
 			editUser: {
 				text: 'Editar',
-				border: 'btn-border'
+				border: 'btn-border',
+				disabled: false
 			},
 			removeUser: {
 				text: 'Eliminar',
-				border: 'btn-border'
+				border: 'btn-border',
+				disabled: false
 			}
 		},
 		title: '',
@@ -400,6 +402,7 @@ angular.module('efindingAdminApp')
 
 			$scope.collection.disabled = false;
 			$scope.parentCollection.disabled = false;
+			$scope.elements.buttons.removeUser.disabled = true;
 
 		} else {
 			if (!Validators.validateRequiredField($scope.collection.name)) {
@@ -464,6 +467,8 @@ angular.module('efindingAdminApp')
 			$scope.elements.alert.text = 'Para eliminar este item, vuelva a presionar el botón.';
 			$scope.elements.alert.color = 'danger';
 
+			$scope.elements.buttons.editUser.disabled = true;
+
 		} else {
 			$scope.elements.buttons.removeUser.text = 'Eliminar';
 
@@ -511,6 +516,15 @@ angular.module('efindingAdminApp')
 		name: '',
 		id: '',
 		code: ''
+	};
+
+	$scope.modal = {
+		alert: {
+			title: '',
+			text: '',
+			color: '',
+			show: false
+		}
 	};
 
 	if (CollectionObject.padre != null) 
@@ -602,7 +616,7 @@ angular.module('efindingAdminApp')
 						Utils.refreshToken($scope.saveCollectionItem);
 					}
 					$scope.modal.alert.title = 'Error al Guardar';
-					$scope.modal.alert.text = '';
+					$scope.modal.alert.text = error.data.errors[0].detail;
 					$scope.modal.alert.color = 'danger';
 					$scope.modal.alert.show = true;
 					return;
