@@ -25,6 +25,7 @@ angular.module('efindingAdminApp')
 			idUser: ''
 		}, function(success) {
 			if (success.data) {
+				$log.error(success.data);
 				data = [];
 				for (var i = 0; i < success.data.length; i++) {
 					data.push({
@@ -36,6 +37,13 @@ angular.module('efindingAdminApp')
 						roleId: success.data[i].attributes.role_id,
 						active: success.data[i].attributes.active
 					});
+					$log.error(success.data[i].attributes.is_superuser);
+
+					if (success.data[i].attributes.is_superuser) 
+					{
+						data[i].roleName = data[i].roleName + ' - Superusuario';
+					}
+
 					data[i].firstName===null?data[i].firstName='': data[i].firstName=data[i].firstName;
 					data[i].lastName===null?data[i].lastName='': data[i].lastName=data[i].lastName;
 				}
