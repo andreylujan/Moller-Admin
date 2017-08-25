@@ -107,7 +107,7 @@ angular.module('efindingAdminApp')
 			$scope.columns[i].columnFilters.push($scope.filter['filter[' + value.sort_name + ']']);
 		});
 	}
-	$scope.filter.include = _.findWhere(_.findWhere(included, { name: 'Inspecciones'}).items, { path: 'efinding.inspecciones.list'}).included;
+	$scope.filter.include = 'creator,construction.administrator,construction.company.organization,field_chief'
 	$scope.filter['sort'] = '';
 	$scope.filter['page[number]'] = $scope.pagination.pages.current;
 	$scope.filter['page[size]'] = $scope.pagination.pages.size;

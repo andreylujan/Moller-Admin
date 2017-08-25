@@ -143,7 +143,7 @@
 
 
 
- 		$scope.tasaAccidentabilidad = Utils.setChartConfig(
+ 				$scope.tasaAccidentabilidad = Utils.setChartConfig(
  								'spline', 
  								null, 
  								{
@@ -200,7 +200,7 @@
 	    					);
  	
 
- 		$scope.tasaSiniestralidad = Utils.setChartConfig(
+ 				$scope.tasaSiniestralidad = Utils.setChartConfig(
  								'spline', 
  								null, 
  								{
@@ -254,6 +254,72 @@
 							        enableMouseTracking: false
 							    }
 							    ]
+	    					);
+
+ 				$scope.titulo = Utils.setChartConfig(
+ 								'column', 
+ 								null, 
+ 								{}, 
+	    						{
+						        	min: 0,
+							        title: {
+							            text: 'Cantidad'
+							        }
+						    	}, 
+	    						{
+							        type: 'category',
+							        labels: {
+							            rotation: -45,
+							            style: {
+							                fontSize: '13px',
+							                fontFamily: 'Verdana, sans-serif'
+							            }
+							        }
+							    }, 
+							    [{
+							        name: 'Meses',
+							        data: [
+							            ['Enero', 23.7],
+							            ['Febrero', 16.1],
+							            ['Marzo', 14.2],
+							            ['Abril', 14.0],
+							            ['Mayo', 12.5],
+							            ['Junio', 12.1]
+							        ]
+							    }],
+	    					);
+
+ 				$scope.titulo2 = Utils.setChartConfig(
+ 								'column', 
+ 								null, 
+ 								{}, 
+	    						{
+						        	min: 0,
+							        title: {
+							            text: 'Cantidad'
+							        }
+						    	}, 
+	    						{
+							        type: 'category',
+							        labels: {
+							            rotation: -45,
+							            style: {
+							                fontSize: '13px',
+							                fontFamily: 'Verdana, sans-serif'
+							            }
+							        }
+							    }, 
+							    [{
+							        name: 'Meses',
+							        data: [
+							            ['Enero', 9.3],
+							            ['Febrero', 9.0],
+							            ['Marzo', 8.9],
+							            ['Abril', 8.9],
+							            ['Mayo', 8.9],
+							            ['Junio', 8.9]
+							        ]
+							    }],
 	    					);
     		}
 		}, function(error) {
