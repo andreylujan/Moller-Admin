@@ -394,11 +394,13 @@ angular.module('efindingAdminApp')
 		buttons: {
 			editUser: {
 				text: 'Editar',
-				border: 'btn-border'
+				border: 'btn-border',
+				disabled: false
 			},
 			removeUser: {
 				text: 'Eliminar',
-				border: 'btn-border'
+				border: 'btn-border',
+				disabled: false
 			}
 		},
 		title: '',
@@ -457,6 +459,7 @@ angular.module('efindingAdminApp')
 		{
 			$scope.elements.buttons.editUser.text = 'Guardar';
 			$scope.elements.buttons.editUser.border = '';
+			$scope.elements.buttons.removeUser.disabled = true;
 			enableFormInputs();
 		} 
 		else 
@@ -527,6 +530,8 @@ angular.module('efindingAdminApp')
 			$scope.elements.alert.title = '¿Seguro que desea eliminar la Accidentabilidad/Siniestralidad?';
 			$scope.elements.alert.text = 'Para eliminarla vuelva a presionar el botón.';
 			$scope.elements.alert.color = 'danger';
+
+			$scope.elements.buttons.editUser.disabled = true;
 
 		} else {
 			$scope.elements.buttons.removeUser.text = 'Eliminar';

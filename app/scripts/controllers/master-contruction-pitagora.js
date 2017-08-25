@@ -388,7 +388,7 @@ angular.module('efindingAdminApp')
 
 })
 
-.controller('constructionDetailsPitagoraInstance', function($scope, $log, $uibModalInstance, idObject, idCompany, Validators, Utils, Constructions, Users, Contractors) {
+.controller('constructionDetailsPitagoraInstance', function($scope, $log, $uibModalInstance, idObject, idCompany, Validators, Utils, Constructions, Users, Contractors, Companies) {
 	$scope.construction = {
 		id: null,
 		name: {
@@ -400,7 +400,8 @@ angular.module('efindingAdminApp')
 		experts: [],
 		inspectors: [],
 		supervisor: {},
-		jTerreno: {}
+		jTerreno: {},
+		companyId: ''
 	};
 
 	$scope.expertsD	= true;
@@ -412,6 +413,7 @@ angular.module('efindingAdminApp')
 	$scope.jefesTerreno = [];
 	$scope.admObra 		= [];
 	$scope.supervisors 	= [];
+	$scope.companies 	= [];
 
 	$scope.elements = {
 		buttons: {
@@ -448,6 +450,7 @@ angular.module('efindingAdminApp')
  				$scope.construction.id = success.data.id;
  				$scope.construction.name.text = success.data.attributes.name;
  				$scope.construction.code = success.data.attributes.code;
+ 				$scope.construction.companyId = success.data.attributes.company_id;
 
 				var contratistas = [];
 
@@ -485,6 +488,7 @@ angular.module('efindingAdminApp')
 
 				$scope.getUsers();
 				$scope.getContractors();
+				$scope.getCompanies();
 
 			} else {
 				$log.error(success);
@@ -545,6 +549,33 @@ angular.module('efindingAdminApp')
 		});
 
 	};
+
+	$scope.getCompanies = function(e) {
+ 		Companies.query({
+ 		}, function(success) {
+ 			if (success.data) {
+				 var data = [];
+				for (var i = 0; i < success.data.length; i++) {
+					data.push({
+						name: success.data[i].attributes.name,
+						id: success.data[i].id,
+					});
+					if (success.data[i].id == $scope.construction.companyId) 
+					{
+						$scope.construction.selectedCompany = data[i];
+					}
+				}
+				$scope.companies = data;
+			} else {
+				$log.error(success);
+			}
+ 		}, function(error) {
+ 			$log.error(error);
+ 			if (error.status === 401) {
+ 				Utils.refreshToken($scope.getContractors);
+ 			}
+ 		});
+ 	};
 
 	$scope.getContractors = function(e) {
 
@@ -645,6 +676,12 @@ angular.module('efindingAdminApp')
 								name: $scope.construction.name.text,
 							}, 
 							relationships: { 
+								company: { 
+									data: { 
+										type: "companies", 
+										id: $scope.construction.selectedCompany.id
+									} 
+								},
 								administrator: { 
 									data: { 
 										type: "users", 

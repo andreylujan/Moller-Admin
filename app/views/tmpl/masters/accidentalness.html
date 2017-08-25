@@ -132,8 +132,8 @@
       		</div>
     	</div>
 	    <div class="modal-footer">
-	      	<button class="btn btn-danger btn-rounded-10 {{elements.buttons.removeUser.border}} mb-10" type="button" ng-click="removeGeneric(accidentalness.id)" >{{elements.buttons.removeUser.text}}</button>
-      		<button class="btn btn-warning btn-rounded-10 {{elements.buttons.editUser.border}} mb-10" type="button" ng-click="editGeneric(accidentalness.id)" ng-disabled="form.$invalid" >{{elements.buttons.editUser.text}}</button>
+	      	<button class="btn btn-danger btn-rounded-10 {{elements.buttons.removeUser.border}} mb-10" type="button" ng-click="removeGeneric(accidentalness.id)" ng-disabled="elements.buttons.removeUser.disabled">{{elements.buttons.removeUser.text}}</button>
+      		<button class="btn btn-warning btn-rounded-10 {{elements.buttons.editUser.border}} mb-10" type="button" ng-click="editGeneric(accidentalness.id)" ng-disabled="elements.buttons.editUser.disabled && !form.$invalid">{{elements.buttons.editUser.text}}</button>
       		<button class="btn btn-cancelRecit btn-rounded-10 mb-10" type="button" ng-click="cancel()">Cerrar</button>
 	    </div>
   	</script>

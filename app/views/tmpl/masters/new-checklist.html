@@ -80,7 +80,8 @@
                         <td data-title="'Eliminar'" class="text-center">
                             <img ng-click="removeItem($index)" ng-src="https://s3-sa-east-1.amazonaws.com/efinding/icons/CHECKLIST_BASURERO.png" style="width:19px; cursor:pointer" uib-tooltip="Eliminar item">
 
-                            <img src="https://s3-sa-east-1.amazonaws.com/efinding/icons/USUARIOS_INFO.png" style="width:24px; cursor:pointer; margin-left: 15px;" uib-tooltip="Más info" ng-click="openModalAddOptions(item.id, item.name)">
+                            <img ng-if="item.items.length > 0 " src="https://s3-sa-east-1.amazonaws.com/efinding/icons/USUARIOS_INFO.png" style="width:24px; cursor:pointer; margin-left: 15px;" uib-tooltip="Más info" ng-click="openModalAddOptions(item.id, item.name)">
+                            <img ng-if="item.items.length == 0 " src="https://s3-sa-east-1.amazonaws.com/efinding/icons/USUARIOS_INFO_PLOMO.png" style="width:24px; cursor:pointer; margin-left: 15px;" uib-tooltip="Más info" ng-click="openModalAddOptions(item.id, item.name)">
                         </td>
                     </tr>
                 </tbody>
