@@ -28,10 +28,14 @@
  		}, function(success) {
 		    if (success.data) {
 
+		    	$log.error(success.data);
+
 		    	$scope.accidentabilidadGlobal = {};
 		    	$scope.siniestralidadGlobal = {};
 		    	$scope.tasaAccidentabilidad = {};
 		    	$scope.tasaSiniestralidad = {};
+		    	$scope.tasa_accidentabilidad_acumulada = '';
+		    	$scope.tasa_siniestralidad_acumulada = '';
 		    	
 		    	$scope.accidentabilidadGlobal = Utils.setChartConfig(
  								'spline', 
@@ -122,119 +126,73 @@
 							    }]
 	    					);
 
+ 				$scope.tasa_accidentabilidad_acumulada 	= success.data.attributes.tasa_accidentabilidad_acumulada;
+		    	$scope.tasa_siniestralidad_acumulada 	= success.data.attributes.tasa_siniestralidad_acumulada;
+
+		    	var indice_frecuencia = [],
+		    		indice_gravedad = [];
+
+		    	angular.forEach(success.data.attributes.indices_de_frecuencia, function(value, key){
+		    		indice_frecuencia.push([value.mes, value.indice_de_frecuencia]);
+		    	});
+
+		    	angular.forEach(success.data.attributes.indices_de_gravedad, function(value, key){
+		    		indice_gravedad.push([value.mes, value.indice_de_gravedad]);
+		    	});
 
 
- 		$scope.tasaAccidentabilidad = Utils.setChartConfig(
- 								'spline', 
- 								null, 
- 								{
- 									spline : {
- 										color: 'green',
-					                	dataLabels : {
-					                    	enabled : true,
-					                    	color: 'black',
-					                    	style: {"fontSize": "15px", "fontWeight": "bold", "textOutline": "1px" },
-					                    	formatter : function() {
-					                        	return this.y + '%';
-					                    	}
-					                	}
-					            	},
-					            	line: {
-					            		color: 'orange'
-					            	}
- 								}, 
+ 				$scope.indice_frecuencia = Utils.setChartConfig(
+ 								'column', 
+ 								355, 
+ 								{}, 
 	    						{
+						        	min: 0,
 							        title: {
-						            	text: 'Porcentaje'
-						        	}
-	    						}, 
+							            text: 'Valor'
+							        }
+						    	}, 
 	    						{
-	    							categories: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return num.mes; })
-	    						}, 
-	    						[{
-							    	type: 'spline',
-							        name: 'Todas las obras',
-							        marker: {
-							            symbol: 'circle',
-							            radius: 7
-							        },
-							        line: {
-							        	radius: 2
-							        },
-							        data: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return parseFloat(num.tasa_accidentabilidad_acumulada.toFixed(2)); })
-							    },
-							    {
-							        type: 'line',
-							        data: success.data.attributes.meta_accidentabilidad,
-							        name: 'Meta',
-							        marker: {
-							            enabled: false
-							        },
-							        states: {
-							            hover: {
-							                lineWidth: 1
+							        type: 'category',
+							        labels: {
+							            rotation: -45,
+							            style: {
+							                fontSize: '13px',
+							                fontFamily: 'Verdana, sans-serif'
 							            }
 							        },
-							        enableMouseTracking: false
-							    }
-							    ]
+							    }, 
+							    [{
+							    	showInLegend: false,
+							        name: 'Total mes',
+							        data: indice_frecuencia
+							    }],
 	    					);
- 	
 
- 		$scope.tasaSiniestralidad = Utils.setChartConfig(
- 								'spline', 
- 								null, 
- 								{
- 									spline : {
- 										color: 'green',
-					                	dataLabels : {
-					                    	enabled : true,
-					                    	color: 'black',
-					                    	style: {"fontSize": "15px", "fontWeight": "bold", "textOutline": "1px" },
-					                    	formatter : function() {
-					                        	return this.y + '%';
-					                    	}
-					                	}
-					            	},
-					            	line: {
-					            		color: 'orange'
-					            	}
- 								}, 
+ 				$scope.indice_gravedad = Utils.setChartConfig(
+ 								'column', 
+ 								355, 
+ 								{}, 
 	    						{
+						        	min: 0,
 							        title: {
-						            	text: 'Porcentaje'
-						        	}
-	    						}, 
+							            text: 'Valor'
+							        }
+						    	}, 
 	    						{
-	    							categories: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return num.mes; })
-	    						}, 
-	    						[{
-							    	type: 'spline',
-							        name: 'Todas las obras',
-							        marker: {
-							            symbol: 'circle',
-							            radius: 7
-							        },
-							        line: {
-							        	radius: 2
-							        },
-							        data: _.map(success.data.attributes.tasas_accidentabilidad, function(num, key){ return parseFloat(num.tasa_siniestralidad_acumulada.toFixed(2)); })
-							    },
-							    {
-							        type: 'line',
-							        data: success.data.attributes.meta_siniestralidad,
-							        name: 'Meta',
-							        marker: {
-							            enabled: false
-							        },
-							        states: {
-							            hover: {
-							                lineWidth: 1
+							        type: 'category',
+							        labels: {
+							            rotation: -45,
+							            style: {
+							                fontSize: '13px',
+							                fontFamily: 'Verdana, sans-serif'
 							            }
-							        },
-							        enableMouseTracking: false
-							    }
-							    ]
+							        }
+							    }, 
+							    [{
+							    	showInLegend: false,
+							    	name: 'Total mes',
+							        data: indice_gravedad
+							    }],
 	    					);
     		}
 		}, function(error) {
