@@ -124,7 +124,7 @@
 
 
 
- 		$scope.tasaAccidentabilidad = Utils.setChartConfig(
+ 		/*$scope.tasaAccidentabilidad = Utils.setChartConfig(
  								'spline', 
  								null, 
  								{
@@ -235,6 +235,73 @@
 							        enableMouseTracking: false
 							    }
 							    ]
+	    					);*/
+	    		$scope.titulo = Utils.setChartConfig(
+ 								'column', 
+ 								355, 
+ 								{}, 
+	    						{
+						        	min: 0,
+							        title: {
+							            text: 'Valor'
+							        }
+						    	}, 
+	    						{
+							        type: 'category',
+							        labels: {
+							            rotation: -45,
+							            style: {
+							                fontSize: '13px',
+							                fontFamily: 'Verdana, sans-serif'
+							            }
+							        },
+							    }, 
+							    [{
+							    	showInLegend: false,
+							        name: 'Total mes',
+							        data: [
+							            ['Enero', 19.3],
+							            ['Febrero', 13.8],
+							            ['Marzo', 45],
+							            ['Abril', 17.2],
+							            ['Mayo', 12.5],
+							            ['Junio', 12.1]
+							        ]
+							    }],
+	    					);
+
+ 				$scope.titulo2 = Utils.setChartConfig(
+ 								'column', 
+ 								355, 
+ 								{}, 
+	    						{
+						        	min: 0,
+							        title: {
+							            text: 'Valor'
+							        }
+						    	}, 
+	    						{
+							        type: 'category',
+							        labels: {
+							            rotation: -45,
+							            style: {
+							                fontSize: '13px',
+							                fontFamily: 'Verdana, sans-serif'
+							            }
+							        }
+							    }, 
+							    [{
+							    	showInLegend: false,
+							    	name: 'Total mes',
+							        data: [
+							            ['Enero', 148],
+							            ['Febrero', 152],
+							            ['Marzo', 200],
+							            ['Abril', 63],
+							            ['Mayo', 150],
+							            ['Junio', 8.9]
+							        ]
+							    }],
 	    					);
     		}
 		}, function(error) {

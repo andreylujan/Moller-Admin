@@ -143,7 +143,7 @@
 
 
 
- 				$scope.tasaAccidentabilidad = Utils.setChartConfig(
+ 				/*$scope.tasaAccidentabilidad = Utils.setChartConfig(
  								'spline', 
  								null, 
  								{
@@ -254,16 +254,16 @@
 							        enableMouseTracking: false
 							    }
 							    ]
-	    					);
+	    					);*/
 
  				$scope.titulo = Utils.setChartConfig(
  								'column', 
- 								null, 
+ 								355, 
  								{}, 
 	    						{
 						        	min: 0,
 							        title: {
-							            text: 'Cantidad'
+							            text: 'Valor'
 							        }
 						    	}, 
 	    						{
@@ -274,15 +274,16 @@
 							                fontSize: '13px',
 							                fontFamily: 'Verdana, sans-serif'
 							            }
-							        }
+							        },
 							    }, 
 							    [{
-							        name: 'Meses',
+							    	showInLegend: false,
+							        name: 'Total mes',
 							        data: [
-							            ['Enero', 23.7],
-							            ['Febrero', 16.1],
-							            ['Marzo', 14.2],
-							            ['Abril', 14.0],
+							            ['Enero', 19.3],
+							            ['Febrero', 13.8],
+							            ['Marzo', 45],
+							            ['Abril', 17.2],
 							            ['Mayo', 12.5],
 							            ['Junio', 12.1]
 							        ]
@@ -291,12 +292,12 @@
 
  				$scope.titulo2 = Utils.setChartConfig(
  								'column', 
- 								null, 
+ 								355, 
  								{}, 
 	    						{
 						        	min: 0,
 							        title: {
-							            text: 'Cantidad'
+							            text: 'Valor'
 							        }
 						    	}, 
 	    						{
@@ -310,13 +311,14 @@
 							        }
 							    }, 
 							    [{
-							        name: 'Meses',
+							    	showInLegend: false,
+							    	name: 'Total mes',
 							        data: [
-							            ['Enero', 9.3],
-							            ['Febrero', 9.0],
-							            ['Marzo', 8.9],
-							            ['Abril', 8.9],
-							            ['Mayo', 8.9],
+							            ['Enero', 148],
+							            ['Febrero', 152],
+							            ['Marzo', 200],
+							            ['Abril', 63],
+							            ['Mayo', 150],
 							            ['Junio', 8.9]
 							        ]
 							    }],
@@ -383,11 +385,6 @@
  			'filter[company_id]': companySelected.id
  		}, function(success) {
  			if (success.data) {
-
- 				$scope.page.filters.constructions.list.push({
- 					id: '',
- 					name: 'Todas las obras'
- 				});
 
  				for (var i = 0; i < success.data.length; i++) {
  					$scope.page.filters.constructions.list.push({
