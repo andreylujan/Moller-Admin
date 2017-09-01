@@ -28,8 +28,6 @@
  		}, function(success) {
 		    if (success.data) {
 
-		    	$log.error(success.data);
-
 		    	$scope.accidentabilidadGlobal = {};
 		    	$scope.siniestralidadGlobal = {};
 		    	$scope.tasaAccidentabilidad = {};
