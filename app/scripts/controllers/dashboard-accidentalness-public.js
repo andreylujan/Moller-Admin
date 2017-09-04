@@ -54,7 +54,7 @@
 	    						{
 						        	labels: {
 							            formatter: function () {
-							                return this.value + '°';
+							                return this.value;
 							            }
 							        },
 							        title: {
@@ -100,7 +100,7 @@
 	    						{
 						        	labels: {
 							            formatter: function () {
-							                return this.value + '°';
+							                return this.value;
 							            }
 							        },
 							        title: {
