@@ -20,11 +20,6 @@
             <div class="col-md-12">
                 <section class="tile" fullscreen="isFullscreen06">
                     <div class="tile-body">
-                        <div class="row">
-                            <div class="col-md-2">
-                                <button class="bg-blue-ps-1 pt-7 pb-7 pr-12 pl-12 br-15 b-0 text-white ml-20 mb-10" ng-click="updateOrCreateChecklist()" uib-tooltip="Guardar checklist"><i class="fa fa-floppy-o"></i></button>
-                            </div>
-                        </div>
                         <form class="form-horizontal" role="form">
                             <div class="form-group">
                                 <label class="col-sm-1 control-label text-uppercase pt-10"><strong>Título</strong></label>
@@ -57,6 +52,13 @@
                         </table>
                         <div class="text-right">
                             <button class="text-right bg-yellow-ps b-0 br-50-percent" style="padding: 7px 14px" ng-click="generateItem()" ng-disabled="page.buttons.oneMoreItem.disabled"><strong>+</strong></button>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <!--button class="bg-blue-ps-1 pt-7 pb-7 pr-12 pl-12 br-15 b-0 text-white ml-20 mb-10" ng-click="updateOrCreateChecklist()" uib-tooltip="Guardar checklist"><i class="fa fa-floppy-o"></i></button-->
+                                <button class="btn btn-green-ps br-20 text-md pl-20 pr-20" type="submit" uib-tooltip="Guardar checklist" ng-click="updateOrCreateChecklist()">Guardar cambios</button>   
+                            </div>
                         </div>
                     </div>
                 </section>
