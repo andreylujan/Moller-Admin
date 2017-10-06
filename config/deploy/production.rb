@@ -9,9 +9,9 @@
 
 set :deploy_to, '/srv/http/www/efinding/production/admin'
 
-server '50.16.161.152', port: 60, user: 'ubuntu', roles: [:web, :app, :db]
+server '34.229.215.234', port: 60, user: 'ubuntu', roles: [:web, :app, :db]
 
-set :branch, 'production'
+set :branch, 'staging-new-server'
 
 # role-based syntax
 # ==================
