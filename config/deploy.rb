@@ -6,7 +6,7 @@ set :repo_url, 'git@github.com:andreylujan/Moller-Admin.git'
 set :branch, 'master'
 
 set :ssh_options, {
- keys: [ "#{ENV['HOME']}/.ssh/nandilagos", "#{ENV['HOME']}/.ssh/leibniz_rsa" ],
+ keys: [ "#{ENV['HOME']}/.ssh/andresEcheckitDev", "#{ENV['HOME']}/.ssh/leibniz_rsa" ],
  forward_agent: true,
  auth_methods: ["publickey"]
 }

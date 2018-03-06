@@ -9,7 +9,7 @@
 
 set :deploy_to, '/srv/http/www/efinding/production/admin'
 
-server '34.229.215.234', port: 60, user: 'ubuntu', roles: [:web, :app, :db]
+server '34.227.102.74', port: 60, user: 'ubuntu', roles: [:web, :app, :db]
 
 set :branch, 'staging-new-server'
 
@@ -45,11 +45,11 @@ set :branch, 'staging-new-server'
 #
 # Global options
 # --------------
-#  set :ssh_options, {
-#    keys: %w(/home/rlisowski/.ssh/id_rsa),
-#    forward_agent: false,
-#    auth_methods: %w(password)
-#  }
+  set :ssh_options, {
+    keys: '{/.ssh/id_rsa',
+    forward_agent: true,
+    auth_methods: %w(password)
+  }
 #
 # The server-based syntax can be used to override options:
 # ------------------------------------

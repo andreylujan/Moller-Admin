@@ -2,12 +2,14 @@
 
 //var API_URL = 'http://50.16.161.152/efinding/api/v1';		//Producción
 //var URL_SERVER = 'http://50.16.161.152/efinding/';		//Producción
-var API_URL = 'http://34.229.215.234/efinding-staging/api/v1';		//Desarrollo
-var URL_SERVER = 'http://34.229.215.234/efinding-staging/';		//Desarrollo
+//var API_URL = 'http://34.229.215.234/efinding-staging/api/v1';		//Desarrollo
+//var URL_SERVER = 'http://34.229.215.234/efinding-staging/';		//Desarrollo
 //var API_URL = 'http://50.16.161.152/pitagora/api/v1';		//Pitagora
 //var URL_SERVER = 'http://50.16.161.152/pitagora/';			//Pitagora
 //var API_URL = 'http://192.168.0.2:3000/api/v1';						//Local
 //var URL_SERVER = 'http://192.168.0.2:3000/';							//Local
+var API_URL = 'http://34.227.102.74/efinding-staging/api/v1';		//QA
+var URL_SERVER = 'http://34.227.102.74/efinding-staging/';			//QA
 
 angular.module('efindingAdminApp')
 
