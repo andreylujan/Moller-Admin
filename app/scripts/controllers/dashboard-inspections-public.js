@@ -18,27 +18,7 @@
  	$auth.setToken(token);
 
  	$scope.page = {
- 		title: 'Inspecciones',
- 		filters: {
- 			companies: {
- 				list: [],
- 				selected: null
- 			},
- 			constructions: {
- 				list: [],
- 				selected: null,
- 				disabled: false,
- 				loaded: false
- 			},
- 			date: {
- 				value: new Date(),
- 				opened: false
- 			}
- 		}
- 	};
-
- 	$scope.page = {
- 		title: 'Inspecciones',
+ 		title: 'Inspecciones del último trimestre móvil',
  		filters: {
  			constructions2: {
  				list: [],
@@ -65,9 +45,10 @@
  		indiceHallazgos: []
  	};
 
-
+ 	var date = (new Date().getMonth()+1) + '/' + new Date().getFullYear();
 	$scope.getDashboardInfo = function() {
  		DashboardInspections.query({
+ 			'filter[period]': date
  		}, function(success) {
 		    if (success.data) {
 		    	$scope.dashboard.cantHallazgosGlobales				= 0;
