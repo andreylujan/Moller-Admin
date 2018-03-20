@@ -63,7 +63,7 @@
  		}, function(success) {
 		    if (success.data) 
 		    {
- 				$scope.listaChequeo = Utils.setChartConfig(
+ 				$scope.listaChequeo = Utils.setChartConfigPitagora(
  								'spline', 
  								null, 
  								{
@@ -103,7 +103,7 @@
 	    					);
 
 
- 				$scope.bajoCumplimiento = Utils.setChartConfig(
+ 				$scope.bajoCumplimiento = Utils.setChartConfigPitagora(
  								'column', 
  								null, 
  								{

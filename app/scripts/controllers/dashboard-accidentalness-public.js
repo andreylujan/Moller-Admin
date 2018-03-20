@@ -35,7 +35,7 @@
 		    	$scope.tasa_accidentabilidad_acumulada = '';
 		    	$scope.tasa_siniestralidad_acumulada = '';
 		    	
-		    	$scope.accidentabilidadGlobal = Utils.setChartConfig(
+		    	$scope.accidentabilidadGlobal = Utils.setChartConfigPitagora(
  								'spline', 
  								null, 
  								{
@@ -81,7 +81,7 @@
 
 
 
-		    	$scope.siniestralidadGlobal = Utils.setChartConfig(
+		    	$scope.siniestralidadGlobal = Utils.setChartConfigPitagora(
  								'spline', 
  								null, 
  								{
@@ -139,7 +139,7 @@
 		    	});
 
 
- 				$scope.indice_frecuencia = Utils.setChartConfig(
+ 				$scope.indice_frecuencia = Utils.setChartConfigPitagora(
  								'column', 
  								355, 
  								{}, 
@@ -166,7 +166,7 @@
 							    }],
 	    					);
 
- 				$scope.indice_gravedad = Utils.setChartConfig(
+ 				$scope.indice_gravedad = Utils.setChartConfigPitagora(
  								'column', 
  								355, 
  								{}, 

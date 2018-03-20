@@ -86,7 +86,7 @@
 		    	});
 
 		    	//GRAFICO 1
-		    	$scope.cantidadHallazgos = Utils.setChartConfig(
+		    	$scope.cantidadHallazgos = Utils.setChartConfigPitagora(
  								'column', 
  								null, 
  								{
@@ -110,7 +110,7 @@
 	    					);
 
 		    	//Grafico 2
-		    	$scope.cantidadHallazgosDonut = Utils.setChartConfig(
+		    	$scope.cantidadHallazgosDonut = Utils.setChartConfigPitagora(
  								'pie', 
  								200, 
  								{
@@ -146,7 +146,7 @@
 
 
 
-		    	$scope.cumplimientoHallazgosDonut = Utils.setChartConfig(
+		    	$scope.cumplimientoHallazgosDonut = Utils.setChartConfigPitagora(
  								'pie', 
  								200, 
  								{
@@ -192,7 +192,7 @@
  				$scope.dashboard.indiceHallazgos = success.data.attributes.indice_de_hallazgos;
  				
 
- 				$scope.indiceHallazgos = Utils.setChartConfig(
+ 				$scope.indiceHallazgos = Utils.setChartConfigPitagora(
  								'column', 
  								null, 
  								{

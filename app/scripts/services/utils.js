@@ -146,7 +146,7 @@ angular.module('efindingAdminApp')
 				plotOptions: plotOptions,
 				credits: {
 					enabled: false
-				}
+				},
 			},
 			yAxis: yAxisData,
 			xAxis: xAxisData,
@@ -155,15 +155,43 @@ angular.module('efindingAdminApp')
 	};
 
 	this.setChartConfigPublicDashboard = function(type, height, width, plotOptions, yAxisData, xAxisData, series) {
-		// if (!type) {
-		// 	type = 'column';
-		// }
-		if (!height) {
-			height = 250;
-		}
-		if (!width) {
-			width = 250;
-		}
+		return {
+			options: {
+				title: {
+					text: null
+				},
+				navigation: {
+					buttonOptions: {
+						enabled: true
+					}
+				},
+				colors: [ '#119848', '#F69022', '#EF3200'],
+				tooltip: {
+					style: {
+						padding: 10,
+						fontWeight: 'bold'
+					}
+				},
+				chart: {
+					type: type,
+					height: height
+				},
+				plotOptions: plotOptions,
+				credits: {
+					enabled: false
+				},
+				exporting: {
+			        enabled: false
+			    }
+			},
+			yAxis: yAxisData,
+			xAxis: xAxisData,
+			series: series
+		};
+	};
+
+
+	this.setChartConfigPitagora = function(type, height, plotOptions, yAxisData, xAxisData, series) {
 		return {
 			options: {
 				title: {
@@ -183,13 +211,15 @@ angular.module('efindingAdminApp')
 				},
 				chart: {
 					type: type,
-					height: height,
-					width: width
+					height: height
 				},
 				plotOptions: plotOptions,
 				credits: {
 					enabled: false
-				}
+				},
+				exporting: {
+			        enabled: false
+			    }
 			},
 			yAxis: yAxisData,
 			xAxis: xAxisData,
