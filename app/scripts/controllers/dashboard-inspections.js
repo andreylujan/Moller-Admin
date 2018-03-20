@@ -12,7 +12,7 @@
  	 									Companies, Constructions, DashboardInspections) {
  	
  	$scope.page = {
- 		title: 'Inspecciones',
+ 		title: 'Inspecciones por trimestre móvil',
  		filters: {
  			companies: {
  				list: [],
